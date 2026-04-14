@@ -1,0 +1,89 @@
+package gnumake
+
+import (
+	"errors"
+	"io/fs"
+	"os/exec"
+	"pik/identity"
+	"pik/model"
+	"pik/runner"
+	"regexp"
+	"slices"
+	"strings"
+)
+
+type make struct {
+	path string
+}
+
+var Indexer = &make{}
+
+var Makefiles = []string{
+	"Makefile",
+	"makefile",
+}
+
+func (m *make) Index(path string, f fs.FS, _ []model.Runner) ([]model.Target, error) {
+
+	entries, err := fs.ReadDir(f, ".")
+	if err != nil {
+		return nil, err
+	}
+	makefile := ""
+	for _, e := range entries {
+		if !e.IsDir() && slices.Contains(Makefiles, strings.ToLower(e.Name())) {
+			content, err := fs.ReadFile(f, e.Name())
+			if err != nil {
+				return nil, err
+			}
+			makefile = string(content)
+			break
+		}
+	}
+
+	if makefile == "" {
+		return nil, nil
+	}
+
+	err = m.findMake()
+	if err != nil {
+		return nil, err
+	}
+
+	return ParseOutput(makefile), nil
+}
+
+var makeRegex = regexp.MustCompile("^([a-zA-Z-]*):((.*?)# (.*))?")
+
+func ParseOutput(input string) []model.Target {
+	var targets []string
+	//var descriptions = make(map[string]string)
+	match := makeRegex.FindAllString(input, len(input))
+	for _, m := range match {
+		targets = append(targets, m)
+	}
+
+	var result []model.Target
+	for _, t := range targets {
+		result = append(result, &MakeTarget{
+			BaseTarget: runner.BaseTarget{
+				Identity: identity.New(t[:len(t)-1]),
+			},
+			Name: t,
+		})
+	}
+	return result
+}
+
+var NoJustError = errors.New("no make in $PATH but source contains makefile")
+
+func (m *make) findMake() error {
+	loc, err := exec.LookPath("make")
+	if errors.Is(err, exec.ErrNotFound) {
+		return NoJustError
+	} else if err != nil {
+		return err
+	}
+	m.path = loc
+	return nil
+}

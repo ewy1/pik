@@ -11,6 +11,7 @@ import (
 	"pik/menu"
 	"pik/model"
 	"pik/run"
+	"pik/runner/gnumake"
 	"pik/runner/just"
 	"pik/runner/python"
 	"pik/runner/shell"
@@ -25,6 +26,7 @@ var initializers = []model.HasInit{
 var indexers = []model.Indexer{
 	pikdex.Indexer,
 	just.Indexer,
+	gnumake.Indexer,
 }
 
 var runners = []model.Runner{
