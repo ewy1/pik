@@ -3,6 +3,7 @@ package menu
 import (
 	"github.com/charmbracelet/lipgloss"
 	"os/exec"
+	"pik/flags"
 	"pik/menu/style"
 	"pik/model"
 	"pik/paths"
@@ -38,10 +39,17 @@ var (
 	BannerTerminatorStyle = style.New(func() lipgloss.Style {
 		return lipgloss.NewStyle().Faint(true).Foreground(BannerTerminatorColor)
 	})
+	BannerDryColor = lipgloss.Color("1")
+	BannerDryStyle = style.New(func() lipgloss.Style {
+		return lipgloss.NewStyle().Foreground(BannerDryColor).Bold(true).MarginRight(1)
+	})
 )
 
 func Banner(source *model.Source, target model.Target, args ...string) string {
 	var parts, argParts []string
+	if *flags.Dry {
+		parts = append(parts, BannerDryStyle.Render("DRY"))
+	}
 	parts = append(parts, BannerPromptStyle.Render("> "))
 	parts = append(parts, BannerSelfStyle.Render("pik"))
 	parts = append(parts, BannerSourceLabelStyle.Render(source.Label()))
