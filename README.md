@@ -1,5 +1,8 @@
-# uwu
-> targets should be files, after all
+<h1 align="center">
+pik
+</h1>
+
+> file-based task runner
 
 ## current features
 
