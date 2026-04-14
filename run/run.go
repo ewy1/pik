@@ -99,5 +99,6 @@ func Exec(source *model.Source, target model.Target, args ...string) error {
 	if *flags.Root {
 		cmd.Args = append([]string{"sudo"}, cmd.Args...)
 	}
+	_, _ = fmt.Fprintln(os.Stderr)
 	return cmd.Run()
 }
