@@ -41,3 +41,7 @@ type HydratedJustTarget struct {
 func (h *HydratedJustTarget) Icon() string {
 	return "\uE673"
 }
+
+func (h *HydratedJustTarget) Description() string {
+	return h.BaseTarget.Description
+}

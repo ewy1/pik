@@ -57,7 +57,6 @@ var makeRegex = regexp.MustCompile("^([a-zA-Z-]*):((.*?)# (.*))?")
 
 func ParseOutput(input string) []model.Target {
 	var targets []string
-	//var descriptions = make(map[string]string)
 	match := makeRegex.FindAllString(input, len(input))
 	for _, m := range match {
 		targets = append(targets, m)
@@ -65,12 +64,21 @@ func ParseOutput(input string) []model.Target {
 
 	var result []model.Target
 	for _, t := range targets {
-		result = append(result, &MakeTarget{
+		split := strings.SplitN(t, "#", 2)
+		name := split[0]
+		name = strings.TrimSpace(name)
+		name = strings.TrimSuffix(name, ":")
+		tgt := &MakeTarget{
 			BaseTarget: runner.BaseTarget{
-				Identity: identity.New(t[:len(t)-1]),
+				Identity: identity.New(name),
+				MyTags:   nil,
 			},
-			Name: t,
-		})
+			Name: name,
+		}
+		if len(split) > 1 {
+			tgt.Description = strings.TrimSpace(split[1])
+		}
+		result = append(result, tgt)
 	}
 	return result
 }
