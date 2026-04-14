@@ -23,7 +23,7 @@ var (
 		return lipgloss.NewStyle()
 	})
 	BannerSelfStyle = style.New(func() lipgloss.Style {
-		return lipgloss.NewStyle().MarginRight(1)
+		return lipgloss.NewStyle().MarginRight(1).Bold(true)
 	})
 	BannerPromptStyle = style.New(func() lipgloss.Style {
 		return lipgloss.NewStyle()
