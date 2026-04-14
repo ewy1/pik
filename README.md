@@ -22,6 +22,8 @@ running `pik` in any repository will index its own file-based task system, as we
 3. you can now access this script from almost anywhere by calling `pik build`. If you want to trigger a specific
    projects build, specify `pik project build`, where `project` is the folder name.
 
+bear in mind scripts will always run in the project directory, not in the `.pik` folder.
+
 pik comes equipped with a tui that allows for target browsing and invoking. open it by running `pik`. the output also
 gently reminds you how to run the invocation next time!
 
