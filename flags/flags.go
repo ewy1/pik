@@ -10,4 +10,5 @@ var (
 	Dry    = pflag.BoolP("dry", "d", false, "print cmdlines instead of running them")
 	Root   = pflag.BoolP("root", "r", false, "run targets (including triggers) with sudo")
 	Yes    = pflag.BoolP("yes", "y", false, "auto-confirm y/n confirmations")
+	Env    = pflag.StringArray("env", nil, "environment files or pre- or suffix")
 )

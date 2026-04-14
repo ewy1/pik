@@ -3,6 +3,7 @@ package run
 import (
 	"fmt"
 	"os"
+	"pik/env"
 	"pik/flags"
 	"pik/menu"
 	"pik/model"
@@ -90,6 +91,11 @@ func Exec(source *model.Source, target model.Target, args ...string) error {
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	cmd.Args = append(cmd.Args, args...)
+
+	e := env.Get(source)
+	if len(e) > 0 {
+		cmd.Env = append(os.Environ(), e...)
+	}
 
 	if *flags.Dry {
 		_, _ = fmt.Fprintln(os.Stderr, menu.InlineCmd(cmd))
