@@ -8,9 +8,13 @@
 * unless overridden, targets will run in the directory where the `.uwu` folder resides.
 * use `--all` flag to start out-of-tree targets without having to navigate to the directory.
 * `--here` to run the target in the current working directory instead of the source directory.
+  * `--at` to run the target in an arbitrary location
 * target tags in filenames which trigger flag behaviours
 * aliases to sources through the `.alias` file
 * tui for viewing and running targets
+* y/n confirmation with yes as default
+  * will be used if we have an uncertain target guess
+  * `--yes` to automatically confirm y/n prompts
 
 ## planned features
 
@@ -18,10 +22,6 @@ As this program has already gone through a number of iterations and forms, this 
 time to catch up with all the features it used to have. This list is not exhaustive, but it is ordered by importance I
 attach to these features.
 
-* y/n confirmation with yes as default
-* runtime flags:
-  * `--there` to override a targets `here` flag.
-  * `--yes` to automatically confirm y/n prompts
 * support for .env files
     * the .env files will be reindexed for every script, meaning a `.pre` trigger can prepare the `.env` file for the
       real targets.
