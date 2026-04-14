@@ -29,7 +29,9 @@ bear in mind scripts will always run in the project directory, not in the `.pik`
 pik comes equipped with a tui that allows for target browsing and invoking. open it by running `pik`. the output also
 gently reminds you how to run the invocation next time!
 
-pik remembers your projects and you can invoke stuff almost anywhere. to view everything pik knows, try `pik -a`!
+pik remembers your projects, and you can invoke stuff almost anywhere. to view everything pik knows, try `pik -a`!
+
+pik reads the first comment line from your targets and informs you in the tui!
 
 ## current features
 
