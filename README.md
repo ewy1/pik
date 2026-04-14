@@ -15,6 +15,10 @@
 * y/n confirmation with yes as default
   * will be used if we have an uncertain target guess
   * `--yes` to automatically confirm y/n prompts
+* autoload .env files
+  * both the project root and `.pik` folder will be searched
+  * values specified with `--env` will be tried as pre- and suffixes: `--env asdf` will load `.env-asdf` and `asdf.env` if they exist.
+  * env files are reread for every trigger, meaning you can have a pre-trigger fetch credentials and save it in .env
 
 ## planned features
 
@@ -22,9 +26,6 @@ As this program has already gone through a number of iterations and forms, this 
 time to catch up with all the features it used to have. This list is not exhaustive, but it is ordered by importance I
 attach to these features.
 
-* support for .env files
-    * the .env files will be reindexed for every script, meaning a `.pre` trigger can prepare the `.env` file for the
-      real targets.
 * python runner and indexer
     * runner with support for uv and venvs
     * indexer with support for `pyproject.toml` script targets
