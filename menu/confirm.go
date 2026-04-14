@@ -6,6 +6,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"io"
 	"os"
+	"pik/flags"
 	"pik/menu/style"
 	"pik/model"
 	"slices"
@@ -21,10 +22,20 @@ var confirmations = []rune{
 var (
 	PromptColor = lipgloss.Color("1")
 	PromptStyle = style.New(func() lipgloss.Style {
-		return lipgloss.NewStyle().Foreground(PromptColor)
+		st := lipgloss.NewStyle()
+		if !*flags.Yes {
+			st.Foreground(PromptColor)
+		}
+		return st
 	})
 	ConfirmStyle = style.New(func() lipgloss.Style {
 		return lipgloss.NewStyle()
+	})
+	AnswerStyle = style.New(func() lipgloss.Style {
+		return lipgloss.NewStyle()
+	})
+	YesStyle = style.New(func() lipgloss.Style {
+		return lipgloss.NewStyle().Faint(true)
 	})
 )
 
@@ -35,7 +46,13 @@ func Confirm(r io.Reader, source *model.Source, target model.Target, args ...str
 		"? ",
 	}
 	banner := BannerStyle.Render(parts...)
-	fmt.Print(banner)
+	_, _ = fmt.Fprint(os.Stderr, banner)
+
+	if *flags.Yes {
+		_, _ = fmt.Fprintln(os.Stderr, AnswerStyle.Render("Y", YesStyle.Render("(--yes)")))
+		return true
+	}
+
 	scanner := bufio.NewScanner(r)
 	scanner.Split(bufio.ScanRunes)
 	scanner.Scan()
