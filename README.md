@@ -11,6 +11,17 @@ predictable and programmable.
 
 running `pik` in any repository will index its own file-based task system, as well as supported external systems.
 
+## installing
+
+if you were already using `pik`, `pik install` would suffice!
+
+thankfully you can `pik` yourself:
+* `git clone https://git.ewy.one/pik/`
+* `cd pik`
+* `bash .pik/install.sh`
+
+wow! you just learned about pik's most obvious usage!
+
 ## getting started
 
 0. if you are already using a supported external runner from [here](#supported-external-runners) and replace it
