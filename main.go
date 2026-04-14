@@ -10,6 +10,7 @@ import (
 	"pik/menu"
 	"pik/model"
 	"pik/run"
+	"pik/runner/just"
 	"pik/runner/python"
 	"pik/runner/shell"
 	"pik/search"
@@ -22,6 +23,7 @@ var initializers = []model.HasInit{
 
 var indexers = []model.Indexer{
 	pikdex.Indexer,
+	just.Indexer,
 }
 
 var runners = []model.Runner{
