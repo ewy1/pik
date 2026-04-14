@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"github.com/spf13/pflag"
 	"os"
 	"pik/cache"
@@ -37,8 +38,17 @@ var hydrators = []model.Hydrator{
 
 var ForceConfirm = false
 
+// go:embed version.txt
+var version string
+
 func main() {
 	pflag.Parse()
+
+	if *flags.Version {
+		_, _ = spool.Print("%s\n", version)
+		os.Exit(0)
+	}
+
 	for _, i := range initializers {
 		err := i.Init()
 		if err != nil {
