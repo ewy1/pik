@@ -15,7 +15,7 @@ func TestUwudex_WantsWalk_AnyRoot(t *testing.T) {
 				Mode: fs.ModeDir,
 			},
 		}
-		u := &uwudex{}
+		u := &pikdex{}
 		result, root, err := u.WantsWalk(data)
 		assert.Equal(t, root, r)
 		assert.NoError(t, err)
@@ -34,7 +34,7 @@ func TestUwudex_WantsWalk_TwoRoots(t *testing.T) {
 			Mode: fs.ModeDir,
 		},
 	}
-	u := &uwudex{}
+	u := &pikdex{}
 	result, r, err := u.WantsWalk(data)
 	// no guarantee we pick any one lol
 	assert.Contains(t, Roots, r)
@@ -46,7 +46,7 @@ func TestUwudex_WantsWalk_NoRoots(t *testing.T) {
 	data := fstest.MapFS{
 		"asdf.txt": &fstest.MapFile{},
 	}
-	u := &uwudex{}
+	u := &pikdex{}
 	result, r, err := u.WantsWalk(data)
 	assert.Equal(t, "", r)
 	assert.NoError(t, err)

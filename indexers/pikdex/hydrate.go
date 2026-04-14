@@ -4,7 +4,7 @@ import (
 	"pik/model"
 )
 
-func (u *uwudex) Hydrate(src *model.Source, result *model.HydratedSource) error {
+func (u *pikdex) Hydrate(src *model.Source, result *model.HydratedSource) error {
 	mod := u.mods[src.Path]
 	if mod.Path != "" {
 		if mod.Aliases != nil {

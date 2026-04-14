@@ -52,9 +52,9 @@ func init() {
 	Roots = append(Roots, "."+self, "_"+self)
 }
 
-var Indexer = &uwudex{mods: make(map[string]*SourceData)}
+var Indexer = &pikdex{mods: make(map[string]*SourceData)}
 
-type uwudex struct {
+type pikdex struct {
 	mods map[string]*SourceData
 }
 
@@ -64,7 +64,7 @@ type SourceData struct {
 	Path    string
 }
 
-func (u *uwudex) Index(absPath string, f fs.FS, runners []model.Runner) ([]model.Target, error) {
+func (u *pikdex) Index(absPath string, f fs.FS, runners []model.Runner) ([]model.Target, error) {
 	wants, root, err := u.WantsWalk(f)
 	if !wants {
 		return nil, err
@@ -133,7 +133,7 @@ func (u *uwudex) Index(absPath string, f fs.FS, runners []model.Runner) ([]model
 	return targets, err
 }
 
-func (u *uwudex) WantsWalk(f fs.FS) (bool, string, error) {
+func (u *pikdex) WantsWalk(f fs.FS) (bool, string, error) {
 	entries, err := fs.ReadDir(f, ".")
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
