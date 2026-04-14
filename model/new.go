@@ -7,7 +7,8 @@ import (
 	"strings"
 )
 
-func NewState(f fs.FS, locations []string, indexers []Indexer, runners []Runner) (*State, error) {
+func NewState(f fs.FS, locations []string, indexers []Indexer, runners []Runner) (*State, []error) {
+	var errs []error
 	st := &State{}
 	for _, loc := range locations {
 		_, dirName := filepath.Split(loc)
@@ -26,11 +27,13 @@ func NewState(f fs.FS, locations []string, indexers []Indexer, runners []Runner)
 
 			s, err := fs.Sub(f, loc)
 			if err != nil {
-				return nil, err
+				errs = append(errs, err)
+				continue
 			}
 			targets, err := indexer.Index("/"+loc, s, runners)
 			if err != nil {
-				return nil, err
+				errs = append(errs, err)
+				continue
 			}
 			src.Targets = append(src.Targets, targets...)
 		}
@@ -41,5 +44,5 @@ func NewState(f fs.FS, locations []string, indexers []Indexer, runners []Runner)
 
 	}
 
-	return st, nil
+	return st, errs
 }

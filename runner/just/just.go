@@ -1,6 +1,7 @@
 package just
 
 import (
+	"errors"
 	"io/fs"
 	"os/exec"
 	"pik/identity"
@@ -83,9 +84,13 @@ func ParseOutput(input string) []model.Target {
 	return result
 }
 
+var NoJustError = errors.New("no just in $PATH but source contains justfile")
+
 func (j *just) findJust() error {
 	loc, err := exec.LookPath("just")
-	if err != nil {
+	if errors.Is(err, exec.ErrNotFound) {
+		return NoJustError
+	} else if err != nil {
 		return err
 	}
 	j.path = loc

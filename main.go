@@ -60,21 +60,22 @@ func main() {
 		panic(err)
 	}
 	var st *model.State
-	var stateError error
+	var stateErrors []error
 	if !*flags.All {
-		st, stateError = model.NewState(fs, locs, indexers, runners)
+		st, stateErrors = model.NewState(fs, locs, indexers, runners)
 	} else {
 		c, err := cache.Load()
 		if err != nil {
 			panic(err)
 		}
-		st, stateError = cache.LoadState(fs, c, indexers, runners)
+		st, stateErrors = cache.LoadState(fs, c, indexers, runners)
 	}
-	if stateError != nil {
-		panic(stateError)
+	if stateErrors != nil {
+		spool.Warn("%v\n", stateErrors)
+	} else {
+		err = cache.Save(st)
 	}
 
-	err = cache.Save(st)
 	if err != nil {
 		_, _ = spool.Warn("%v", err)
 	}
@@ -84,11 +85,13 @@ func main() {
 	if len(args) == 0 {
 		source, target, err := menu.Show(st, hydrators)
 		if err != nil {
-			panic(err)
+			spool.Warn("%v\n", err)
+			os.Exit(1)
 		}
 		err = run.Run(source.Source, target, args...)
 		if err != nil {
-			panic(err)
+			spool.Warn("%v\n", err)
+			os.Exit(1)
 		}
 
 		return
@@ -99,7 +102,8 @@ func main() {
 		err := pflag.Set("all", "true")
 		ForceConfirm = true
 		if err != nil {
-			panic(err)
+			spool.Warn("%v\n", err)
+			os.Exit(1)
 		}
 		main()
 		return
@@ -119,6 +123,7 @@ func main() {
 
 	err = run.Run(src, target, args...)
 	if err != nil {
-		panic(err)
+		spool.Warn("%v\n", err)
+		os.Exit(1)
 	}
 }

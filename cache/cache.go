@@ -104,7 +104,7 @@ func Save(s *model.State) error {
 	return os.WriteFile(Path, []byte(c.String()), os.ModePerm)
 }
 
-func LoadState(f fs.FS, cache Cache, indexers []model.Indexer, runners []model.Runner) (*model.State, error) {
+func LoadState(f fs.FS, cache Cache, indexers []model.Indexer, runners []model.Runner) (*model.State, []error) {
 	var locs []string
 	for _, e := range cache.Entries {
 		locs = append(locs, e.Path)

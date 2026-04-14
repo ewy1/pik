@@ -8,8 +8,12 @@ import (
 )
 
 var WrongModelTypeError = errors.New("wrong model type")
+var NoSourcesIndexedError = errors.New("no sources indexed")
 
 func Show(st *model.State, hydrators []model.Hydrator) (*model.HydratedSource, model.HydratedTarget, error) {
+	if len(st.Sources) == 0 {
+		return nil, nil, NoSourcesIndexedError
+	}
 	md := NewModel(st, hydrators)
 	program := tea.NewProgram(md)
 	resultModel, err := program.Run()
