@@ -29,5 +29,9 @@ func Describe(file string) (string, error) {
 	if !strings.HasPrefix(text, "#") {
 		return "", nil
 	}
+	for _, c := range DescriptionPrefixes {
+		text = strings.TrimPrefix(text, c)
+		text = strings.TrimSpace(text)
+	}
 	return text, nil
 }
