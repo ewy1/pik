@@ -29,7 +29,12 @@ var (
 )
 
 func Confirm(r io.Reader, source *model.Source, target model.Target, args ...string) bool {
-	banner := ConfirmStyle.Render(PromptStyle.Render("[Y/n]"), Banner(source, target, args...), "? ")
+	parts := []string{
+		ConfirmStyle.Render(PromptStyle.Render("[Y/n]")),
+		Banner(source, target, args...),
+		"? ",
+	}
+	banner := BannerStyle.Render(parts...)
 	fmt.Print(banner)
 	scanner := bufio.NewScanner(r)
 	scanner.Split(bufio.ScanRunes)
