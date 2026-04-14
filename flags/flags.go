@@ -12,4 +12,5 @@ var (
 	Yes     = pflag.BoolP("yes", "y", false, "auto-confirm y/n confirmations")
 	Env     = pflag.StringArray("env", nil, "environment files or pre- or suffix")
 	Version = pflag.BoolP("version", "v", false, "print version and exit")
+	List    = pflag.BoolP("list", "l", false, "list available targets and exit")
 )

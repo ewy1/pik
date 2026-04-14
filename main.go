@@ -10,6 +10,7 @@ import (
 	"pik/indexers/pikdex"
 	"pik/menu"
 	"pik/model"
+	"pik/paths"
 	"pik/run"
 	"pik/runner/gnumake"
 	"pik/runner/just"
@@ -46,7 +47,8 @@ var version string
 func main() {
 	pflag.Parse()
 
-	if *flags.Version {
+	switch {
+	case *flags.Version:
 		_, _ = spool.Print("%s\n", version)
 		os.Exit(0)
 	}
@@ -76,6 +78,7 @@ func main() {
 	}
 	var st *model.State
 	var stateErrors []error
+
 	if !*flags.All {
 		st, stateErrors = model.NewState(fs, locs, indexers, runners)
 	} else {
@@ -90,10 +93,18 @@ func main() {
 		_, _ = spool.Warn("%v\n", stateErrors)
 	} else {
 		err = cache.Save(st)
+		if err != nil {
+			_, _ = spool.Warn("%v", err)
+		}
 	}
 
-	if err != nil {
-		_, _ = spool.Warn("%v", err)
+	if *flags.List {
+		for _, s := range st.Sources {
+			for _, t := range s.Targets {
+				_, _ = spool.Print(t.ShortestId() + paths.Ifs)
+			}
+		}
+		os.Exit(0)
 	}
 
 	args := pflag.Args()
@@ -130,7 +141,7 @@ func main() {
 	}
 
 	if target == nil {
-		_, _ = spool.Print("no target found.")
+		_, _ = spool.Print("target not found.")
 		os.Exit(1)
 		return
 	}

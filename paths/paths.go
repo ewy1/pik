@@ -13,6 +13,7 @@ var (
 	This   = "pik"
 	Cache  = filepath.Join(xdg.CacheHome, This)
 	Config = filepath.Join(xdg.ConfigHome, This)
+	Ifs    = os.Getenv("IFS")
 )
 
 func init() {
@@ -23,6 +24,9 @@ func init() {
 	err = os.MkdirAll(Config, 0700)
 	if err != nil {
 		spool.Warn("%v\n", err)
+	}
+	if Ifs == "" {
+		Ifs = "\n"
 	}
 }
 
