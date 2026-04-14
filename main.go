@@ -59,17 +59,20 @@ func main() {
 	}
 	here, err := os.Getwd()
 	if err != nil {
-		panic(err)
+		_, _ = spool.Warn("%v\n", err)
+		os.Exit(1)
 	}
 	locs := crawl.RichLocations(here)
 	last := locs[len(locs)-1]
 	root, err := os.OpenRoot(last)
 	if root == nil {
-		panic(err)
+		_, _ = spool.Warn("%v\n", err)
+		os.Exit(1)
 	}
 	fs := root.FS()
 	if err != nil {
-		panic(err)
+		_, _ = spool.Warn("%v\n", err)
+		os.Exit(1)
 	}
 	var st *model.State
 	var stateErrors []error
@@ -78,12 +81,13 @@ func main() {
 	} else {
 		c, err := cache.Load()
 		if err != nil {
-			panic(err)
+			_, _ = spool.Warn("%v\n", err)
+			os.Exit(1)
 		}
 		st, stateErrors = cache.LoadState(fs, c, indexers, runners)
 	}
 	if stateErrors != nil {
-		spool.Warn("%v\n", stateErrors)
+		_, _ = spool.Warn("%v\n", stateErrors)
 	} else {
 		err = cache.Save(st)
 	}
@@ -97,16 +101,16 @@ func main() {
 	if len(args) == 0 {
 		source, target, err := menu.Show(st, hydrators)
 		if err != nil {
-			spool.Warn("%v\n", err)
+			_, _ = spool.Warn("%v\n", err)
 			os.Exit(1)
 		}
 		if target == nil {
-			spool.Warn("no target selected.\n")
+			_, _ = spool.Warn("no target selected.\n")
 			os.Exit(0)
 		}
 		err = run.Run(source.Source, target, args...)
 		if err != nil {
-			spool.Warn("%v\n", err)
+			_, _ = spool.Warn("%v\n", err)
 			os.Exit(1)
 		}
 
@@ -118,7 +122,7 @@ func main() {
 		err := pflag.Set("all", "true")
 		ForceConfirm = true
 		if err != nil {
-			spool.Warn("%v\n", err)
+			_, _ = spool.Warn("%v\n", err)
 			os.Exit(1)
 		}
 		main()
@@ -139,7 +143,7 @@ func main() {
 
 	err = run.Run(src, target, args...)
 	if err != nil {
-		spool.Warn("%v\n", err)
+		_, _ = spool.Warn("%v\n", err)
 		os.Exit(1)
 	}
 }
