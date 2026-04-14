@@ -91,9 +91,8 @@ func Exec(source *model.Source, target model.Target, args ...string) error {
 	cmd.Stderr = os.Stderr
 	cmd.Args = append(cmd.Args, args...)
 
-	_, _ = fmt.Fprintln(os.Stderr, menu.InlineCmd(cmd))
-
 	if *flags.Dry {
+		_, _ = fmt.Fprintln(os.Stderr, menu.InlineCmd(cmd))
 		return nil
 	}
 
