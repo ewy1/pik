@@ -21,8 +21,7 @@ func (h *HydratedProjTarget) Icon() string {
 }
 
 func (h *HydratedProjTarget) Description() string {
-	//TODO implement me
-	return "//TODO"
+	return h.BaseTarget.Cmd
 }
 
 func (p *ProjTarget) Create(s *model.Source) *exec.Cmd {

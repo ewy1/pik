@@ -1,7 +1,9 @@
 package shell
 
 import (
+	"pik/describe"
 	"pik/runner"
+	"pik/spool"
 )
 
 type HydratedShellTarget struct {
@@ -13,5 +15,10 @@ func (h *HydratedShellTarget) Icon() string {
 }
 
 func (h *HydratedShellTarget) Description() string {
-	return "//TODO"
+	desc, err := describe.Describe(h.BaseTarget.Script)
+	if err != nil {
+		spool.Warn("%v\n", err)
+		return ""
+	}
+	return desc
 }

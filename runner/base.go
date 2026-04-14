@@ -70,7 +70,7 @@ func (b BaseHydration[T]) Icon() string {
 }
 
 func (b BaseHydration[T]) Description() string {
-	return "//TODO"
+	return ""
 }
 
 func (b BaseHydration[T]) Target() model.Target {

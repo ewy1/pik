@@ -32,6 +32,7 @@ running `pik` in a supported repository will index its own file-based task syste
 * target tags in filenames which trigger flag behaviours
 * aliases to sources through the `.alias` file
 * tui for viewing and running targets
+  * descriptions for targets based on the first- or second line comment
 * y/n confirmation with yes as default
     * will be used if we have an uncertain target guess
     * `--yes` to automatically confirm y/n prompts
@@ -52,7 +53,6 @@ attach to these features.
     * this will also enable arbitrary shells like node by way of the shebang
 * indexers for other target types such as `make` and `npm`
 * expand tui:
-    * adding descriptions to targets based on the first comment in a target
     * support for categories and ordering of targets through the `.order` file
     * search
     * more hotkeys (filter jumping, toggle all, etc.)
