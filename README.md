@@ -2,7 +2,7 @@
 pik
 </h1>
 
-> file-based task runner
+> file-based task runner [mepik.dev](https://mepik.dev)
 
 ## the goal
 
