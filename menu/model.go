@@ -11,6 +11,7 @@ type Model struct {
 	Index         int
 	Indices       map[int]model.HydratedTarget
 	SourceIndices map[int]*model.HydratedSource
+	Quit          bool
 }
 
 func (m *Model) Init() tea.Cmd {
@@ -40,6 +41,7 @@ func (m *Model) HandleInput(msg tea.KeyMsg) (tea.Cmd, error) {
 	case "down", "j":
 		m.Index++
 	case "q", "esc":
+		m.Quit = true
 		cmd = tea.Quit
 	case "space", " ", "enter":
 		cmd = tea.Quit
@@ -59,6 +61,9 @@ func (m *Model) View() string {
 }
 
 func (m *Model) Result() (*model.HydratedSource, model.HydratedTarget) {
+	if m.Quit {
+		return nil, nil
+	}
 	return m.SourceIndices[m.Index], m.Indices[m.Index]
 }
 

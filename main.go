@@ -88,6 +88,10 @@ func main() {
 			spool.Warn("%v\n", err)
 			os.Exit(1)
 		}
+		if target == nil {
+			spool.Warn("no target selected.\n")
+			os.Exit(0)
+		}
 		err = run.Run(source.Source, target, args...)
 		if err != nil {
 			spool.Warn("%v\n", err)

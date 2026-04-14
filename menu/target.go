@@ -42,7 +42,7 @@ func (m *Model) Target(t model.HydratedTarget) string {
 	selectionStyle := TargetStyle
 	selectionDescriptionStyle := TargetDescriptionStyle
 	_, sel := m.Result()
-	if sel.Target() == t.Target() {
+	if sel != nil && sel.Target() == t.Target() {
 		selectionStyle = SelectedTargetStyle
 		selectionDescriptionStyle = SelectedTargetDescriptionStyle
 	}

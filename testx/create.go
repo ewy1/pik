@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"pik/identity"
 	"pik/model"
+	"pik/runner"
 	"testing"
 )
 
@@ -31,6 +32,7 @@ func TState(sources ...*model.Source) *model.State {
 }
 
 type TestTarget struct {
+	runner.BaseTarget
 	Identifier string
 	SubValue   []string
 	Tags       model.Tags
