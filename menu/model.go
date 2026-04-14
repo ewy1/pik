@@ -33,25 +33,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, result
 }
 
-func (m *Model) HandleInput(msg tea.KeyMsg) (tea.Cmd, error) {
-	var cmd tea.Cmd
-	switch msg.String() {
-	case "up", "k":
-		m.Index--
-	case "down", "j":
-		m.Index++
-	case "q", "esc":
-		m.Quit = true
-		cmd = tea.Quit
-	case "space", " ", "enter":
-		cmd = tea.Quit
-	}
-
-	m.Validate()
-
-	return cmd, nil
-}
-
 func (m *Model) HandleSignal(cmd tea.Cmd) (tea.Cmd, error) {
 	return nil, nil
 }
