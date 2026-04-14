@@ -40,7 +40,7 @@ var hydrators = []model.Hydrator{
 
 var ForceConfirm = false
 
-// go:embed version.txt
+//go:embed version.txt
 var version string
 
 func main() {
