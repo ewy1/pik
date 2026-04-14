@@ -20,7 +20,7 @@ thankfully you can `pik` yourself:
 * `cd pik`
 * `bash .pik/install.sh`
 
-wow! you just learned about pik's most obvious usage!
+wow! you just learned about `pik`s most obvious usage!
 
 ## getting started
 
