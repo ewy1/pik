@@ -10,7 +10,7 @@ var (
 	TargetBackgroundColor         = lipgloss.Color("8")
 	SelectedTargetBackgroundColor = lipgloss.Color("2")
 	TargetStyle                   = style.New(func() lipgloss.Style {
-		st := lipgloss.NewStyle().Border(lipgloss.OuterHalfBlockBorder(), false, false, false, true).BorderBackground(TargetBackgroundColor).Background(TargetBackgroundColor)
+		st := lipgloss.NewStyle().Border(lipgloss.OuterHalfBlockBorder(), false, false, false, true)
 		return st
 	})
 	SelectedTargetStyle = style.New(func() lipgloss.Style {
