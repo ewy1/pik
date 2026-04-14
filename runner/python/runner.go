@@ -57,7 +57,7 @@ func (p python) PyFor(src *model.Source) []string {
 }
 
 func (p python) CreateProjTarget(name string, cmd string) model.Target {
-	return &ProjTarget{
+	return &Project{
 		BaseTarget: runner.BaseTarget{
 			Identity: identity.New(name),
 		},
@@ -67,7 +67,7 @@ func (p python) CreateProjTarget(name string, cmd string) model.Target {
 
 func (p python) CreateTarget(fs fs.FS, source string, file string, entry fs.DirEntry) (model.Target, error) {
 	_, filename := filepath.Split(file)
-	return &FileTarget{
+	return &File{
 		BaseTarget: runner.BaseTarget{
 			Identity: identity.New(filename),
 			MyTags:   model.TagsFromFilename(filename),

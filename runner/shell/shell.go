@@ -38,11 +38,11 @@ type shell struct {
 var WrongTargetError = errors.New("wrong target type")
 
 func (s *shell) Hydrate(target model.Target) (model.HydratedTarget, error) {
-	cast, ok := target.(*ShellTarget)
+	cast, ok := target.(*Target)
 	if !ok {
 		return nil, WrongTargetError
 	}
-	hyd := &HydratedShellTarget{BaseHydration: runner.Hydrated(cast)}
+	hyd := &Hydrated{BaseHydration: runner.Hydrated(cast)}
 	return hyd, nil
 }
 
@@ -102,7 +102,7 @@ func (s *shell) CreateTarget(fs fs.FS, src string, file string, _ fs.DirEntry) (
 		}
 		sub = append(sub, p)
 	}
-	return &ShellTarget{
+	return &Target{
 		BaseTarget: runner.BaseTarget{
 			Identity: identity.New(filename),
 			MyTags:   model.TagsFromFilename(filename),

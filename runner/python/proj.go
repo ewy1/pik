@@ -7,24 +7,24 @@ import (
 	"pik/runner"
 )
 
-type ProjTarget struct {
+type Project struct {
 	runner.BaseTarget
 	Cmd string
 }
 
-type HydratedProjTarget struct {
-	runner.BaseHydration[*ProjTarget]
+type Hydrated struct {
+	runner.BaseHydration[*Project]
 }
 
-func (h *HydratedProjTarget) Icon() string {
+func (h *Hydrated) Icon() string {
 	return "\uE606"
 }
 
-func (h *HydratedProjTarget) Description() string {
+func (h *Hydrated) Description() string {
 	return h.BaseTarget.Cmd
 }
 
-func (p *ProjTarget) Create(s *model.Source) *exec.Cmd {
+func (p *Project) Create(s *model.Source) *exec.Cmd {
 	var cmd []string
 	if Python.Uv != "" {
 		cmd = []string{Python.Uv, "run", "--", p.Cmd}
@@ -34,16 +34,16 @@ func (p *ProjTarget) Create(s *model.Source) *exec.Cmd {
 	return exec.Command(cmd[0], cmd[1:]...)
 }
 
-func (p *ProjTarget) Sub() []string {
+func (p *Project) Sub() []string {
 	return nil
 }
 
-func (p *ProjTarget) Label() string {
+func (p *Project) Label() string {
 	return p.Cmd
 }
 
-func (p *ProjTarget) Hydrate(src *model.Source) (model.HydratedTarget, error) {
-	return &HydratedProjTarget{
+func (p *Project) Hydrate(src *model.Source) (model.HydratedTarget, error) {
+	return &Hydrated{
 		BaseHydration: runner.Hydrated(p),
 	}, nil
 }

@@ -73,7 +73,7 @@ func ParseOutput(input string) []model.Target {
 	var result []model.Target
 	for c, targets := range categories {
 		for _, t := range targets {
-			result = append(result, &JustTarget{
+			result = append(result, &Target{
 				BaseTarget: runner.BaseTarget{
 					Identity: identity.New(t),
 				},

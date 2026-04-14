@@ -8,7 +8,7 @@ import (
 	"pik/model"
 )
 
-type Pyproj struct {
+type pyproj struct {
 	Project struct {
 		Scripts map[string]string
 	}
@@ -29,7 +29,7 @@ func (p python) Index(path string, f fs.FS, runners []model.Runner) ([]model.Tar
 		return nil, err
 	}
 
-	pp := &Pyproj{}
+	pp := &pyproj{}
 
 	err = toml.Unmarshal(content, pp)
 	if err != nil {

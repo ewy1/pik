@@ -6,15 +6,15 @@ import (
 	"pik/spool"
 )
 
-type HydratedShellTarget struct {
-	runner.BaseHydration[*ShellTarget]
+type Hydrated struct {
+	runner.BaseHydration[*Target]
 }
 
-func (h *HydratedShellTarget) Icon() string {
+func (h *Hydrated) Icon() string {
 	return "\uF489"
 }
 
-func (h *HydratedShellTarget) Description() string {
+func (h *Hydrated) Description() string {
 	desc, err := describe.Describe(h.BaseTarget.Script)
 	if err != nil {
 		spool.Warn("%v\n", err)

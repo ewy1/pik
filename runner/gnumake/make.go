@@ -68,7 +68,7 @@ func ParseOutput(input string) []model.Target {
 		name := split[0]
 		name = strings.TrimSpace(name)
 		name = strings.TrimSuffix(name, ":")
-		tgt := &MakeTarget{
+		tgt := &Target{
 			BaseTarget: runner.BaseTarget{
 				Identity: identity.New(name),
 				MyTags:   nil,

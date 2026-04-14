@@ -7,29 +7,29 @@ import (
 	"pik/runner"
 )
 
-type ShellTarget struct {
+type Target struct {
 	runner.BaseTarget
 	Shell    string
 	Script   string
 	SubValue []string
 }
 
-func (s *ShellTarget) String() string {
+func (s *Target) String() string {
 	return s.Label()
 }
 
-func (s *ShellTarget) Hydrate(_ *model.Source) (model.HydratedTarget, error) {
+func (s *Target) Hydrate(_ *model.Source) (model.HydratedTarget, error) {
 	return Runner.Hydrate(s)
 }
 
-func (s *ShellTarget) Sub() []string {
+func (s *Target) Sub() []string {
 	return s.SubValue
 }
 
-func (s *ShellTarget) Label() string {
+func (s *Target) Label() string {
 	return s.Identity.Full
 }
 
-func (s *ShellTarget) Create(src *model.Source) *exec.Cmd {
+func (s *Target) Create(src *model.Source) *exec.Cmd {
 	return exec.Command(s.Shell, filepath.Join(src.Path, s.Script))
 }

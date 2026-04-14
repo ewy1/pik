@@ -6,36 +6,36 @@ import (
 	"pik/runner"
 )
 
-type JustTarget struct {
+type Target struct {
 	runner.BaseTarget
 	Category string
 }
 
-func (j JustTarget) Create(s *model.Source) *exec.Cmd {
+func (j Target) Create(s *model.Source) *exec.Cmd {
 	return exec.Command(Indexer.path, j.Identity.Full)
 }
 
-func (j JustTarget) Sub() []string {
+func (j Target) Sub() []string {
 	if j.Category != "" {
 		return []string{j.Category}
 	}
 	return nil
 }
 
-func (j JustTarget) Label() string {
+func (j Target) Label() string {
 	return j.Identity.Full
 }
 
-func (j *JustTarget) Hydrate(src *model.Source) (model.HydratedTarget, error) {
-	return &HydratedJustTarget{
+func (j *Target) Hydrate(src *model.Source) (model.HydratedTarget, error) {
+	return &Hydrated{
 		BaseHydration: runner.Hydrated(j),
 	}, nil
 }
 
-type HydratedJustTarget struct {
-	runner.BaseHydration[*JustTarget]
+type Hydrated struct {
+	runner.BaseHydration[*Target]
 }
 
-func (h *HydratedJustTarget) Icon() string {
+func (h *Hydrated) Icon() string {
 	return "\uF039"
 }

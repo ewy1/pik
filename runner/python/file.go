@@ -7,20 +7,20 @@ import (
 	"pik/runner"
 )
 
-type FileTarget struct {
+type File struct {
 	runner.BaseTarget
 	File string
 }
 
 type HydratedFileTarget struct {
-	runner.BaseHydration[*FileTarget]
+	runner.BaseHydration[*File]
 }
 
 func (h *HydratedFileTarget) Icon() string {
 	return "\uE606"
 }
 
-func (p *FileTarget) Create(s *model.Source) *exec.Cmd {
+func (p *File) Create(s *model.Source) *exec.Cmd {
 	var cmd []string
 	if Python.Uv != "" {
 		cmd = []string{Python.Uv, "run", "--", p.File}
@@ -36,15 +36,15 @@ func (p *FileTarget) Create(s *model.Source) *exec.Cmd {
 	return exec.Command(cmd[0], cmd[1:]...)
 }
 
-func (p *FileTarget) Sub() []string {
+func (p *File) Sub() []string {
 	return nil
 }
 
-func (p *FileTarget) Label() string {
+func (p *File) Label() string {
 	return p.Full
 }
 
-func (p *FileTarget) Hydrate(src *model.Source) (model.HydratedTarget, error) {
+func (p *File) Hydrate(src *model.Source) (model.HydratedTarget, error) {
 	return &HydratedFileTarget{
 		BaseHydration: runner.Hydrated(p),
 	}, nil

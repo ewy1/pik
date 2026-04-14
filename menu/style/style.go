@@ -2,14 +2,14 @@ package style
 
 import "github.com/charmbracelet/lipgloss"
 
-type StyleBuilder func() lipgloss.Style
+type Builder func() lipgloss.Style
 
 type Style struct {
 	style   *lipgloss.Style
-	builder StyleBuilder
+	builder Builder
 }
 
-func New(builder StyleBuilder) Style {
+func New(builder Builder) Style {
 	return Style{
 		builder: builder,
 	}
