@@ -27,12 +27,12 @@ gently reminds you how to run the invocation next time!
 
 ## current features
 
-* run targets by their approximate name: `uwu build` will trigger `.uwu/build.sh`, or `.uwu/build.py`, or `make build`
+* run targets by their approximate name: `pik build` will trigger `.pik/build.sh`, or `.pik/build.py`, or `make build`
   depending on what's possible.
-    * including external targets from `just`
-* specify source names to search for the target in that source explicitly: `uwu myproject build` can
-  run `../../myproject/.uwu/build.sh`
-* unless overridden, targets will run in the directory where the `.uwu` folder resides.
+    * including external targets from `just` and `make`
+* specify source names to search for the target in that source explicitly: `pik myproject build` can
+  run `../../myproject/.pik/build.sh` and `
+* unless overridden, targets will run in the directory where the `.pik` folder resides.
 * use `--all` flag to start out-of-tree targets without having to navigate to the directory.
 * `--here` to run the target in the current working directory instead of the source directory.
     * `--at` to run the target in an arbitrary location
@@ -53,6 +53,7 @@ gently reminds you how to run the invocation next time!
 ### supported external runners
 
 * `just`
+* `make`
 * if you want any more let me know and it should be done very fast
 
 ## planned features
