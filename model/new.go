@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"io/fs"
 	"path/filepath"
 	"pik/identity"
@@ -26,12 +27,12 @@ func NewState(f fs.FS, locations []string, indexers []Indexer, runners []Runner)
 		for _, indexer := range indexers {
 
 			s, err := fs.Sub(f, loc)
-			if err != nil {
+			if err != nil && !errors.Is(err, fs.ErrNotExist) {
 				errs = append(errs, err)
 				continue
 			}
 			targets, err := indexer.Index("/"+loc, s, runners)
-			if err != nil {
+			if err != nil && !errors.Is(err, fs.ErrNotExist) {
 				errs = append(errs, err)
 				continue
 			}
