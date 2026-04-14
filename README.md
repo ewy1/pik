@@ -14,7 +14,7 @@ running `pik` in any repository will index its own file-based task system, as we
 ## getting started
 
 0. if you are already using a supported external runner from [here](#supported-external-runners) and replace it
-   with `pik` (`just build` -> `pik build`)
+   with `pik` (`make build` -> `pik build`)
 
 
 1. create a `.pik` folder in your project
@@ -37,7 +37,7 @@ pik reads the first comment line from your targets and informs you in the tui!
 
 * run targets by their approximate name: `pik build` will trigger `.pik/build.sh`, or `.pik/build.py`, or `make build`
   depending on what's possible.
-    * including external targets from `just` and `make`
+    * including external targets from [here](#supported-external-runners)
 * specify source names to search for the target in that source explicitly: `pik myproject build` can
   run `../../myproject/.pik/build.sh` and `
 * unless overridden, targets will run in the directory where the `.pik` folder resides.
@@ -72,7 +72,7 @@ attach to these features.
 
 * runner for executable files
     * this will also enable arbitrary shells like node by way of the shebang
-* indexers for other target types such as `make` and `npm`
+* indexers for other target types such as `npm`
 * whitelists for external runners in `.pik`
     * adding descriptions to external targets
 * expand tui:
