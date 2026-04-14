@@ -119,6 +119,7 @@ func (u *uwudex) Index(absPath string, f fs.FS, runners []model.Runner) ([]model
 					return err
 				}
 				targets = append(targets, t)
+				return nil
 			}
 			if err != nil {
 				// TODO: Gracefully keep crawling?
