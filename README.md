@@ -24,8 +24,12 @@ running `pik` in any repository will index its own file-based task system, as we
 
 bear in mind scripts will always run in the project directory, not in the `.pik` folder.
 
+## <span style="color: green">killer</span> features
+
 pik comes equipped with a tui that allows for target browsing and invoking. open it by running `pik`. the output also
 gently reminds you how to run the invocation next time!
+
+pik remembers your projects and you can invoke stuff almost anywhere. to view everything pik knows, try `pik -a`!
 
 ## current features
 
