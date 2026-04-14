@@ -13,13 +13,17 @@ running `pik` in any repository will index its own file-based task system, as we
 
 ## getting started
 
-0. if you are already using a supported external runner from [here](#supported-external-runners) and replace it with `pik` (`just build` -> `pik build`)
+0. if you are already using a supported external runner from [here](#supported-external-runners) and replace it
+   with `pik` (`just build` -> `pik build`)
 
 
 1. create a `.pik` folder in your project
 2. put a script in there, for example: `.pik/build.sh` containing `go build .`
 3. you can now access this script from almost anywhere by calling `pik build`. If you want to trigger a specific
    projects build, specify `pik project build`, where `project` is the folder name.
+
+pik comes equipped with a tui that allows for target browsing and invoking. open it by running `pik`. the output also
+gently reminds you how to run the invocation next time!
 
 ## current features
 
@@ -35,7 +39,7 @@ running `pik` in any repository will index its own file-based task system, as we
 * target tags in filenames which trigger flag behaviours
 * aliases to sources through the `.alias` file
 * tui for viewing and running targets
-  * descriptions for targets based on first comment in a target
+    * descriptions for targets based on first comment in a target
 * y/n confirmation with yes as default
     * will be used if we have an uncertain target guess
     * `--yes` to automatically confirm y/n prompts
@@ -47,6 +51,7 @@ running `pik` in any repository will index its own file-based task system, as we
 * create any kind of target: high-level support for shell and python, and arbitrary shells with the shebang.
 
 ### supported external runners
+
 * `just`
 * if you want any more let me know and it should be done very fast
 
@@ -60,7 +65,7 @@ attach to these features.
     * this will also enable arbitrary shells like node by way of the shebang
 * indexers for other target types such as `make` and `npm`
 * whitelists for external runners in `.pik`
-  * adding descriptions to external targets
+    * adding descriptions to external targets
 * expand tui:
     * support for categories and ordering of targets through the `.order` file
     * search
