@@ -24,6 +24,7 @@ import (
 var initializers = []model.Initializer{
 	python.Python,
 	git.Git,
+	pikdex.Indexer,
 }
 
 var indexers = []model.Indexer{

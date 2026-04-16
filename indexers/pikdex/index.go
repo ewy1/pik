@@ -38,18 +38,19 @@ var SkippedFolders = []string{
 	".idea",
 }
 
-func init() {
+func (u *pikdex) Init() error {
 	// add own executable name to uwudexable dirs
 	self, err := os.Executable()
 	if strings.HasSuffix(self, ".test") {
-		return
+		return nil
 	}
 	if err != nil {
 		_, _ = spool.Warn("%v\n", err)
-		return
+		return nil
 	}
 	self = strings.TrimSuffix(self, ".exe")
 	Roots = append(Roots, "."+self, "_"+self)
+	return nil
 }
 
 var Indexer = &pikdex{mods: make(map[string]*SourceData)}
