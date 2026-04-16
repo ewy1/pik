@@ -2,7 +2,6 @@ package shell
 
 import (
 	"os/exec"
-	"path/filepath"
 	"pik/model"
 	"pik/runner"
 )
@@ -31,5 +30,5 @@ func (s *Target) Label() string {
 }
 
 func (s *Target) Create(src *model.Source) *exec.Cmd {
-	return exec.Command(s.Shell, filepath.Join(src.Path, s.Script))
+	return exec.Command(s.Shell, s.Script)
 }
