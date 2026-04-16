@@ -97,7 +97,7 @@ func (s *shell) CreateTarget(fs fs.FS, src string, file string, _ fs.DirEntry) (
 			MyTags:   model.TagsFromFilename(filename),
 		},
 		Shell:    shell,
-		Script:   filepath.Join(src, file),
+		Script:   file,
 		SubValue: sub,
 	}, nil
 }

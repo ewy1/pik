@@ -17,7 +17,7 @@ func (h *Hydrated) Icon() string {
 }
 
 func (h *Hydrated) Description() string {
-	desc, err := describe.Describe(h.BaseTarget.Script)
+	desc, err := describe.Describe(h.BaseTarget, h.BaseTarget.Script)
 	if err != nil {
 		spool.Warn("%v\n", err)
 		return ""
