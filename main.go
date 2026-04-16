@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "embed"
+	"fmt"
 	"github.com/spf13/pflag"
 	"os"
 	"pik/cache"
@@ -161,6 +162,7 @@ func main() {
 	}
 
 	if confirm || ForceConfirm {
+		_, _ = fmt.Fprintf(os.Stderr, "this target is out of tree.\n")
 		if !menu.Confirm(os.Stdin, src, target, args...) {
 			os.Exit(0)
 		}
