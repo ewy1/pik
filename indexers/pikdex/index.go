@@ -109,21 +109,18 @@ func (u *pikdex) Index(absPath string, f fs.FS, runners []model.Runner) ([]model
 		for _, r := range runners {
 			wants, err := r.Wants(f, p, d)
 			if err != nil {
-				// TODO: Gracefully keep crawling?
-				return err
+				spool.Warn("%v\n", err)
 			}
 			if wants {
 				t, err := r.CreateTarget(f, absPath, p, d)
 				if err != nil {
-					// TODO: Gracefully keep crawling?
-					return err
+					spool.Warn("%v\n", err)
 				}
 				targets = append(targets, t)
 				return nil
 			}
 			if err != nil {
-				// TODO: Gracefully keep crawling?
-				return err
+				spool.Warn("%v\n", err)
 			}
 		}
 		return nil
