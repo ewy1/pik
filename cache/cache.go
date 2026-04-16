@@ -111,3 +111,19 @@ func LoadState(f fs.FS, cache Cache, indexers []model.Indexer, runners []model.R
 	}
 	return model.NewState(f, locs, indexers, runners)
 }
+
+func (c Cache) Strip(needle Cache) Cache {
+	var result []Entry
+outer:
+	for _, e := range c.Entries {
+		for _, t := range needle.Entries {
+			if t.Path == e.Path {
+				continue outer
+			}
+		}
+		result = append(result, e)
+	}
+	return Cache{
+		Entries: result,
+	}
+}

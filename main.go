@@ -40,6 +40,7 @@ var hydrators = []model.Hydrator{
 }
 
 var ForceConfirm = false
+var SourcesWithoutResults cache.Cache
 
 //go:embed version.txt
 var version string
@@ -79,10 +80,12 @@ func main() {
 	var st *model.State
 	var stateErrors []error
 
+	var c cache.Cache
 	if !*flags.All {
 		st, stateErrors = model.NewState(fs, locs, indexers, runners)
 	} else {
-		c, err := cache.Load()
+		c, err = cache.Load()
+		c.Strip(SourcesWithoutResults)
 		if err != nil {
 			_, _ = spool.Warn("%v\n", err)
 			os.Exit(1)
@@ -136,6 +139,7 @@ func main() {
 			_, _ = spool.Warn("%v\n", err)
 			os.Exit(1)
 		}
+		SourcesWithoutResults = c
 		main()
 		return
 	}

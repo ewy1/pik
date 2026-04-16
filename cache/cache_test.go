@@ -77,3 +77,17 @@ func TestFromReader_Comments(t *testing.T) {
 		Label: "da source",
 	})
 }
+
+func TestStrip(t *testing.T) {
+	c := Cache{Entries: []Entry{{"/asdf/123", ""}, {"xxxxx", "lab"}}}
+	remove := Cache{Entries: []Entry{{"xxxxx", "wronglabel"}}}
+	result := c.Strip(remove)
+	assert.Equal(t, Cache{Entries: []Entry{{"/asdf/123", ""}}}, result)
+}
+
+func TestStrip_Nothing(t *testing.T) {
+	c := Cache{Entries: []Entry{{"/asdf/123", ""}, {"/asdf/123", ""}}}
+	old := Cache{}
+	result := c.Strip(old)
+	assert.Equal(t, c, result)
+}
