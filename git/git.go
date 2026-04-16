@@ -77,6 +77,9 @@ func (g *gitMod) Diff(source *model.Source) (int, int, int, error) {
 	insertions := 0
 	deletions := 0
 	for _, s := range split {
+		if strings.TrimSpace(s) == "" {
+			return 0, 0, 0, nil
+		}
 		var e error
 		pt := strings.Split(strings.TrimSpace(s), " ")
 		num, e := strconv.Atoi(pt[0])

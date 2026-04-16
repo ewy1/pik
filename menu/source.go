@@ -100,12 +100,18 @@ var (
 )
 
 func Git(info *model.GitInfo) string {
-
-	return GitInfoStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left,
+	var parts = []string{
 		"  ",
 		info.Branch,
-		GitAddStyle.Render("+"+strconv.Itoa(info.Insertions)),
-		GitRemoveStyle.Render("-"+strconv.Itoa(info.Deletions)),
-		GitChangeStyle.Render("~"+strconv.Itoa(info.Changes)),
+	}
+
+	if info.Insertions > 0 {
+		parts = append(parts, GitAddStyle.Render("+"+strconv.Itoa(info.Insertions)))
+		parts = append(parts, GitRemoveStyle.Render("-"+strconv.Itoa(info.Deletions)))
+		parts = append(parts, GitChangeStyle.Render("~"+strconv.Itoa(info.Changes)))
+	}
+
+	return GitInfoStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left,
+		parts...,
 	))
 }
