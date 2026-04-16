@@ -16,7 +16,7 @@ func NewState(f fs.FS, locations []string, indexers []Indexer, runners []Runner)
 	var sources = make([]*Source, len(locations), len(locations))
 	for i, loc := range locations {
 		wg.Go(func() {
-			_, dirName := filepath.Split(loc)
+			_, dirName := filepath.Split(strings.TrimSuffix(loc, "/"))
 			src := &Source{
 				Path:     loc,
 				Identity: identity.New(dirName),
