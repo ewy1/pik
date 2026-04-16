@@ -1,5 +1,5 @@
 package model
 
-type Hydrator interface {
-	Hydrate(source *Source, result *HydratedSource) error
+type Modder interface {
+	Mod(source *Source, result *HydratedSource) error
 }

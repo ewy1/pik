@@ -35,17 +35,6 @@ type shell struct {
 	Locations map[string]string
 }
 
-var WrongTargetError = errors.New("wrong target type")
-
-func (s *shell) Hydrate(target model.Target) (model.HydratedTarget, error) {
-	cast, ok := target.(*Target)
-	if !ok {
-		return nil, WrongTargetError
-	}
-	hyd := &Hydrated{BaseHydration: runner.Hydrated(cast)}
-	return hyd, nil
-}
-
 func (s *shell) Wants(f fs.FS, file string, entry fs.DirEntry) (bool, error) {
 	if entry != nil && entry.IsDir() {
 		return false, nil
@@ -108,7 +97,7 @@ func (s *shell) CreateTarget(fs fs.FS, src string, file string, _ fs.DirEntry) (
 			MyTags:   model.TagsFromFilename(filename),
 		},
 		Shell:    shell,
-		Script:   file,
+		Script:   filepath.Join(src, file),
 		SubValue: sub,
 	}, nil
 }

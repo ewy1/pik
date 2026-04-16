@@ -10,7 +10,7 @@ import (
 var WrongModelTypeError = errors.New("wrong model type")
 var NoSourcesIndexedError = errors.New("no sources indexed")
 
-func Show(st *model.State, hydrators []model.Hydrator) (*model.HydratedSource, model.HydratedTarget, error) {
+func Show(st *model.State, hydrators []model.Modder) (*model.HydratedSource, model.HydratedTarget, error) {
 	if len(st.Sources) == 0 {
 		return nil, nil, NoSourcesIndexedError
 	}
@@ -29,7 +29,7 @@ func Show(st *model.State, hydrators []model.Hydrator) (*model.HydratedSource, m
 	return src, t, nil
 }
 
-func Hydrate(st *model.State, hydrators []model.Hydrator) *model.HydratedState {
+func Hydrate(st *model.State, hydrators []model.Modder) *model.HydratedState {
 	hyd := &model.HydratedState{
 		State:           st,
 		HydratedSources: make([]*model.HydratedSource, len(st.Sources)),
@@ -38,7 +38,7 @@ func Hydrate(st *model.State, hydrators []model.Hydrator) *model.HydratedState {
 		hydSrc := s.Hydrate(hydrators)
 
 		for _, h := range hydrators {
-			err := h.Hydrate(s, hydSrc)
+			err := h.Mod(s, hydSrc)
 			if err != nil {
 				spool.Warn("%v\n", err)
 				continue

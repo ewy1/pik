@@ -57,7 +57,7 @@ func (m *Model) Validate() {
 	}
 }
 
-func NewModel(st *model.State, hydrators []model.Hydrator) *Model {
+func NewModel(st *model.State, hydrators []model.Modder) *Model {
 	m := &Model{
 		HydratedState: Hydrate(st, hydrators),
 		Index:         0,

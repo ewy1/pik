@@ -4,11 +4,12 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"pik/menu/style"
 	"pik/model"
+	"strconv"
 )
 
 var (
 	SourceStyle = style.New(func() lipgloss.Style {
-		st := lipgloss.NewStyle()
+		st := lipgloss.NewStyle().PaddingBottom(1)
 		return st
 	})
 	SourceHeaderBackground = lipgloss.Color("5")
@@ -47,11 +48,18 @@ func (m *Model) Source(src *model.HydratedSource) string {
 
 	icon := SourceIconStyle.Render(Icon(src.Icon))
 
-	return SourceStyle.Render(lipgloss.JoinVertical(lipgloss.Top,
+	parts := []string{
 		SourceHeaderStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left, SourceLabelStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left, icon, src.Label()), SourcePathStyle.Render(src.ShortPath())))),
 		SourceTargetsStyle.Render(targetContent),
-	))
+	}
 
+	if src.Git != nil {
+		parts = append(parts, Git(src.Git))
+	}
+
+	return SourceStyle.Render(lipgloss.JoinVertical(lipgloss.Top,
+		parts...,
+	))
 }
 
 var (
@@ -67,4 +75,37 @@ func (m *Model) State(st *model.HydratedState) string {
 	}
 
 	return StateStyle.Render(lipgloss.JoinVertical(lipgloss.Top, sources...))
+}
+
+var (
+	GitColor     = lipgloss.Color("4")
+	GitInfoStyle = style.New(func() lipgloss.Style {
+		return lipgloss.NewStyle().Background(GitColor).Border(lipgloss.OuterHalfBlockBorder(), false, false, false, true).BorderBackground(GitColor).Padding(0, 1)
+	})
+	GitStatusStyle = style.New(func() lipgloss.Style {
+		return lipgloss.NewStyle().Bold(true).Background(GitColor).PaddingLeft(1)
+	})
+	GitAddColor = lipgloss.Color("2")
+	GitAddStyle = style.New(func() lipgloss.Style {
+		return GitStatusStyle.Get().Foreground(GitAddColor)
+	})
+	GitRemoveColor = lipgloss.Color("1")
+	GitRemoveStyle = style.New(func() lipgloss.Style {
+		return GitStatusStyle.Get().Foreground(GitRemoveColor)
+	})
+	GitChangeColor = lipgloss.Color("5")
+	GitChangeStyle = style.New(func() lipgloss.Style {
+		return GitStatusStyle.Get().Foreground(GitChangeColor)
+	})
+)
+
+func Git(info *model.GitInfo) string {
+
+	return GitInfoStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left,
+		"  ",
+		info.Branch,
+		GitAddStyle.Render("+"+strconv.Itoa(info.Insertions)),
+		GitRemoveStyle.Render("-"+strconv.Itoa(info.Deletions)),
+		GitChangeStyle.Render("~"+strconv.Itoa(info.Changes)),
+	))
 }

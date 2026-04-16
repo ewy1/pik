@@ -7,6 +7,7 @@ import (
 	"pik/cache"
 	"pik/crawl"
 	"pik/flags"
+	"pik/git"
 	"pik/indexers/pikdex"
 	"pik/menu"
 	"pik/model"
@@ -20,8 +21,9 @@ import (
 	"pik/spool"
 )
 
-var initializers = []model.HasInit{
+var initializers = []model.Initializer{
 	python.Python,
+	git.Git,
 }
 
 var indexers = []model.Indexer{
@@ -35,8 +37,9 @@ var runners = []model.Runner{
 	python.Python,
 }
 
-var hydrators = []model.Hydrator{
+var hydrators = []model.Modder{
 	pikdex.Indexer,
+	git.Git,
 }
 
 var ForceConfirm = false

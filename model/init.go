@@ -1,5 +1,5 @@
 package model
 
-type HasInit interface {
+type Initializer interface {
 	Init() error
 }

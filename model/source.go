@@ -18,6 +18,7 @@ type HydratedSource struct {
 	HydratedTargets []HydratedTarget
 	Aliases         []string
 	Icon            string
+	Git             *GitInfo
 }
 
 func (s *Source) Label() string {
@@ -31,13 +32,13 @@ func (s *HydratedSource) Label() string {
 	return s.Identity.Full
 }
 
-func (s *Source) Hydrate(hydrators []Hydrator) *HydratedSource {
+func (s *Source) Hydrate(hydrators []Modder) *HydratedSource {
 	hs := &HydratedSource{
 		Source:          s,
 		HydratedTargets: make([]HydratedTarget, 0, len(s.Targets)),
 	}
 	for _, h := range hydrators {
-		err := h.Hydrate(s, hs)
+		err := h.Mod(s, hs)
 		if err != nil {
 			spool.Warn("%v", err)
 		}
