@@ -23,11 +23,6 @@ var (
 		return st
 
 	})
-	SourceIconStyle = style.New(func() lipgloss.Style {
-		st := lipgloss.NewStyle().PaddingRight(1).Width(3)
-		return st
-
-	})
 	SourceTargetsStyle = style.New(func() lipgloss.Style {
 		st := lipgloss.NewStyle()
 		return st
@@ -46,7 +41,7 @@ func (m *Model) Source(src *model.HydratedSource) string {
 
 	targetContent := lipgloss.JoinVertical(lipgloss.Top, targets...)
 
-	icon := SourceIconStyle.Render(src.Icon)
+	icon := PaddedIcon(src.Icon)
 
 	parts := []string{
 		SourceHeaderStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left, SourceLabelStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left, icon, src.Label()), SourcePathStyle.Render(src.ShortPath())))),
