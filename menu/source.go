@@ -107,8 +107,15 @@ func Git(info *model.GitInfo) string {
 
 	if info.Insertions > 0 {
 		parts = append(parts, GitAddStyle.Render("+"+strconv.Itoa(info.Insertions)))
+	}
+	if info.Deletions > 0 {
 		parts = append(parts, GitRemoveStyle.Render("-"+strconv.Itoa(info.Deletions)))
+	}
+	if info.Changes > 0 {
 		parts = append(parts, GitChangeStyle.Render("~"+strconv.Itoa(info.Changes)))
+	}
+	if info.Changes == 0 && info.Deletions == 0 && info.Insertions == 0 {
+		parts = append(parts, GitAddStyle.Render("clean"))
 	}
 
 	return GitInfoStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left,
