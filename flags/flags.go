@@ -13,4 +13,5 @@ var (
 	Env     = pflag.StringArray("env", nil, "environment files or pre- or suffix")
 	Version = pflag.BoolP("version", "v", false, "print version and exit")
 	List    = pflag.BoolP("list", "l", false, "list available targets and exit")
+	Inline  = pflag.BoolP("inline", "i", false, "do not use terminal alt screen")
 )
