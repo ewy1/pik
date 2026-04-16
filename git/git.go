@@ -86,11 +86,12 @@ func (g *gitMod) Diff(source *model.Source) (int, int, int, error) {
 		switch {
 		case strings.Contains(s, "changed"):
 			changes = num
-		case strings.Contains(s, "insertions"):
+		case strings.Contains(s, "insertion"):
 			insertions = num
-		case strings.Contains(s, "deletions"):
+		case strings.Contains(s, "deletion"):
 			deletions = num
 		default:
+			spool.Warn("%v", string(b))
 			return changes, insertions, deletions, UnknownResponseError
 		}
 
