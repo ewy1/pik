@@ -13,13 +13,15 @@ func NewState(f fs.FS, locations []string, indexers []Indexer, runners []Runner)
 	var errs []error
 	st := &State{}
 	wg := sync.WaitGroup{}
-	for _, loc := range locations {
+	var sources = make([]*Source, len(locations), len(locations))
+	for i, loc := range locations {
 		wg.Go(func() {
 			_, dirName := filepath.Split(loc)
 			src := &Source{
 				Path:     loc,
 				Identity: identity.New(dirName),
 			}
+			sources[i] = src
 			loc = strings.TrimSuffix(loc, "/")
 			loc = strings.TrimPrefix(loc, "/")
 
@@ -28,30 +30,42 @@ func NewState(f fs.FS, locations []string, indexers []Indexer, runners []Runner)
 			}
 
 			myWg := sync.WaitGroup{}
-			for _, indexer := range indexers {
+			var targets = make([][]Target, len(indexers), len(indexers))
+			for ti, indexer := range indexers {
 				myWg.Go(func() {
 					s, err := fs.Sub(f, loc)
 					if err != nil && !errors.Is(err, fs.ErrNotExist) {
 						errs = append(errs, err)
 						return
 					}
-					targets, err := indexer.Index("/"+loc, s, runners)
+					result, err := indexer.Index("/"+loc, s, runners)
 					if err != nil && !errors.Is(err, fs.ErrNotExist) {
 						errs = append(errs, err)
 						return
 					}
-					src.Targets = append(src.Targets, targets...)
+					targets[ti] = result
 				})
 			}
 			myWg.Wait()
 
-			if src.Targets != nil {
-				st.Sources = append(st.Sources, src)
+			for _, t := range targets {
+				if t == nil {
+					continue
+				}
+				sources[i].Targets = append(sources[i].Targets, t...)
 			}
+
 		})
 
 	}
 	wg.Wait()
+
+	for _, s := range sources {
+		if s == nil || s.Targets == nil {
+			continue
+		}
+		st.Sources = append(st.Sources, s)
+	}
 
 	return st, errs
 }
