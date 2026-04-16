@@ -19,6 +19,7 @@ import (
 	"pik/runner/shell"
 	"pik/search"
 	"pik/spool"
+	"sync"
 )
 
 var initializers = []model.Initializer{
@@ -58,12 +59,17 @@ func main() {
 		os.Exit(0)
 	}
 
+	wg := sync.WaitGroup{}
 	for _, i := range initializers {
-		err := i.Init()
-		if err != nil {
-			_, _ = spool.Warn("%v\n", err)
-		}
+		wg.Go(func() {
+			err := i.Init()
+			if err != nil {
+				_, _ = spool.Warn("%v\n", err)
+			}
+		})
 	}
+	wg.Wait()
+
 	here, err := os.Getwd()
 	if err != nil {
 		_, _ = spool.Warn("%v\n", err)
