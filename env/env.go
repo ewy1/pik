@@ -26,7 +26,7 @@ func IsEnv(file string) bool {
 	return slices.Contains(options, file)
 }
 
-func EnvFiles(f fs.FS, p string, deep bool) []string {
+func Files(f fs.FS, p string, deep bool) []string {
 	var result []string
 	dir, err := fs.ReadDir(f, p)
 	if err != nil {
@@ -34,7 +34,7 @@ func EnvFiles(f fs.FS, p string, deep bool) []string {
 	}
 	for _, e := range dir {
 		if e.IsDir() && slices.Contains(pikdex.Roots, e.Name()) && deep {
-			result = append(result, EnvFiles(f, e.Name(), false)...)
+			result = append(result, Files(f, e.Name(), false)...)
 		}
 		if !e.IsDir() && IsEnv(e.Name()) {
 			result = append(result, filepath.Join(p, e.Name()))
@@ -46,7 +46,7 @@ func EnvFiles(f fs.FS, p string, deep bool) []string {
 func Get(src *model.Source) []string {
 	f := os.DirFS(src.Path)
 	var result []string
-	files := EnvFiles(f, ".", true)
+	files := Files(f, ".", true)
 	for _, f := range files {
 		res, err := godotenv.Read(filepath.Join(src.Path, f))
 		if err != nil {
