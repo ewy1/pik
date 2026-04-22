@@ -20,7 +20,8 @@ func IsEnv(file string) bool {
 		options = append(options,
 			".env-"+e,
 			".env."+e,
-			e+".env")
+			e+".env",
+			"."+e+".env")
 	}
 	return slices.Contains(options, file)
 }

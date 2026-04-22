@@ -61,7 +61,7 @@
 				
 				<option value="file2">pik/describe/describe.go (96.9%)</option>
 				
-				<option value="file3">pik/env/env.go (0.0%)</option>
+				<option value="file3">pik/env/env.go (88.0%)</option>
 				
 				<option value="file4">pik/git/git.go (0.0%)</option>
 				
@@ -433,51 +433,52 @@ import (
         "slices"
 )
 
-func IsEnv(file string) bool <span class="cov0" title="0">{
+func IsEnv(file string) bool <span class="cov8" title="1">{
         options := []string{
                 ".env",
         }
-        for _, e := range *flags.Env </span><span class="cov0" title="0">{
+        for _, e := range *flags.Env </span><span class="cov8" title="1">{
                 options = append(options,
                         ".env-"+e,
                         ".env."+e,
-                        e+".env")
+                        e+".env",
+                        "."+e+".env")
         }</span>
-        <span class="cov0" title="0">return slices.Contains(options, file)</span>
+        <span class="cov8" title="1">return slices.Contains(options, file)</span>
 }
 
-func EnvFiles(f fs.FS, p string, deep bool) []string <span class="cov0" title="0">{
+func EnvFiles(f fs.FS, p string, deep bool) []string <span class="cov8" title="1">{
         var result []string
         dir, err := fs.ReadDir(f, p)
         if err != nil </span><span class="cov0" title="0">{
                 return nil
         }</span>
-        <span class="cov0" title="0">for _, e := range dir </span><span class="cov0" title="0">{
-                if e.IsDir() &amp;&amp; slices.Contains(pikdex.Roots, e.Name()) &amp;&amp; deep </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">for _, e := range dir </span><span class="cov8" title="1">{
+                if e.IsDir() &amp;&amp; slices.Contains(pikdex.Roots, e.Name()) &amp;&amp; deep </span><span class="cov8" title="1">{
                         result = append(result, EnvFiles(f, e.Name(), false)...)
                 }</span>
-                <span class="cov0" title="0">if !e.IsDir() &amp;&amp; IsEnv(e.Name()) </span><span class="cov0" title="0">{
+                <span class="cov8" title="1">if !e.IsDir() &amp;&amp; IsEnv(e.Name()) </span><span class="cov8" title="1">{
                         result = append(result, filepath.Join(p, e.Name()))
                 }</span>
         }
-        <span class="cov0" title="0">return result</span>
+        <span class="cov8" title="1">return result</span>
 }
 
-func Get(src *model.Source) []string <span class="cov0" title="0">{
+func Get(src *model.Source) []string <span class="cov8" title="1">{
         f := os.DirFS(src.Path)
         var result []string
         files := EnvFiles(f, ".", true)
-        for _, f := range files </span><span class="cov0" title="0">{
+        for _, f := range files </span><span class="cov8" title="1">{
                 res, err := godotenv.Read(filepath.Join(src.Path, f))
                 if err != nil </span><span class="cov0" title="0">{
                         spool.Warn("%v", err)
                         continue</span>
                 }
-                <span class="cov0" title="0">for k, v := range res </span><span class="cov0" title="0">{
+                <span class="cov8" title="1">for k, v := range res </span><span class="cov8" title="1">{
                         result = append(result, k+"="+v)
                 }</span>
         }
-        <span class="cov0" title="0">return result</span>
+        <span class="cov8" title="1">return result</span>
 }
 </pre>
 		
