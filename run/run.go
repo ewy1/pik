@@ -10,6 +10,11 @@ import (
 	"slices"
 )
 
+// Run creates an exec.Cmd from a model.Source, model.Target and args.
+// 1. run pre-triggers, quit on fail
+// 2. run target
+// 3. if success, run post
+// 4. run final
 func Run(source *model.Source, target model.Target, args ...string) error {
 	tags := target.Tags()
 	skipTriggers := tags.Has(model.Single) || *flags.Single
@@ -50,6 +55,8 @@ func Final(source *model.Source, target model.Target) error {
 	return ExecWithTrigger(source, target, model.Final)
 }
 
+// ExecWithTrigger loops through a model.Source and runs targets if they match the expected model.Tag
+// triggers only run if their subdirectory is "in tree"
 func ExecWithTrigger(source *model.Source, target model.Target, tag model.Tag) error {
 	for _, t := range source.Targets {
 		if t.Tags().Has(tag) {
