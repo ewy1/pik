@@ -22,6 +22,13 @@ func TestSearch_TargetAndSource(t *testing.T) {
 	testx.AssertTargetIs(t, "def", res.Target)
 }
 
+func TestSearch_TargetAndSource_CaseInsensitive(t *testing.T) {
+	st := testx.TState(testx.TSource("src", "abc", "def"))
+	res := Search(st, "SRC", "DeF")
+	testx.AssertSourceIs(t, "src", res.Source)
+	testx.AssertTargetIs(t, "def", res.Target)
+}
+
 func TestSearch_SourceDefaultTarget(t *testing.T) {
 	st := testx.TState(testx.TSource("src", "abc", "src"))
 	res := Search(st, "src")
