@@ -13,6 +13,7 @@ type Target interface {
 	Tags() Tags
 	ShortestId() string
 	Visible() bool
+	Invocation(src *Source) []string
 }
 
 type HydratedTarget interface {
