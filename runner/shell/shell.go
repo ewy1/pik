@@ -13,6 +13,7 @@ import (
 	"pik/spool"
 	"slices"
 	"strings"
+	"sync"
 )
 
 //TODO: Clean up shell selection? Maybe default to bash?
@@ -33,6 +34,7 @@ var Runner = &shell{
 
 type shell struct {
 	Locations map[string]string
+	lock      sync.Mutex
 }
 
 func (s *shell) Wants(f fs.FS, file string, entry fs.DirEntry) (bool, error) {
@@ -67,7 +69,9 @@ func (s *shell) Find(shell string) (string, error) {
 	}
 
 	if p, err := exec.LookPath(shell); err == nil {
+		s.lock.Lock()
 		s.Locations[shell] = p
+		s.lock.Unlock()
 		return shell, nil
 	} else {
 		return "", err
