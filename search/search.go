@@ -26,12 +26,17 @@ func Search(s *model.State, args ...string) *Result {
 	var suspectSource *model.Source
 
 args_loop:
-	for _, arg := range args {
+	for i, arg := range args {
 		for _, src := range s.Sources {
 
 			if targetSource == nil {
 				if src.Is(arg) {
 					targetSource = src
+
+					// only try to find the default target if this is the last argument
+					if len(args)-1 != i {
+						continue args_loop
+					}
 
 					// try to look for arg target with the same name as the source
 					// "default target" of sorts
@@ -51,8 +56,13 @@ args_loop:
 				// uncertain about source, check ours to see if any match
 				for _, t := range src.Targets {
 					if t.Matches(arg) {
-						target = t
-						targetSource = src
+						if slices.Equal(t.Sub(), subdir) {
+							target = t
+							targetSource = src
+						} else {
+							suspect = t
+							suspectSource = src
+						}
 						continue args_loop
 					}
 				}
@@ -91,7 +101,10 @@ args_loop:
 	if suspect != nil && target == nil {
 		target = suspect
 		targetSource = suspectSource
-		confirm = true
+
+		if !(suspect.Sub() != nil && subdir == nil) {
+			confirm = true
+		}
 	}
 
 	if target != nil && target.Sub() != nil && subdir != nil && !slices.Equal(target.Sub(), subdir) {

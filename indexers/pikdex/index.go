@@ -73,7 +73,9 @@ func (u *pikdex) Index(absPath string, f fs.FS, runners []model.Runner) ([]model
 		return nil, err
 	}
 	var targets []model.Target
+	u.Lock()
 	mod := u.mods[absPath]
+	u.Unlock()
 	if mod == nil {
 		u.mods[absPath] = &SourceData{
 			Path: absPath,

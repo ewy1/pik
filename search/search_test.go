@@ -133,3 +133,24 @@ func TestSearch_SourceDefault(t *testing.T) {
 	assert.Equal(t, res.Target, src.Targets[0])
 	assert.False(t, res.NeedsConfirmation)
 }
+
+func TestSearch_SourceDefault_Other(t *testing.T) {
+	src := testx.TSource("src", "src", "other")
+	st := testx.TState(src)
+	res := Search(st, "src", "other")
+	assert.Nil(t, res.Args)
+	assert.Equal(t, res.Target, src.Targets[1])
+	assert.False(t, res.NeedsConfirmation)
+}
+
+func TestSearch_SubdirDefault_Other(t *testing.T) {
+	tgt := testx.TTarget("subname", "subname")
+	other := testx.TTarget("othername", "subname")
+	src := testx.TSource("src")
+	src.Targets = append(src.Targets, tgt, other)
+	st := testx.TState(src)
+	res := Search(st, "subname", "othername")
+	assert.Nil(t, res.Args)
+	assert.Equal(t, other, res.Target)
+	assert.False(t, res.NeedsConfirmation)
+}
