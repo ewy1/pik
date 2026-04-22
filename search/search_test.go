@@ -113,3 +113,23 @@ func TestSearch_Override(t *testing.T) {
 	assert.Equal(t, "abc.override.sh", res.Target.(*testx.TestTarget).Id.Full)
 	assert.False(t, res.NeedsConfirmation)
 }
+
+func TestSearch_SubdirDefault(t *testing.T) {
+	tgt := testx.TTarget("subname", "subname")
+	src := testx.TSource("src")
+	src.Targets = append(src.Targets, tgt)
+	st := testx.TState(src)
+	res := Search(st, "subname")
+	assert.Nil(t, res.Args)
+	assert.Equal(t, res.Target, tgt)
+	assert.False(t, res.NeedsConfirmation)
+}
+
+func TestSearch_SourceDefault(t *testing.T) {
+	src := testx.TSource("sourcename", "sourcename")
+	st := testx.TState(src)
+	res := Search(st, "sourcename")
+	assert.Nil(t, res.Args)
+	assert.Equal(t, res.Target, src.Targets[0])
+	assert.False(t, res.NeedsConfirmation)
+}

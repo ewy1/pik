@@ -1,1 +1,0 @@
-ssh git@ewy.one -- cd /srv/pik/pik "&&" git pull

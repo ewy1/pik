@@ -18,6 +18,7 @@ func TTarget(name string, sub ...string) model.Target {
 
 func TSource(name string, targets ...string) *model.Source {
 	src := &model.Source{
+		Path:     name,
 		Identity: identity.New(name),
 	}
 	for _, t := range targets {

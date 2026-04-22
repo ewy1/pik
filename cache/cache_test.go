@@ -1,10 +1,36 @@
+//go:build test
+
 package cache
 
 import (
 	"github.com/stretchr/testify/assert"
+	. "pik/testx"
 	"strings"
 	"testing"
+	"testing/fstest"
 )
+
+func TestLoadFile(t *testing.T) {
+	input := `
+
+# comment
+/asdf/hjkl # label
+
+# other comment
+//comment
+
+`
+	f := fstest.MapFS{
+		"contexts": &fstest.MapFile{
+			Data: []byte(input),
+		},
+	}
+	res, err := LoadFile(f, "contexts")
+	assert.NoError(t, err)
+	assert.Len(t, res.Entries, 1)
+	assert.Equal(t, res.Entries[0].Path, "/asdf/hjkl")
+	assert.Equal(t, res.Entries[0].Label, "label")
+}
 
 func TestFromReader_Blank(t *testing.T) {
 	input := `   
@@ -112,4 +138,30 @@ func TestMerge(t *testing.T) {
 	result := base.Merge(other)
 	assert.Len(t, result.Entries, 3)
 	assert.Contains(t, result.Entries, a, b, c)
+}
+
+func TestCache_String(t *testing.T) {
+	c := Cache{Entries: []Entry{{Path: "/asdf/hjkl", Label: "hjkl"}}}
+	output := c.String()
+	for _, e := range c.Entries {
+		assert.Contains(t, output, e.Path)
+		assert.Contains(t, output, e.Label)
+	}
+}
+
+func TestNew(t *testing.T) {
+	st := TState(TSource("/test/location", "target1", "target2"), TSource("/other/place/asdf/hjkl", "1target", "2target"))
+	c := New(st)
+	assert.NotNil(t, c)
+	assert.Len(t, c.Entries, 2)
+	assert.Equal(t, "/test/location", c.Entries[0].Path)
+	assert.Equal(t, "/other/place/asdf/hjkl", c.Entries[1].Path)
+}
+
+func TestLoadFile_NotExist(t *testing.T) {
+	f := fstest.MapFS{}
+	c, err := LoadFile(f, "anything is fine")
+	assert.Nil(t, c.Entries)
+	assert.Error(t, err)
+
 }

@@ -10,6 +10,7 @@ import (
 	"pik/spool"
 	"slices"
 	"strings"
+	"sync"
 )
 
 var Roots = []string{
@@ -56,6 +57,7 @@ func (u *pikdex) Init() error {
 var Indexer = &pikdex{mods: make(map[string]*SourceData)}
 
 type pikdex struct {
+	sync.Mutex
 	mods map[string]*SourceData
 }
 
@@ -126,7 +128,9 @@ func (u *pikdex) Index(absPath string, f fs.FS, runners []model.Runner) ([]model
 		}
 		return nil
 	})
+	u.Lock()
 	u.mods[absPath] = mod
+	u.Unlock()
 
 	return targets, err
 }
