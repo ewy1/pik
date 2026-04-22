@@ -88,7 +88,3 @@ func (b BaseHydration[T]) Description() string {
 func (b BaseHydration[T]) Target() model.Target {
 	return b.BaseTarget
 }
-
-func (b BaseTarget) Visible() bool {
-	return b.Tags().Visible()
-}
