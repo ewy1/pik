@@ -89,10 +89,10 @@ args_loop:
 
 		}
 
-		if target == nil {
+		if target == nil && suspect == nil {
 			subdir = append(subdir, arg)
 			continue args_loop
-		} else if targetSource != nil {
+		} else if targetSource != nil || suspect != nil {
 			forward = append(forward, arg)
 			continue args_loop
 		}

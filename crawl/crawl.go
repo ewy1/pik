@@ -16,12 +16,8 @@ func RichLocations(origin string) []string {
 
 	eval, err := Evaluated(origin)
 	if err == nil && eval != origin {
-		i := 0
 		evaledLocations := Locations(eval)
-		var result []string
-		for i < len(locs) && i < len(evaledLocations) {
-			result = append(result, evaledLocations[i], locs[i])
-		}
+		result := append(locs, evaledLocations...)
 		result = slices.Compact(result)
 		return result
 	}

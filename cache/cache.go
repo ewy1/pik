@@ -34,6 +34,8 @@ type Entry struct {
 	Label string
 }
 
+var Empty = Cache{}
+
 // Path is the file path to the "contexts" cache file
 var Path = path.Join(paths.Cache, "contexts")
 
@@ -42,9 +44,11 @@ var FsPath = Path[1:]
 
 var UnexpectedEntryError = errors.New("unexpected cache entry")
 
+// LoadFile creates a Cache from a file or an empty one if the file does not exist
+// this handles opening a reader for Unmarshal
 func LoadFile(root fs.FS, path string) (Cache, error) {
 	fd, err := root.Open(path)
-	if errors.Is(err, os.ErrNotExist) {
+	if errors.Is(err, fs.ErrNotExist) {
 		return Cache{}, nil
 	} else if err != nil {
 		return Cache{}, err
@@ -52,10 +56,11 @@ func LoadFile(root fs.FS, path string) (Cache, error) {
 	if fd != nil {
 		defer fd.Close()
 	}
-	return Load(fd)
+	return Unmarshal(fd)
 }
 
-func Load(r io.Reader) (Cache, error) {
+// Unmarshal attempts to create a Cache from reader content
+func Unmarshal(r io.Reader) (Cache, error) {
 	c := Cache{}
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
@@ -80,7 +85,8 @@ func Load(r io.Reader) (Cache, error) {
 	return c, nil
 }
 
-func (c Cache) String() string {
+// Marshal returns the file representation of the Cache
+func (c Cache) Marshal() []byte {
 	b := strings.Builder{}
 	for _, e := range c.Entries {
 		b.WriteString(e.Path)
@@ -88,7 +94,11 @@ func (c Cache) String() string {
 		b.WriteString(e.Label)
 		b.WriteString("\n")
 	}
-	return b.String()
+	return []byte(b.String())
+}
+
+func (c Cache) String() string {
+	return string(c.Marshal())
 }
 
 func New(st *model.State) Cache {
@@ -115,7 +125,7 @@ func SaveFile(path string, s *model.State, loaded Cache) error {
 
 func Save(s *model.State, w io.Writer, loaded Cache) error {
 	result := New(s).Merge(loaded)
-	_, err := w.Write([]byte(result.String()))
+	_, err := w.Write([]byte(result.Marshal()))
 	return err
 
 }

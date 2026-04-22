@@ -4,6 +4,7 @@ package cache
 
 import (
 	"github.com/stretchr/testify/assert"
+	"path/filepath"
 	. "pik/testx"
 	"strings"
 	"testing"
@@ -36,7 +37,7 @@ func TestFromReader_Blank(t *testing.T) {
 	input := `   
 `
 	sr := strings.NewReader(input)
-	c, err := Load(sr)
+	c, err := Unmarshal(sr)
 	assert.Nil(t, err)
 	assert.Len(t, c.Entries, 0)
 }
@@ -44,7 +45,7 @@ func TestFromReader_Blank(t *testing.T) {
 func TestFromReader_OneEntry(t *testing.T) {
 	input := `/abc/def # deffers`
 	sr := strings.NewReader(input)
-	c, err := Load(sr)
+	c, err := Unmarshal(sr)
 	assert.Nil(t, err)
 	assert.Len(t, c.Entries, 1)
 	assert.Equal(t, c.Entries[0], Entry{
@@ -59,7 +60,7 @@ func TestFromReader_ManyEntries(t *testing.T) {
 /path/src # da source
 `
 	sr := strings.NewReader(input)
-	c, err := Load(sr)
+	c, err := Unmarshal(sr)
 	assert.Nil(t, err)
 	assert.Len(t, c.Entries, 3)
 	assert.Equal(t, c.Entries[0], Entry{
@@ -87,7 +88,7 @@ func TestFromReader_Comments(t *testing.T) {
 # // comment
 `
 	sr := strings.NewReader(input)
-	c, err := Load(sr)
+	c, err := Unmarshal(sr)
 	assert.Nil(t, err)
 	assert.Len(t, c.Entries, 3)
 	assert.Equal(t, c.Entries[0], Entry{
@@ -162,6 +163,24 @@ func TestLoadFile_NotExist(t *testing.T) {
 	f := fstest.MapFS{}
 	c, err := LoadFile(f, "anything is fine")
 	assert.Nil(t, c.Entries)
-	assert.Error(t, err)
+	assert.NoError(t, err)
 
+}
+
+func TestSaveFile(t *testing.T) {
+	dir := t.TempDir()
+	loc := filepath.Join(dir, "savefile")
+	st := TState(TSource("source_one", "target"), TSource("second_source", "t1", "t2", "t3"))
+	c := Cache{Entries: []Entry{
+		{
+			Path:  "path",
+			Label: "label",
+		},
+		{
+			Path:  "/otherpath/123",
+			Label: "",
+		},
+	}}
+	err := SaveFile(loc, st, c)
+	assert.NoError(t, err)
 }

@@ -55,11 +55,11 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">pik/cache/cache.go (75.4%)</option>
+				<option value="file0">pik/cache/cache.go (88.7%)</option>
 				
-				<option value="file1">pik/crawl/crawl.go (53.8%)</option>
+				<option value="file1">pik/crawl/crawl.go (95.7%)</option>
 				
-				<option value="file2">pik/describe/describe.go (0.0%)</option>
+				<option value="file2">pik/describe/describe.go (96.9%)</option>
 				
 				<option value="file3">pik/env/env.go (0.0%)</option>
 				
@@ -69,7 +69,7 @@
 				
 				<option value="file6">pik/indexers/pikdex/hydrate.go (0.0%)</option>
 				
-				<option value="file7">pik/indexers/pikdex/index.go (11.7%)</option>
+				<option value="file7">pik/indexers/pikdex/index.go (11.3%)</option>
 				
 				<option value="file8">pik/indexers/pikdex/meta.go (0.0%)</option>
 				
@@ -129,7 +129,7 @@
 				
 				<option value="file36">pik/runner/stub.go (0.0%)</option>
 				
-				<option value="file37">pik/search/search.go (94.6%)</option>
+				<option value="file37">pik/search/search.go (93.5%)</option>
 				
 				<option value="file38">pik/testx/create.go (70.0%)</option>
 				
@@ -181,6 +181,8 @@ type Entry struct {
         Label string
 }
 
+var Empty = Cache{}
+
 // Path is the file path to the "contexts" cache file
 var Path = path.Join(paths.Cache, "contexts")
 
@@ -189,9 +191,11 @@ var FsPath = Path[1:]
 
 var UnexpectedEntryError = errors.New("unexpected cache entry")
 
+// LoadFile creates a Cache from a file or an empty one if the file does not exist
+// this handles opening a reader for Unmarshal
 func LoadFile(root fs.FS, path string) (Cache, error) <span class="cov8" title="1">{
         fd, err := root.Open(path)
-        if errors.Is(err, os.ErrNotExist) </span><span class="cov8" title="1">{
+        if errors.Is(err, fs.ErrNotExist) </span><span class="cov8" title="1">{
                 return Cache{}, nil
         }</span> else<span class="cov8" title="1"> if err != nil </span><span class="cov0" title="0">{
                 return Cache{}, err
@@ -199,10 +203,11 @@ func LoadFile(root fs.FS, path string) (Cache, error) <span class="cov8" title="
         <span class="cov8" title="1">if fd != nil </span><span class="cov8" title="1">{
                 defer fd.Close()
         }</span>
-        <span class="cov8" title="1">return Load(fd)</span>
+        <span class="cov8" title="1">return Unmarshal(fd)</span>
 }
 
-func Load(r io.Reader) (Cache, error) <span class="cov8" title="1">{
+// Unmarshal attempts to create a Cache from reader content
+func Unmarshal(r io.Reader) (Cache, error) <span class="cov8" title="1">{
         c := Cache{}
         scanner := bufio.NewScanner(r)
         for scanner.Scan() </span><span class="cov8" title="1">{
@@ -227,7 +232,8 @@ func Load(r io.Reader) (Cache, error) <span class="cov8" title="1">{
         <span class="cov8" title="1">return c, nil</span>
 }
 
-func (c Cache) String() string <span class="cov8" title="1">{
+// Marshal returns the file representation of the Cache
+func (c Cache) Marshal() []byte <span class="cov8" title="1">{
         b := strings.Builder{}
         for _, e := range c.Entries </span><span class="cov8" title="1">{
                 b.WriteString(e.Path)
@@ -235,8 +241,12 @@ func (c Cache) String() string <span class="cov8" title="1">{
                 b.WriteString(e.Label)
                 b.WriteString("\n")
         }</span>
-        <span class="cov8" title="1">return b.String()</span>
+        <span class="cov8" title="1">return []byte(b.String())</span>
 }
+
+func (c Cache) String() string <span class="cov8" title="1">{
+        return string(c.Marshal())
+}</span>
 
 func New(st *model.State) Cache <span class="cov8" title="1">{
         c := &amp;Cache{}
@@ -249,20 +259,20 @@ func New(st *model.State) Cache <span class="cov8" title="1">{
         <span class="cov8" title="1">return *c</span>
 }
 
-func SaveFile(path string, s *model.State, loaded Cache) error <span class="cov0" title="0">{
+func SaveFile(path string, s *model.State, loaded Cache) error <span class="cov8" title="1">{
         fd, err := os.Create(path)
         if err != nil </span><span class="cov0" title="0">{
                 return err
         }</span>
-        <span class="cov0" title="0">if fd != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if fd != nil </span><span class="cov8" title="1">{
                 defer fd.Close()
         }</span>
-        <span class="cov0" title="0">return Save(s, fd, loaded)</span>
+        <span class="cov8" title="1">return Save(s, fd, loaded)</span>
 }
 
-func Save(s *model.State, w io.Writer, loaded Cache) error <span class="cov0" title="0">{
+func Save(s *model.State, w io.Writer, loaded Cache) error <span class="cov8" title="1">{
         result := New(s).Merge(loaded)
-        _, err := w.Write([]byte(result.String()))
+        _, err := w.Write([]byte(result.Marshal()))
         return err
 
 }</span>
@@ -301,24 +311,20 @@ import (
         "strings"
 )
 
-func Evaluated(loc string) (string, error) <span class="cov0" title="0">{
+func Evaluated(loc string) (string, error) <span class="cov8" title="1">{
         return filepath.EvalSymlinks(loc)
 }</span>
 
-func RichLocations(origin string) []string <span class="cov0" title="0">{
+func RichLocations(origin string) []string <span class="cov8" title="1">{
         locs := Locations(origin)
 
         eval, err := Evaluated(origin)
-        if err == nil &amp;&amp; eval != origin </span><span class="cov0" title="0">{
-                i := 0
+        if err == nil &amp;&amp; eval != origin </span><span class="cov8" title="1">{
                 evaledLocations := Locations(eval)
-                var result []string
-                for i &lt; len(locs) &amp;&amp; i &lt; len(evaledLocations) </span><span class="cov0" title="0">{
-                        result = append(result, evaledLocations[i], locs[i])
-                }</span>
-                <span class="cov0" title="0">result = slices.Compact(result)
-                return result</span>
-        }
+                result := append(locs, evaledLocations...)
+                result = slices.Compact(result)
+                return result
+        }</span>
         <span class="cov0" title="0">return locs</span>
 }
 
@@ -352,6 +358,7 @@ func ParentDir(origin string) string <span class="cov8" title="1">{
 
 import (
         "bufio"
+        "io"
         "os"
         "pik/model"
         "strings"
@@ -364,35 +371,51 @@ var DescriptionPrefixes = []string{
 
 var descriptions = make(map[model.Target]*string)
 
-func Describe(key model.Target, file string) (string, error) <span class="cov0" title="0">{
-        if d := descriptions[key]; d != nil </span><span class="cov0" title="0">{
+func Describe(key model.Target, file string) (string, error) <span class="cov8" title="1">{
+        if d := descriptions[key]; d != nil </span><span class="cov8" title="1">{
                 return *d, nil
         }</span>
-        <span class="cov0" title="0">fd, err := os.Open(file)
-        if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">fd, err := os.Open(file)
+        if err != nil </span><span class="cov8" title="1">{
                 msg := err.Error()
                 descriptions[key] = &amp;msg
                 return "", err
         }</span>
-        <span class="cov0" title="0">defer fd.Close()
-        scanner := bufio.NewScanner(fd)
+        <span class="cov8" title="1">defer fd.Close()
+        text, err := FromReader(fd)
+        if err != nil </span><span class="cov0" title="0">{
+                return text, err
+        }</span> else<span class="cov8" title="1"> {
+                descriptions[key] = &amp;text
+        }</span>
+        <span class="cov8" title="1">return text, err</span>
+}
+
+func FromReader(reader io.Reader) (string, error) <span class="cov8" title="1">{
+        scanner := bufio.NewScanner(reader)
         scanner.Split(bufio.ScanLines)
         scanner.Scan()
         text := scanner.Text()
-        if strings.HasPrefix(text, "#!") </span><span class="cov0" title="0">{
+        if strings.HasPrefix(text, "#!") </span><span class="cov8" title="1">{
                 scanner.Scan()
                 text = scanner.Text()
         }</span>
-        <span class="cov0" title="0">text = strings.TrimSpace(text)
-        if !strings.HasPrefix(text, "#") </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">text = strings.TrimSpace(text)
+        hasPrefix := false
+        for _, p := range DescriptionPrefixes </span><span class="cov8" title="1">{
+                if strings.HasPrefix(text, p) </span><span class="cov8" title="1">{
+                        hasPrefix = true
+                        break</span>
+                }
+        }
+        <span class="cov8" title="1">if !hasPrefix </span><span class="cov8" title="1">{
                 return "", nil
         }</span>
-        <span class="cov0" title="0">for _, c := range DescriptionPrefixes </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">for _, c := range DescriptionPrefixes </span><span class="cov8" title="1">{
                 text = strings.TrimPrefix(text, c)
                 text = strings.TrimSpace(text)
         }</span>
-        <span class="cov0" title="0">descriptions[key] = &amp;text
-        return text, nil</span>
+        <span class="cov8" title="1">return text, nil</span>
 }
 </pre>
 		
@@ -692,7 +715,9 @@ func (u *pikdex) Index(absPath string, f fs.FS, runners []model.Runner) ([]model
                 return nil, err
         }</span>
         <span class="cov0" title="0">var targets []model.Target
+        u.Lock()
         mod := u.mods[absPath]
+        u.Unlock()
         if mod == nil </span><span class="cov0" title="0">{
                 u.mods[absPath] = &amp;SourceData{
                         Path: absPath,
@@ -2977,23 +3002,28 @@ func Search(s *model.State, args ...string) *Result <span class="cov8" title="1"
         var suspectSource *model.Source
 
 args_loop:
-        for _, arg := range args </span><span class="cov8" title="1">{
+        for i, arg := range args </span><span class="cov8" title="1">{
                 for _, src := range s.Sources </span><span class="cov8" title="1">{
 
                         if targetSource == nil </span><span class="cov8" title="1">{
                                 if src.Is(arg) </span><span class="cov8" title="1">{
                                         targetSource = src
 
+                                        // only try to find the default target if this is the last argument
+                                        if len(args)-1 != i </span><span class="cov8" title="1">{
+                                                continue args_loop</span>
+                                        }
+
                                         // try to look for arg target with the same name as the source
                                         // "default target" of sorts
-                                        for _, t := range targetSource.Targets </span><span class="cov8" title="1">{
+                                        <span class="cov8" title="1">for _, t := range targetSource.Targets </span><span class="cov8" title="1">{
                                                 if t.Matches(arg) </span><span class="cov8" title="1">{
                                                         target = t
                                                         continue args_loop</span>
                                                 }
                                         }
 
-                                        <span class="cov8" title="1">continue args_loop</span>
+                                        <span class="cov0" title="0">continue args_loop</span>
                                 }
                         }
 
@@ -3002,9 +3032,14 @@ args_loop:
                                 // uncertain about source, check ours to see if any match
                                 for _, t := range src.Targets </span><span class="cov8" title="1">{
                                         if t.Matches(arg) </span><span class="cov8" title="1">{
-                                                target = t
-                                                targetSource = src
-                                                continue args_loop</span>
+                                                if slices.Equal(t.Sub(), subdir) </span><span class="cov8" title="1">{
+                                                        target = t
+                                                        targetSource = src
+                                                }</span> else<span class="cov8" title="1"> {
+                                                        suspect = t
+                                                        suspectSource = src
+                                                }</span>
+                                                <span class="cov8" title="1">continue args_loop</span>
                                         }
                                 }
 
@@ -3030,10 +3065,10 @@ args_loop:
 
                 }
 
-                <span class="cov8" title="1">if target == nil </span><span class="cov8" title="1">{
+                <span class="cov8" title="1">if target == nil &amp;&amp; suspect == nil </span><span class="cov8" title="1">{
                         subdir = append(subdir, arg)
                         continue args_loop</span>
-                } else<span class="cov8" title="1"> if targetSource != nil </span><span class="cov8" title="1">{
+                } else<span class="cov8" title="1"> if targetSource != nil || suspect != nil </span><span class="cov8" title="1">{
                         forward = append(forward, arg)
                         continue args_loop</span>
                 }
@@ -3042,8 +3077,11 @@ args_loop:
         <span class="cov8" title="1">if suspect != nil &amp;&amp; target == nil </span><span class="cov8" title="1">{
                 target = suspect
                 targetSource = suspectSource
-                confirm = true
-        }</span>
+
+                if !(suspect.Sub() != nil &amp;&amp; subdir == nil) </span><span class="cov8" title="1">{
+                        confirm = true
+                }</span>
+        }
 
         <span class="cov8" title="1">if target != nil &amp;&amp; target.Sub() != nil &amp;&amp; subdir != nil &amp;&amp; !slices.Equal(target.Sub(), subdir) </span><span class="cov8" title="1">{
                 confirm = true

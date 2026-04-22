@@ -2,6 +2,7 @@ package describe
 
 import (
 	"bufio"
+	"io"
 	"os"
 	"pik/model"
 	"strings"
@@ -25,7 +26,17 @@ func Describe(key model.Target, file string) (string, error) {
 		return "", err
 	}
 	defer fd.Close()
-	scanner := bufio.NewScanner(fd)
+	text, err := FromReader(fd)
+	if err != nil {
+		return text, err
+	} else {
+		descriptions[key] = &text
+	}
+	return text, err
+}
+
+func FromReader(reader io.Reader) (string, error) {
+	scanner := bufio.NewScanner(reader)
 	scanner.Split(bufio.ScanLines)
 	scanner.Scan()
 	text := scanner.Text()
@@ -34,13 +45,19 @@ func Describe(key model.Target, file string) (string, error) {
 		text = scanner.Text()
 	}
 	text = strings.TrimSpace(text)
-	if !strings.HasPrefix(text, "#") {
+	hasPrefix := false
+	for _, p := range DescriptionPrefixes {
+		if strings.HasPrefix(text, p) {
+			hasPrefix = true
+			break
+		}
+	}
+	if !hasPrefix {
 		return "", nil
 	}
 	for _, c := range DescriptionPrefixes {
 		text = strings.TrimPrefix(text, c)
 		text = strings.TrimSpace(text)
 	}
-	descriptions[key] = &text
 	return text, nil
 }
