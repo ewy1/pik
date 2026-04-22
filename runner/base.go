@@ -22,7 +22,14 @@ func (t *BaseTarget) Matches(input string) bool {
 func (t *BaseTarget) ShortestId() string {
 	return t.Reduced
 }
+
+func (b *BaseTarget) Visible() bool {
+	return b.Tags().Visible()
+}
+
 func (b *BaseTarget) Invocation(src *model.Source) []string {
+	return append([]string{src.Identity.Reduced}, append(b.Sub, b.Identity.Reduced)...)
+}
 
 func Hydrated[T model.Target](in T) BaseHydration[T] {
 	return BaseHydration[T]{

@@ -16,12 +16,13 @@ func New(input string) Tag {
 }
 
 var (
-	Here   = New("here")
-	Pre    = New("pre")
-	Post   = New("post")
-	Final  = New("final")
-	Hidden = New("hidden")
-	Single = New("single")
+	Here     = New("here")
+	Pre      = New("pre")
+	Post     = New("post")
+	Final    = New("final")
+	Hidden   = New("hidden")
+	Single   = New("single")
+	Override = New("override")
 )
 
 var TagList []Tag
