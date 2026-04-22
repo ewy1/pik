@@ -10,7 +10,7 @@ func TestFromReader_Blank(t *testing.T) {
 	input := `   
 `
 	sr := strings.NewReader(input)
-	c, err := FromReader(sr)
+	c, err := Load(sr)
 	assert.Nil(t, err)
 	assert.Len(t, c.Entries, 0)
 }
@@ -18,7 +18,7 @@ func TestFromReader_Blank(t *testing.T) {
 func TestFromReader_OneEntry(t *testing.T) {
 	input := `/abc/def # deffers`
 	sr := strings.NewReader(input)
-	c, err := FromReader(sr)
+	c, err := Load(sr)
 	assert.Nil(t, err)
 	assert.Len(t, c.Entries, 1)
 	assert.Equal(t, c.Entries[0], Entry{
@@ -33,7 +33,7 @@ func TestFromReader_ManyEntries(t *testing.T) {
 /path/src # da source
 `
 	sr := strings.NewReader(input)
-	c, err := FromReader(sr)
+	c, err := Load(sr)
 	assert.Nil(t, err)
 	assert.Len(t, c.Entries, 3)
 	assert.Equal(t, c.Entries[0], Entry{
@@ -61,7 +61,7 @@ func TestFromReader_Comments(t *testing.T) {
 # // comment
 `
 	sr := strings.NewReader(input)
-	c, err := FromReader(sr)
+	c, err := Load(sr)
 	assert.Nil(t, err)
 	assert.Len(t, c.Entries, 3)
 	assert.Equal(t, c.Entries[0], Entry{
@@ -90,4 +90,26 @@ func TestStrip_Nothing(t *testing.T) {
 	old := Cache{}
 	result := c.Strip(old)
 	assert.Equal(t, c, result)
+}
+
+func TestMerge(t *testing.T) {
+	a := Entry{
+		Path: "/usr/share/asdf",
+	}
+	b := Entry{
+		Path: "/test/location",
+	}
+	c := Entry{
+		Path:  "/new/mypath",
+		Label: "mypath",
+	}
+	base := Cache{Entries: []Entry{
+		a, b,
+	}}
+	other := Cache{Entries: []Entry{
+		b, c,
+	}}
+	result := base.Merge(other)
+	assert.Len(t, result.Entries, 3)
+	assert.Contains(t, result.Entries, a, b, c)
 }

@@ -8,13 +8,15 @@ type Identity struct {
 }
 
 func (i Identity) Is(input string) bool {
-	return Reduce(input) == i.Reduced
+	reduced := Reduce(input)
+	return i.Reduced == reduced
 }
 
 func New(input string) Identity {
+	reduced := Reduce(input)
 	return Identity{
 		Full:    input,
-		Reduced: Reduce(input),
+		Reduced: reduced,
 	}
 
 }

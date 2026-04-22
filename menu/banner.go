@@ -98,3 +98,23 @@ func InlineCmd(cmd *exec.Cmd) string {
 	}
 	return CmdStyle.Render("  # "+CmdDirStyle.Render(paths.ReplaceHome(cmd.Dir)+":"), CmdArgStyle.Render(args...))
 }
+
+var (
+	OverrideStyle = style.New(func() lipgloss.Style {
+		return lipgloss.NewStyle()
+	})
+	OverrideCaretColor = lipgloss.Color("1")
+	OverrideCaretStyle = style.New(func() lipgloss.Style {
+		return lipgloss.NewStyle().Foreground(OverrideCaretColor).Bold(true)
+	})
+	OverrideTextStyle = style.New(func() lipgloss.Style {
+		return lipgloss.NewStyle().Faint(true)
+	})
+)
+
+func OverrideWarning(t model.Target) string {
+	return OverrideStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left,
+		OverrideCaretStyle.Render("! "),
+		OverrideTextStyle.Render("overridden by "+t.Label()),
+	))
+}

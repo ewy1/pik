@@ -23,29 +23,46 @@ import (
 	"sync"
 )
 
-var initializers = []model.Initializer{
-	python.Python,
-	git.Git,
-	pikdex.Indexer,
+// preInitializers are ran before the initializers.
+// useful for initializing stuff like paths, preparing directories, and reading the environment
+var preInitializers = []model.Initializer{
+	paths.Paths,
 }
 
+// initializers are ran before indexing with the indexers,
+// data from the preInitializers can be accessed at this time.
+var initializers = []model.Initializer{
+	pikdex.Indexer,
+	python.Python,
+	git.Git,
+}
+
+// indexers are methods which scan a directory and return a number of targets.
 var indexers = []model.Indexer{
 	pikdex.Indexer,
 	just.Indexer,
 	gnumake.Indexer,
 }
 
+// runners are modules which know how to turn a file into an exec.Cmd
+// all indexers have access to these but only pikdex uses it
 var runners = []model.Runner{
 	shell.Runner,
 	python.Python,
 }
 
+// hydrators are ran when the menu is required
+// for example adding git info, descriptions, icons...
 var hydrators = []model.Modder{
 	pikdex.Indexer,
 	git.Git,
 }
 
+// ForceConfirm means we will have to ask for confirmation before running no matter what
 var ForceConfirm = false
+
+// SourcesWithoutResults is a failed cache from the previous iteration
+// used for stripping out results to prevent double-index
 var SourcesWithoutResults cache.Cache
 
 //go:embed version.txt
@@ -61,6 +78,17 @@ func main() {
 	}
 
 	wg := sync.WaitGroup{}
+	for _, i := range preInitializers {
+		wg.Go(func() {
+			err := i.Init()
+			if err != nil {
+				_, _ = spool.Warn("%v\n", err)
+			}
+		})
+	}
+	wg.Wait()
+
+	wg = sync.WaitGroup{}
 	for _, i := range initializers {
 		wg.Go(func() {
 			err := i.Init()
@@ -95,7 +123,7 @@ func main() {
 	if !*flags.All {
 		st, stateErrors = model.NewState(fs, locs, indexers, runners)
 	} else {
-		c, err = cache.Load()
+		c, err = cache.LoadFile(fs, cache.Path[1:])
 		c.Strip(SourcesWithoutResults)
 		if err != nil {
 			_, _ = spool.Warn("%v\n", err)
@@ -106,7 +134,7 @@ func main() {
 	if stateErrors != nil {
 		_, _ = spool.Warn("%v\n", stateErrors)
 	} else {
-		err = cache.Save(st)
+		err = cache.SaveFile(cache.Path, st, c)
 		if err != nil {
 			_, _ = spool.Warn("%v", err)
 		}
@@ -142,9 +170,9 @@ func main() {
 		return
 	}
 
-	target, src, confirm, _, args := search.Search(st, args...)
-	if !*flags.All && target == nil && len(args) > 0 {
-		err := pflag.Set("all", "true")
+	result := search.Search(st, args...)
+	// TODO: Move auto-all logic into Search?
+	if !*flags.All && result.Target == nil && len(args) > 0 {
 		ForceConfirm = true
 		if err != nil {
 			_, _ = spool.Warn("%v\n", err)
@@ -155,20 +183,22 @@ func main() {
 		return
 	}
 
-	if target == nil {
+	if result.Target == nil {
 		_, _ = spool.Print("target not found.")
 		os.Exit(1)
 		return
 	}
 
-	if confirm || ForceConfirm {
+	if result.NeedsConfirmation || ForceConfirm {
 		_, _ = fmt.Fprintf(os.Stderr, "this target is out of tree.\n")
-		if !menu.Confirm(os.Stdin, src, target, args...) {
+		if !menu.Confirm(os.Stdin, result.Source, result.Target, args...) {
 			os.Exit(0)
 		}
 	}
-
-	err = run.Run(src, target, args...)
+	if result.Overridden {
+		_, _ = fmt.Fprintln(os.Stderr, menu.OverrideWarning(result.Target))
+	}
+	err = run.Run(result.Source, result.Target, args...)
 	if err != nil {
 		_, _ = spool.Warn("%v\n", err)
 		os.Exit(1)

@@ -4,7 +4,6 @@ import (
 	"github.com/adrg/xdg"
 	"os"
 	"path/filepath"
-	"pik/spool"
 	"strings"
 )
 
@@ -16,18 +15,24 @@ var (
 	Ifs    = os.Getenv("IFS")
 )
 
-func init() {
+type paths struct {
+}
+
+var Paths = &paths{}
+
+func (p paths) Init() error {
 	err := os.MkdirAll(Cache, 0700)
 	if err != nil {
-		spool.Warn("%v\n", err)
+		return err
 	}
 	err = os.MkdirAll(Config, 0700)
 	if err != nil {
-		spool.Warn("%v\n", err)
+		return err
 	}
 	if Ifs == "" {
 		Ifs = "\n"
 	}
+	return nil
 }
 
 func ReplaceHome(input string) string {

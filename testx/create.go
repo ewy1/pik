@@ -11,8 +11,9 @@ import (
 	"testing"
 )
 
-func TTarget(name string) model.Target {
-	return TestTarget{Identifier: name}
+func TTarget(name string, sub ...string) model.Target {
+	t := TestTarget{Id: identity.New(name), MyTags: model.TagsFromFilename(name), SubValue: sub}
+	return &t
 }
 
 func TSource(name string, targets ...string) *model.Source {
@@ -32,10 +33,18 @@ func TState(sources ...*model.Source) *model.State {
 }
 
 type TestTarget struct {
-	runner.BaseTarget
-	Identifier string
-	SubValue   []string
-	Tags       model.Tags
+	runner.Stub
+	Id       identity.Identity
+	SubValue []string
+	MyTags   model.Tags
+}
+
+func (t TestTarget) Invocation(src *model.Source) []string {
+	return []string{src.Identity.Reduced, t.Id.Reduced}
+}
+
+func (t TestTarget) Matches(input string) bool {
+	return t.Id.Is(input)
 }
 
 func (t TestTarget) Visible() bool {
@@ -52,11 +61,7 @@ func (t TestTarget) Sub() []string {
 }
 
 func (t TestTarget) Label() string {
-	return t.Identifier
-}
-
-func (t TestTarget) Matches(input string) bool {
-	return input == t.Identifier
+	return t.Id.Full
 }
 
 func (t TestTarget) Create(s *model.Source) *exec.Cmd {
@@ -70,8 +75,10 @@ func AssertTargetIsNot(t *testing.T, input string, target model.Target) {
 	assert.NotEqual(t, input, target.Label())
 }
 func AssertSourceIs(t *testing.T, input string, src *model.Source) {
+	assert.NotNil(t, src.Identity)
 	assert.Equal(t, input, src.Identity.Reduced)
 }
 func AssertSourceIsNot(t *testing.T, input string, src *model.Source) {
+	assert.NotNil(t, src.Identity)
 	assert.NotEqual(t, input, src.Identity.Reduced)
 }

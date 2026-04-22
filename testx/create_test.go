@@ -3,6 +3,7 @@
 package testx
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -24,4 +25,10 @@ func TestAssertTargetIs_Correct(t *testing.T) {
 func TestAssertTargetIs_Wrong(t *testing.T) {
 	ta := TTarget("aaaa")
 	AssertTargetIsNot(t, "bbbbbb", ta)
+}
+
+func TestTTargetIdentity(t *testing.T) {
+	ta := TTarget("asdf.hidden.sh")
+	assert.True(t, ta.Matches("asdf"))
+	assert.False(t, ta.Matches("hidden"))
 }

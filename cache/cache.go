@@ -16,6 +16,7 @@ type Cache struct {
 	Entries []Entry
 }
 
+// Merge combines two caches and filters duplicate keys
 func (c Cache) Merge(other Cache) Cache {
 	mp := make(map[string]string)
 	for _, e := range append(c.Entries, other.Entries...) {
@@ -33,22 +34,28 @@ type Entry struct {
 	Label string
 }
 
+// Path is the file path to the "contexts" cache file
 var Path = path.Join(paths.Cache, "contexts")
+
+// FsPath is the Path with the leading slash removed, to be opened from fs.FS
+var FsPath = Path[1:]
 
 var UnexpectedEntryError = errors.New("unexpected cache entry")
 
-func Load() (Cache, error) {
-	fd, err := os.Open(Path)
+func LoadFile(root fs.FS, path string) (Cache, error) {
+	fd, err := root.Open(path)
 	if errors.Is(err, os.ErrNotExist) {
 		return Cache{}, nil
 	} else if err != nil {
 		return Cache{}, err
 	}
-	defer fd.Close()
-	return FromReader(fd)
+	if fd != nil {
+		defer fd.Close()
+	}
+	return Load(fd)
 }
 
-func FromReader(r io.Reader) (Cache, error) {
+func Load(r io.Reader) (Cache, error) {
 	c := Cache{}
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
@@ -95,13 +102,22 @@ func New(st *model.State) Cache {
 	return *c
 }
 
-func Save(s *model.State) error {
-	ld, err := Load()
+func SaveFile(path string, s *model.State, loaded Cache) error {
+	fd, err := os.Create(path)
 	if err != nil {
 		return err
 	}
-	c := New(s).Merge(ld)
-	return os.WriteFile(Path, []byte(c.String()), os.ModePerm)
+	if fd != nil {
+		defer fd.Close()
+	}
+	return Save(s, fd, loaded)
+}
+
+func Save(s *model.State, w io.Writer, loaded Cache) error {
+	result := New(s).Merge(loaded)
+	_, err := w.Write([]byte(result.String()))
+	return err
+
 }
 
 func LoadState(f fs.FS, cache Cache, indexers []model.Indexer, runners []model.Runner) (*model.State, []error) {
@@ -126,4 +142,12 @@ outer:
 	return Cache{
 		Entries: result,
 	}
+}
+
+func Touch() error {
+	fd, err := os.Create(Path)
+	if fd != nil {
+		defer fd.Close()
+	}
+	return err
 }

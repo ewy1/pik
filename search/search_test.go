@@ -1,3 +1,5 @@
+//go:build test
+
 package search
 
 import (
@@ -8,104 +10,99 @@ import (
 
 func TestSearch_TargetOnly(t *testing.T) {
 	st := testx.TState(testx.TSource("src", "abc", "def"))
-	target, source, _, _, _ := Search(st, "def")
-	testx.AssertSourceIs(t, "src", source)
-	testx.AssertTargetIs(t, "def", target)
+	res := Search(st, "def")
+	testx.AssertSourceIs(t, "src", res.Source)
+	testx.AssertTargetIs(t, "def", res.Target)
 }
 
 func TestSearch_TargetAndSource(t *testing.T) {
 	st := testx.TState(testx.TSource("src", "abc", "def"))
-	target, source, _, _, _ := Search(st, "src", "def")
-	testx.AssertSourceIs(t, "src", source)
-	testx.AssertTargetIs(t, "def", target)
+	res := Search(st, "src", "def")
+	testx.AssertSourceIs(t, "src", res.Source)
+	testx.AssertTargetIs(t, "def", res.Target)
 }
 
 func TestSearch_SourceDefaultTarget(t *testing.T) {
 	st := testx.TState(testx.TSource("src", "abc", "src"))
-	target, src, _, _, _ := Search(st, "src")
-	testx.AssertSourceIs(t, "src", src)
-	assert.NotNil(t, target)
+	res := Search(st, "src")
+	testx.AssertSourceIs(t, "src", res.Source)
+	assert.NotNil(t, res.Target)
 }
 
 func TestSearch_SubdirWrong(t *testing.T) {
 	st := testx.TState(testx.TSource("src", "abc", "src"))
-	st.Sources[0].Targets = append(st.Sources[0].Targets, testx.TestTarget{
-		Identifier: "script",
-		SubValue:   []string{"subdir"},
-	})
-	target, src, confirm, sd, _ := Search(st, "wrong", "script")
-	testx.AssertSourceIs(t, "src", src)
-	testx.AssertTargetIs(t, "script", target)
-	assert.Equal(t, sd, []string{"wrong"})
-	assert.NotNil(t, target)
-	assert.True(t, confirm)
+	st.Sources[0].Targets = append(st.Sources[0].Targets, testx.TTarget("script", "subdir"))
+	res := Search(st, "wrong", "script")
+	testx.AssertSourceIs(t, "src", res.Source)
+	testx.AssertTargetIs(t, "script", res.Target)
+	assert.Equal(t, []string{"wrong"}, res.Sub)
+	assert.NotNil(t, res.Target)
+	assert.True(t, res.NeedsConfirmation)
 }
 
 func TestSearch_SubdirMissing(t *testing.T) {
 	st := testx.TState(testx.TSource("src", "abc", "src"))
-	st.Sources[0].Targets = append(st.Sources[0].Targets, testx.TestTarget{
-		Identifier: "script",
-		SubValue:   []string{"subdir"},
-	})
-	target, src, confirm, sd, _ := Search(st, "script")
-	testx.AssertSourceIs(t, "src", src)
-	testx.AssertTargetIs(t, "script", target)
-	assert.Nil(t, sd)
-	assert.NotNil(t, target)
-	assert.False(t, confirm)
+	st.Sources[0].Targets = append(st.Sources[0].Targets, testx.TTarget("script", "subdir"))
+	res := Search(st, "script")
+	testx.AssertSourceIs(t, "src", res.Source)
+	testx.AssertTargetIs(t, "script", res.Target)
+	assert.Nil(t, res.Sub)
+	assert.NotNil(t, res.Target)
+	assert.False(t, res.NeedsConfirmation)
 }
 
 func TestSearch_Args(t *testing.T) {
 	st := testx.TState(testx.TSource("src", "abc", "def"))
-	target, source, _, _, args := Search(st, "def", "a1", "a2")
-	testx.AssertSourceIs(t, "src", source)
-	testx.AssertTargetIs(t, "def", target)
-	assert.Equal(t, []string{"a1", "a2"}, args)
+	res := Search(st, "def", "a1", "a2")
+	testx.AssertSourceIs(t, "src", res.Source)
+	testx.AssertTargetIs(t, "def", res.Target)
+	assert.Equal(t, []string{"a1", "a2"}, res.Args)
 }
 
 func TestSearch_Args_SubdirMissing(t *testing.T) {
 	st := testx.TState(testx.TSource("src", "abc", "src"))
-	st.Sources[0].Targets = append(st.Sources[0].Targets, testx.TestTarget{
-		Identifier: "script",
-		SubValue:   []string{"subdir"},
-	})
-	target, src, _, _, args := Search(st, "script", "a1", "a2")
-	testx.AssertSourceIs(t, "src", src)
-	testx.AssertTargetIs(t, "script", target)
-	assert.Equal(t, []string{"a1", "a2"}, args)
+	st.Sources[0].Targets = append(st.Sources[0].Targets, testx.TTarget("script", "subdir"))
+	res := Search(st, "script", "a1", "a2")
+	testx.AssertSourceIs(t, "src", res.Source)
+	testx.AssertTargetIs(t, "script", res.Target)
+	assert.Equal(t, []string{"a1", "a2"}, res.Args)
 }
 
 func TestSearch_Args_SubdirPresent(t *testing.T) {
 	st := testx.TState(testx.TSource("src", "abc", "src"))
-	st.Sources[0].Targets = append(st.Sources[0].Targets, testx.TestTarget{
-		Identifier: "script",
-		SubValue:   []string{"subdir"},
-	})
-	target, src, _, _, args := Search(st, "subdir", "script", "a1", "a2")
-	testx.AssertSourceIs(t, "src", src)
-	testx.AssertTargetIs(t, "script", target)
-	assert.Equal(t, []string{"a1", "a2"}, args)
+	st.Sources[0].Targets = append(st.Sources[0].Targets, testx.TTarget("script", "subdir"))
+	res := Search(st, "subdir", "script", "a1", "a2")
+	testx.AssertSourceIs(t, "src", res.Source)
+	testx.AssertTargetIs(t, "script", res.Target)
+	assert.Equal(t, []string{"a1", "a2"}, res.Args)
 }
 
 func TestSearch_SecondarySource(t *testing.T) {
 	st := testx.TState(testx.TSource("src", "abc", "def"), testx.TSource("aaa", "hjkl"))
-	target, source, _, _, _ := Search(st, "aaa", "hjkl")
-	testx.AssertSourceIs(t, "aaa", source)
-	testx.AssertTargetIs(t, "hjkl", target)
+	res := Search(st, "aaa", "hjkl")
+	testx.AssertSourceIs(t, "aaa", res.Source)
+	testx.AssertTargetIs(t, "hjkl", res.Target)
 }
 
 func TestSearch_SecondarySource_DuplicateTargetName(t *testing.T) {
 	st := testx.TState(testx.TSource("src", "abc", "def"), testx.TSource("aaa", "abc"))
-	target, source, confirm, _, _ := Search(st, "aaa", "def")
-	testx.AssertSourceIs(t, "src", source)
-	testx.AssertTargetIs(t, "def", target)
-	assert.True(t, confirm)
+	res := Search(st, "aaa", "def")
+	testx.AssertSourceIs(t, "src", res.Source)
+	testx.AssertTargetIs(t, "def", res.Target)
+	assert.True(t, res.NeedsConfirmation)
 }
 
 func TestSearch_SourceTargetMixup(t *testing.T) {
 	st := testx.TState(testx.TSource("src", "abc"), testx.TSource("aaa", "ccc"))
-	target, source, confirm, _, _ := Search(st, "src", "ccc")
-	testx.AssertSourceIs(t, "aaa", source)
-	testx.AssertTargetIs(t, "ccc", target)
-	assert.True(t, confirm)
+	res := Search(st, "src", "ccc")
+	testx.AssertSourceIs(t, "aaa", res.Source)
+	testx.AssertTargetIs(t, "ccc", res.Target)
+	assert.True(t, res.NeedsConfirmation)
+}
+
+func TestSearch_Override(t *testing.T) {
+	st := testx.TState(testx.TSource("src", "abc.override.sh", "abc.sh"))
+	res := Search(st, "src", "abc")
+	assert.Equal(t, "abc.override.sh", res.Target.(*testx.TestTarget).Id.Full)
+	assert.False(t, res.NeedsConfirmation)
 }
