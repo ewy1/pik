@@ -54,3 +54,66 @@ func (s Stub) Invocation(src *model.Source) []string {
 	//TODO implement me
 	panic("implement me")
 }
+
+type HydratedStub struct {
+}
+
+func (h HydratedStub) Matches(input string) bool {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h HydratedStub) Create(s *model.Source) *exec.Cmd {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h HydratedStub) Sub() []string {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h HydratedStub) Label() string {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h HydratedStub) Hydrate(src *model.Source) (model.HydratedTarget, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h HydratedStub) Tags() model.Tags {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h HydratedStub) ShortestId() string {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h HydratedStub) Visible() bool {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h HydratedStub) Invocation(src *model.Source) []string {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h HydratedStub) Icon() string {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h HydratedStub) Description() string {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h HydratedStub) Target() model.Target {
+	//TODO implement me
+	panic("implement me")
+}
