@@ -12,18 +12,18 @@ import (
 	"strings"
 )
 
-type make struct {
+type gnumake struct {
 	path string
 }
 
-var Indexer = &make{}
+var Indexer = &gnumake{}
 
 var Makefiles = []string{
 	"Makefile",
 	"makefile",
 }
 
-func (m *make) Index(path string, f fs.FS, _ []model.Runner) ([]model.Target, error) {
+func (m *gnumake) Index(path string, f fs.FS, _ []model.Runner) ([]model.Target, error) {
 
 	entries, err := fs.ReadDir(f, ".")
 	if err != nil {
@@ -83,10 +83,10 @@ func ParseOutput(input string) []model.Target {
 	return result
 }
 
-var NoJustError = errors.New("no make in $PATH but source contains makefile")
+var NoJustError = errors.New("no gnumake in $PATH but source contains makefile")
 
-func (m *make) findMake() error {
-	loc, err := exec.LookPath("make")
+func (m *gnumake) findMake() error {
+	loc, err := exec.LookPath("gnumake")
 	if errors.Is(err, exec.ErrNotFound) {
 		return NoJustError
 	} else if err != nil {
