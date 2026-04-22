@@ -53,8 +53,7 @@ func (t TestTarget) Visible() bool {
 }
 
 func (t TestTarget) Hydrate(src *model.Source) (model.HydratedTarget, error) {
-	//TODO implement me
-	panic("implement me")
+	return runner.HydratedStub{}, nil
 }
 
 func (t TestTarget) Sub() []string {
