@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/fs"
 	"path/filepath"
+	"pik/flags"
 	"pik/identity"
 	"strings"
 	"sync"
@@ -11,7 +12,9 @@ import (
 
 func NewState(f fs.FS, locations []string, indexers []Indexer, runners []Runner) (*State, []error) {
 	var errs []error
-	st := &State{}
+	st := &State{
+		All: *flags.All,
+	}
 	wg := sync.WaitGroup{}
 	var sources = make([]*Source, len(locations), len(locations))
 	for i, loc := range locations {
