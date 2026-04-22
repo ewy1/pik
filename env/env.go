@@ -12,6 +12,8 @@ import (
 	"slices"
 )
 
+// IsEnv returns whether a given file is suitable for environment loading
+// this method respects the --env flag
 func IsEnv(file string) bool {
 	options := []string{
 		".env",
@@ -26,6 +28,7 @@ func IsEnv(file string) bool {
 	return slices.Contains(options, file)
 }
 
+// Files returns a list of files (that exist) that should be indexed and used as environment files
 func Files(f fs.FS, p string, deep bool) []string {
 	var result []string
 	dir, err := fs.ReadDir(f, p)
@@ -43,6 +46,7 @@ func Files(f fs.FS, p string, deep bool) []string {
 	return result
 }
 
+// Get returns all environment key-value pairs we should index for a source
 func Get(src *model.Source) []string {
 	f := os.DirFS(src.Path)
 	var result []string

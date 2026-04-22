@@ -101,6 +101,7 @@ func (c Cache) String() string {
 	return string(c.Marshal())
 }
 
+// New creates a new Cache from a model.State
 func New(st *model.State) Cache {
 	c := &Cache{}
 	for _, s := range st.Sources {
@@ -112,6 +113,7 @@ func New(st *model.State) Cache {
 	return *c
 }
 
+// SaveFile helps you use Save with a file path instead of a reader
 func SaveFile(path string, s *model.State, loaded Cache) error {
 	fd, err := os.Create(path)
 	if err != nil {
@@ -123,6 +125,7 @@ func SaveFile(path string, s *model.State, loaded Cache) error {
 	return Save(s, fd, loaded)
 }
 
+// Save writes the cache combined with the "loaded" cache to the writer.
 func Save(s *model.State, w io.Writer, loaded Cache) error {
 	result := New(s).Merge(loaded)
 	_, err := w.Write([]byte(result.Marshal()))
@@ -130,6 +133,7 @@ func Save(s *model.State, w io.Writer, loaded Cache) error {
 
 }
 
+// LoadState creates a state with model.NewState based on cache content
 func LoadState(f fs.FS, cache Cache, indexers []model.Indexer, runners []model.Runner) (*model.State, []error) {
 	var locs []string
 	for _, e := range cache.Entries {
@@ -138,6 +142,8 @@ func LoadState(f fs.FS, cache Cache, indexers []model.Indexer, runners []model.R
 	return model.NewState(f, locs, indexers, runners)
 }
 
+// Strip removes the needle's entries from the receiver's entries when they have matching paths.
+// used to skip already indexed locations when auto-all-ing
 func (c Cache) Strip(needle Cache) Cache {
 	var result []Entry
 outer:

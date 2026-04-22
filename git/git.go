@@ -28,6 +28,7 @@ func (g *gitMod) Init() error {
 
 var Git = &gitMod{}
 
+// Mod is the git hydration mod
 func (g *gitMod) Mod(source *model.Source, result *model.HydratedSource) error {
 	gitFolder := filepath.Join(source.Path, ".git")
 	if st, err := os.Stat(gitFolder); err == nil && st.IsDir() {
@@ -56,6 +57,7 @@ func (g *gitMod) Mod(source *model.Source, result *model.HydratedSource) error {
 	return nil
 }
 
+// Branch returns the git branch of a given source
 func (g *gitMod) Branch(source *model.Source) (string, error) {
 	cmd := exec.Command(g.Git, "branch", "--show-current")
 	cmd.Dir = source.Path
@@ -65,6 +67,7 @@ func (g *gitMod) Branch(source *model.Source) (string, error) {
 
 var UnknownResponseError = errors.New("unknown response")
 
+// Diff returns the number of changes of a given source
 func (g *gitMod) Diff(source *model.Source) (changes int, insertions int, deletions int, err error) {
 	cmd := exec.Command(g.Git, "diff", "--shortstat")
 	cmd.Dir = source.Path

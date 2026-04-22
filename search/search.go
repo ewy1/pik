@@ -5,16 +5,25 @@ import (
 	"slices"
 )
 
+// Result is a struct containing information about the search and search results
 type Result struct {
-	Target            model.Target
-	Source            *model.Source
+	// Target is the target selected by the search
+	Target model.Target
+	// Source is the source belonging to the selected Target
+	Source *model.Source
+	// NeedsConfirmation is true when there are discrepancies between expected and actual invocation
 	NeedsConfirmation bool
-	Overridden        bool
-	Sub               []string
-	Args              []string
+	// Overridden is whether it was overridden by a .override target
+	Overridden bool
+	// Sub is the subcategory or -folder
+	Sub []string
+	// Args are the remaining arguments which we should pass to the target
+	Args []string
 }
 
 // Search is the meat of pik
+// since there are a ton of different ways to invoke targets, leave a unit test
+// when you change this
 func Search(s *model.State, args ...string) *Result {
 	var target model.Target
 	var targetSource *model.Source

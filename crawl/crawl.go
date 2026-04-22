@@ -7,10 +7,12 @@ import (
 	"strings"
 )
 
+// Evaluated returns a path with evaluated symlinks
 func Evaluated(loc string) (string, error) {
 	return filepath.EvalSymlinks(loc)
 }
 
+// RichLocations combines the path and Evaluated path Locations
 func RichLocations(origin string) []string {
 	locs := Locations(origin)
 
@@ -24,6 +26,8 @@ func RichLocations(origin string) []string {
 	return locs
 }
 
+// Locations returns a slice of increasingly shorter file paths,
+// losing a segment each time.
 func Locations(origin string) []string {
 	origin = path.Clean(origin)
 	var locs = []string{
@@ -40,6 +44,7 @@ func Locations(origin string) []string {
 	return locs
 }
 
+// ParentDir returns a path with the top element missing
 func ParentDir(origin string) string {
 	trimmedOrigin := strings.TrimSuffix(origin, "/")
 	dir, _ := path.Split(trimmedOrigin)

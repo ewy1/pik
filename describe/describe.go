@@ -15,6 +15,7 @@ var DescriptionPrefixes = []string{
 
 var descriptions = make(map[model.Target]*string)
 
+// Describe attempts to read a description from a file and stores it in the cache
 func Describe(key model.Target, file string) (string, error) {
 	if d := descriptions[key]; d != nil {
 		return *d, nil
@@ -35,6 +36,8 @@ func Describe(key model.Target, file string) (string, error) {
 	return text, err
 }
 
+// FromReader reads a description from an io.Reader and returns it.
+// this is not stored in the cache.
 func FromReader(reader io.Reader) (string, error) {
 	scanner := bufio.NewScanner(reader)
 	scanner.Split(bufio.ScanLines)
