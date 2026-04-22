@@ -33,8 +33,8 @@ var Runner = &shell{
 }
 
 type shell struct {
+	sync.Mutex
 	Locations map[string]string
-	lock      sync.Mutex
 }
 
 func (s *shell) Wants(f fs.FS, file string, entry fs.DirEntry) (bool, error) {
@@ -69,9 +69,9 @@ func (s *shell) Find(shell string) (string, error) {
 	}
 
 	if p, err := exec.LookPath(shell); err == nil {
-		s.lock.Lock()
+		s.Lock()
 		s.Locations[shell] = p
-		s.lock.Unlock()
+		s.Unlock()
 		return shell, nil
 	} else {
 		return "", err

@@ -172,7 +172,7 @@ func main() {
 
 	result := search.Search(st, args...)
 	// TODO: Move auto-all logic into Search?
-	if !*flags.All && result.Target == nil && len(args) > 0 {
+	if !*flags.All && result.Target == nil && len(result.Args) > 0 {
 		ForceConfirm = true
 		if err != nil {
 			_, _ = spool.Warn("%v\n", err)
@@ -198,7 +198,7 @@ func main() {
 	if result.Overridden {
 		_, _ = fmt.Fprintln(os.Stderr, menu.OverrideWarning(result.Target))
 	}
-	err = run.Run(result.Source, result.Target, args...)
+	err = run.Run(result.Source, result.Target, result.Args...)
 	if err != nil {
 		_, _ = spool.Warn("%v\n", err)
 		os.Exit(1)

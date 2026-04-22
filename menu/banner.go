@@ -43,6 +43,9 @@ var (
 	BannerDryStyle = style.New(func() lipgloss.Style {
 		return lipgloss.NewStyle().Foreground(BannerDryColor).Bold(true).MarginRight(1)
 	})
+	BannerDefaultStyle = style.New(func() lipgloss.Style {
+		return lipgloss.NewStyle().Faint(true).MarginLeft(1)
+	})
 )
 
 func Banner(source *model.Source, target model.Target, args ...string) string {
@@ -53,7 +56,15 @@ func Banner(source *model.Source, target model.Target, args ...string) string {
 	parts = append(parts, BannerPromptStyle.Render("> "))
 	parts = append(parts, BannerSelfStyle.Render("pik"))
 	parts = append(parts, BannerSourceLabelStyle.Render(source.Label()))
+	def := false
 	if sub := target.Sub(); sub != nil {
+
+		// remove "default" invocations
+		if sub[len(sub)-1] == target.ShortestId() {
+			sub = sub[:len(sub)-1]
+			def = true
+		}
+
 		for i, s := range sub {
 			sub[i] = BannerSubItemStyle.Render(s)
 		}
@@ -74,6 +85,9 @@ func Banner(source *model.Source, target model.Target, args ...string) string {
 		}
 
 		parts = append(parts, BannerArgsStyle.Render(argParts...))
+	}
+	if def {
+		parts = append(parts, BannerDefaultStyle.Render("# "+target.Label()))
 	}
 	result := BannerStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left, parts...))
 	return result

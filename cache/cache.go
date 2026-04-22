@@ -143,11 +143,3 @@ outer:
 		Entries: result,
 	}
 }
-
-func Touch() error {
-	fd, err := os.Create(Path)
-	if fd != nil {
-		defer fd.Close()
-	}
-	return err
-}
