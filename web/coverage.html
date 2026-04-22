@@ -1,0 +1,3194 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>cache: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">pik/cache/cache.go (75.4%)</option>
+				
+				<option value="file1">pik/crawl/crawl.go (53.8%)</option>
+				
+				<option value="file2">pik/describe/describe.go (0.0%)</option>
+				
+				<option value="file3">pik/env/env.go (0.0%)</option>
+				
+				<option value="file4">pik/git/git.go (0.0%)</option>
+				
+				<option value="file5">pik/identity/identity.go (0.0%)</option>
+				
+				<option value="file6">pik/indexers/pikdex/hydrate.go (0.0%)</option>
+				
+				<option value="file7">pik/indexers/pikdex/index.go (11.7%)</option>
+				
+				<option value="file8">pik/indexers/pikdex/meta.go (0.0%)</option>
+				
+				<option value="file9">pik/main.go (0.0%)</option>
+				
+				<option value="file10">pik/menu/banner.go (0.0%)</option>
+				
+				<option value="file11">pik/menu/confirm.go (0.0%)</option>
+				
+				<option value="file12">pik/menu/icon.go (0.0%)</option>
+				
+				<option value="file13">pik/menu/input.go (0.0%)</option>
+				
+				<option value="file14">pik/menu/menu.go (0.0%)</option>
+				
+				<option value="file15">pik/menu/model.go (0.0%)</option>
+				
+				<option value="file16">pik/menu/source.go (0.0%)</option>
+				
+				<option value="file17">pik/menu/style/style.go (0.0%)</option>
+				
+				<option value="file18">pik/menu/target.go (0.0%)</option>
+				
+				<option value="file19">pik/model/new.go (0.0%)</option>
+				
+				<option value="file20">pik/model/source.go (0.0%)</option>
+				
+				<option value="file21">pik/model/tags.go (96.2%)</option>
+				
+				<option value="file22">pik/paths/paths.go (0.0%)</option>
+				
+				<option value="file23">pik/run/run.go (0.0%)</option>
+				
+				<option value="file24">pik/runner/base.go (0.0%)</option>
+				
+				<option value="file25">pik/runner/gnumake/make.go (0.0%)</option>
+				
+				<option value="file26">pik/runner/gnumake/target.go (0.0%)</option>
+				
+				<option value="file27">pik/runner/just/just.go (0.0%)</option>
+				
+				<option value="file28">pik/runner/just/target.go (0.0%)</option>
+				
+				<option value="file29">pik/runner/python/file.go (0.0%)</option>
+				
+				<option value="file30">pik/runner/python/indexer.go (0.0%)</option>
+				
+				<option value="file31">pik/runner/python/proj.go (0.0%)</option>
+				
+				<option value="file32">pik/runner/python/runner.go (0.0%)</option>
+				
+				<option value="file33">pik/runner/shell/hydrated.go (0.0%)</option>
+				
+				<option value="file34">pik/runner/shell/shell.go (11.8%)</option>
+				
+				<option value="file35">pik/runner/shell/target.go (0.0%)</option>
+				
+				<option value="file36">pik/runner/stub.go (0.0%)</option>
+				
+				<option value="file37">pik/search/search.go (94.6%)</option>
+				
+				<option value="file38">pik/testx/create.go (70.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package cache
+
+import (
+        "bufio"
+        "errors"
+        "io"
+        "io/fs"
+        "os"
+        "path"
+        "pik/model"
+        "pik/paths"
+        "strings"
+)
+
+type Cache struct {
+        Entries []Entry
+}
+
+// Merge combines two caches and filters duplicate keys
+func (c Cache) Merge(other Cache) Cache <span class="cov8" title="1">{
+        mp := make(map[string]string)
+        for _, e := range append(c.Entries, other.Entries...) </span><span class="cov8" title="1">{
+                mp[e.Path] = e.Label
+        }</span>
+        <span class="cov8" title="1">result := Cache{}
+        for p, l := range mp </span><span class="cov8" title="1">{
+                result.Entries = append(result.Entries, Entry{Label: l, Path: p})
+        }</span>
+        <span class="cov8" title="1">return result</span>
+}
+
+type Entry struct {
+        Path  string
+        Label string
+}
+
+// Path is the file path to the "contexts" cache file
+var Path = path.Join(paths.Cache, "contexts")
+
+// FsPath is the Path with the leading slash removed, to be opened from fs.FS
+var FsPath = Path[1:]
+
+var UnexpectedEntryError = errors.New("unexpected cache entry")
+
+func LoadFile(root fs.FS, path string) (Cache, error) <span class="cov8" title="1">{
+        fd, err := root.Open(path)
+        if errors.Is(err, os.ErrNotExist) </span><span class="cov8" title="1">{
+                return Cache{}, nil
+        }</span> else<span class="cov8" title="1"> if err != nil </span><span class="cov0" title="0">{
+                return Cache{}, err
+        }</span>
+        <span class="cov8" title="1">if fd != nil </span><span class="cov8" title="1">{
+                defer fd.Close()
+        }</span>
+        <span class="cov8" title="1">return Load(fd)</span>
+}
+
+func Load(r io.Reader) (Cache, error) <span class="cov8" title="1">{
+        c := Cache{}
+        scanner := bufio.NewScanner(r)
+        for scanner.Scan() </span><span class="cov8" title="1">{
+                line := strings.TrimSpace(scanner.Text())
+                if line == "" || line[0] == '#' || line[0:2] == "//" </span><span class="cov8" title="1">{
+                        continue</span>
+                }
+
+                <span class="cov8" title="1">entry := &amp;Entry{}
+                parts := strings.SplitN(line, "#", 2)
+                switch len(parts) </span>{
+                case 2:<span class="cov8" title="1">
+                        entry.Label = strings.TrimSpace(parts[1])
+                        fallthrough</span>
+                case 1:<span class="cov8" title="1">
+                        entry.Path = strings.TrimSpace(parts[0])</span>
+                default:<span class="cov0" title="0">
+                        return c, UnexpectedEntryError</span>
+                }
+                <span class="cov8" title="1">c.Entries = append(c.Entries, *entry)</span>
+        }
+        <span class="cov8" title="1">return c, nil</span>
+}
+
+func (c Cache) String() string <span class="cov8" title="1">{
+        b := strings.Builder{}
+        for _, e := range c.Entries </span><span class="cov8" title="1">{
+                b.WriteString(e.Path)
+                b.WriteString(" # ")
+                b.WriteString(e.Label)
+                b.WriteString("\n")
+        }</span>
+        <span class="cov8" title="1">return b.String()</span>
+}
+
+func New(st *model.State) Cache <span class="cov8" title="1">{
+        c := &amp;Cache{}
+        for _, s := range st.Sources </span><span class="cov8" title="1">{
+                c.Entries = append(c.Entries, Entry{
+                        Path:  s.Path,
+                        Label: s.Label(),
+                })
+        }</span>
+        <span class="cov8" title="1">return *c</span>
+}
+
+func SaveFile(path string, s *model.State, loaded Cache) error <span class="cov0" title="0">{
+        fd, err := os.Create(path)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">if fd != nil </span><span class="cov0" title="0">{
+                defer fd.Close()
+        }</span>
+        <span class="cov0" title="0">return Save(s, fd, loaded)</span>
+}
+
+func Save(s *model.State, w io.Writer, loaded Cache) error <span class="cov0" title="0">{
+        result := New(s).Merge(loaded)
+        _, err := w.Write([]byte(result.String()))
+        return err
+
+}</span>
+
+func LoadState(f fs.FS, cache Cache, indexers []model.Indexer, runners []model.Runner) (*model.State, []error) <span class="cov0" title="0">{
+        var locs []string
+        for _, e := range cache.Entries </span><span class="cov0" title="0">{
+                locs = append(locs, e.Path)
+        }</span>
+        <span class="cov0" title="0">return model.NewState(f, locs, indexers, runners)</span>
+}
+
+func (c Cache) Strip(needle Cache) Cache <span class="cov8" title="1">{
+        var result []Entry
+outer:
+        for _, e := range c.Entries </span><span class="cov8" title="1">{
+                for _, t := range needle.Entries </span><span class="cov8" title="1">{
+                        if t.Path == e.Path </span><span class="cov8" title="1">{
+                                continue outer</span>
+                        }
+                }
+                <span class="cov8" title="1">result = append(result, e)</span>
+        }
+        <span class="cov8" title="1">return Cache{
+                Entries: result,
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package crawl
+
+import (
+        "path"
+        "path/filepath"
+        "slices"
+        "strings"
+)
+
+func Evaluated(loc string) (string, error) <span class="cov0" title="0">{
+        return filepath.EvalSymlinks(loc)
+}</span>
+
+func RichLocations(origin string) []string <span class="cov0" title="0">{
+        locs := Locations(origin)
+
+        eval, err := Evaluated(origin)
+        if err == nil &amp;&amp; eval != origin </span><span class="cov0" title="0">{
+                i := 0
+                evaledLocations := Locations(eval)
+                var result []string
+                for i &lt; len(locs) &amp;&amp; i &lt; len(evaledLocations) </span><span class="cov0" title="0">{
+                        result = append(result, evaledLocations[i], locs[i])
+                }</span>
+                <span class="cov0" title="0">result = slices.Compact(result)
+                return result</span>
+        }
+        <span class="cov0" title="0">return locs</span>
+}
+
+func Locations(origin string) []string <span class="cov8" title="1">{
+        origin = path.Clean(origin)
+        var locs = []string{
+                origin,
+        }
+        for </span><span class="cov8" title="1">{
+                previous := locs[len(locs)-1]
+                parent := ParentDir(previous)
+                if previous == parent </span><span class="cov8" title="1">{
+                        break</span>
+                }
+                <span class="cov8" title="1">locs = append(locs, parent)</span>
+        }
+        <span class="cov8" title="1">return locs</span>
+}
+
+func ParentDir(origin string) string <span class="cov8" title="1">{
+        trimmedOrigin := strings.TrimSuffix(origin, "/")
+        dir, _ := path.Split(trimmedOrigin)
+        if dir == "" </span><span class="cov8" title="1">{
+                return origin
+        }</span>
+        <span class="cov8" title="1">return dir</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package describe
+
+import (
+        "bufio"
+        "os"
+        "pik/model"
+        "strings"
+)
+
+var DescriptionPrefixes = []string{
+        "#",
+        "//",
+}
+
+var descriptions = make(map[model.Target]*string)
+
+func Describe(key model.Target, file string) (string, error) <span class="cov0" title="0">{
+        if d := descriptions[key]; d != nil </span><span class="cov0" title="0">{
+                return *d, nil
+        }</span>
+        <span class="cov0" title="0">fd, err := os.Open(file)
+        if err != nil </span><span class="cov0" title="0">{
+                msg := err.Error()
+                descriptions[key] = &amp;msg
+                return "", err
+        }</span>
+        <span class="cov0" title="0">defer fd.Close()
+        scanner := bufio.NewScanner(fd)
+        scanner.Split(bufio.ScanLines)
+        scanner.Scan()
+        text := scanner.Text()
+        if strings.HasPrefix(text, "#!") </span><span class="cov0" title="0">{
+                scanner.Scan()
+                text = scanner.Text()
+        }</span>
+        <span class="cov0" title="0">text = strings.TrimSpace(text)
+        if !strings.HasPrefix(text, "#") </span><span class="cov0" title="0">{
+                return "", nil
+        }</span>
+        <span class="cov0" title="0">for _, c := range DescriptionPrefixes </span><span class="cov0" title="0">{
+                text = strings.TrimPrefix(text, c)
+                text = strings.TrimSpace(text)
+        }</span>
+        <span class="cov0" title="0">descriptions[key] = &amp;text
+        return text, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package env
+
+import (
+        "github.com/joho/godotenv"
+        "io/fs"
+        "os"
+        "path/filepath"
+        "pik/flags"
+        "pik/indexers/pikdex"
+        "pik/model"
+        "pik/spool"
+        "slices"
+)
+
+func IsEnv(file string) bool <span class="cov0" title="0">{
+        options := []string{
+                ".env",
+        }
+        for _, e := range *flags.Env </span><span class="cov0" title="0">{
+                options = append(options,
+                        ".env-"+e,
+                        ".env."+e,
+                        e+".env")
+        }</span>
+        <span class="cov0" title="0">return slices.Contains(options, file)</span>
+}
+
+func EnvFiles(f fs.FS, p string, deep bool) []string <span class="cov0" title="0">{
+        var result []string
+        dir, err := fs.ReadDir(f, p)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">for _, e := range dir </span><span class="cov0" title="0">{
+                if e.IsDir() &amp;&amp; slices.Contains(pikdex.Roots, e.Name()) &amp;&amp; deep </span><span class="cov0" title="0">{
+                        result = append(result, EnvFiles(f, e.Name(), false)...)
+                }</span>
+                <span class="cov0" title="0">if !e.IsDir() &amp;&amp; IsEnv(e.Name()) </span><span class="cov0" title="0">{
+                        result = append(result, filepath.Join(p, e.Name()))
+                }</span>
+        }
+        <span class="cov0" title="0">return result</span>
+}
+
+func Get(src *model.Source) []string <span class="cov0" title="0">{
+        f := os.DirFS(src.Path)
+        var result []string
+        files := EnvFiles(f, ".", true)
+        for _, f := range files </span><span class="cov0" title="0">{
+                res, err := godotenv.Read(filepath.Join(src.Path, f))
+                if err != nil </span><span class="cov0" title="0">{
+                        spool.Warn("%v", err)
+                        continue</span>
+                }
+                <span class="cov0" title="0">for k, v := range res </span><span class="cov0" title="0">{
+                        result = append(result, k+"="+v)
+                }</span>
+        }
+        <span class="cov0" title="0">return result</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package git
+
+import (
+        "errors"
+        "os"
+        "os/exec"
+        "path/filepath"
+        "pik/model"
+        "pik/spool"
+        "strconv"
+        "strings"
+)
+
+type gitMod struct {
+        Git string
+        err error
+}
+
+func (g *gitMod) Init() error <span class="cov0" title="0">{
+        p, err := exec.LookPath("git")
+        if err != nil </span><span class="cov0" title="0">{
+                g.err = err
+                return nil
+        }</span>
+        <span class="cov0" title="0">g.Git = p
+        return nil</span>
+}
+
+var Git = &amp;gitMod{}
+
+func (g *gitMod) Mod(source *model.Source, result *model.HydratedSource) error <span class="cov0" title="0">{
+        gitFolder := filepath.Join(source.Path, ".git")
+        if st, err := os.Stat(gitFolder); err == nil &amp;&amp; st.IsDir() </span><span class="cov0" title="0">{
+                if g.Git == "" </span><span class="cov0" title="0">{
+                        spool.Warn("source %v seems to be a git repository but git is not installed\n", source.Identity.Full)
+                        return nil
+                }</span>
+                <span class="cov0" title="0">branch, err := g.Branch(source)
+                if err != nil </span><span class="cov0" title="0">{
+                        spool.Warn("%v", err)
+                        return nil
+                }</span>
+                <span class="cov0" title="0">ch, in, de, err := g.Diff(source)
+                if err != nil </span><span class="cov0" title="0">{
+                        spool.Warn("%v", err)
+                        return nil
+                }</span>
+                <span class="cov0" title="0">result.Git = &amp;model.GitInfo{
+                        Branch:     branch,
+                        Insertions: in,
+                        Deletions:  de,
+                        Changes:    ch,
+                }</span>
+        }
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (g *gitMod) Branch(source *model.Source) (string, error) <span class="cov0" title="0">{
+        cmd := exec.Command(g.Git, "branch", "--show-current")
+        cmd.Dir = source.Path
+        b, err := cmd.CombinedOutput()
+        return strings.TrimSpace(string(b)), err
+}</span>
+
+var UnknownResponseError = errors.New("unknown response")
+
+func (g *gitMod) Diff(source *model.Source) (int, int, int, error) <span class="cov0" title="0">{
+        cmd := exec.Command(g.Git, "diff", "--shortstat")
+        cmd.Dir = source.Path
+        b, err := cmd.CombinedOutput()
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, 0, 0, err
+        }</span>
+        <span class="cov0" title="0">split := strings.Split(string(b), ",")
+        changes := 0
+        insertions := 0
+        deletions := 0
+        for _, s := range split </span><span class="cov0" title="0">{
+                if strings.TrimSpace(s) == "" </span><span class="cov0" title="0">{
+                        return 0, 0, 0, nil
+                }</span>
+                <span class="cov0" title="0">var e error
+                pt := strings.Split(strings.TrimSpace(s), " ")
+                num, e := strconv.Atoi(pt[0])
+                switch </span>{
+                case strings.Contains(s, "changed"):<span class="cov0" title="0">
+                        changes = num</span>
+                case strings.Contains(s, "insertion"):<span class="cov0" title="0">
+                        insertions = num</span>
+                case strings.Contains(s, "deletion"):<span class="cov0" title="0">
+                        deletions = num</span>
+                default:<span class="cov0" title="0">
+                        return changes, insertions, deletions, UnknownResponseError</span>
+                }
+
+                <span class="cov0" title="0">if e != nil </span><span class="cov0" title="0">{
+                        return changes, insertions, deletions, e
+                }</span>
+        }
+        <span class="cov0" title="0">return changes, insertions, deletions, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package identity
+
+import "strings"
+
+type Identity struct {
+        Full    string
+        Reduced string
+}
+
+func (i Identity) Is(input string) bool <span class="cov0" title="0">{
+        reduced := Reduce(input)
+        return i.Reduced == reduced
+}</span>
+
+func New(input string) Identity <span class="cov0" title="0">{
+        reduced := Reduce(input)
+        return Identity{
+                Full:    input,
+                Reduced: reduced,
+        }
+
+}</span>
+
+func Reduce(input string) string <span class="cov0" title="0">{
+        reduced := input
+        if !strings.HasPrefix(reduced, ".") </span><span class="cov0" title="0">{
+                reduced = strings.Split(reduced, ".")[0]
+        }</span>
+        <span class="cov0" title="0">reduced = strings.ToLower(reduced)
+        return reduced</span>
+
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package pikdex
+
+import (
+        "pik/model"
+        "strings"
+)
+
+func (u *pikdex) Mod(src *model.Source, result *model.HydratedSource) error <span class="cov0" title="0">{
+        mod := u.mods[strings.TrimSuffix(src.Path, "/")]
+        if mod.Path != "" </span><span class="cov0" title="0">{
+                if mod.Aliases != nil </span><span class="cov0" title="0">{
+                        result.Aliases = append(result.Aliases, mod.Aliases...)
+                }</span>
+                <span class="cov0" title="0">if mod.Icon != "" </span><span class="cov0" title="0">{
+                        result.Icon = mod.Icon
+                }</span>
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package pikdex
+
+import (
+        "errors"
+        "io/fs"
+        "os"
+        "path"
+        "path/filepath"
+        "pik/model"
+        "pik/spool"
+        "slices"
+        "strings"
+        "sync"
+)
+
+var Roots = []string{
+
+        // current name
+        ".pik",
+        "_pik",
+
+        // program names from a previous life
+        ".godo",
+        "_godo",
+        ".pik",
+        "_uwu",
+
+        //utility
+        ".bin",
+        "_bin",
+        "tasks",
+        ".tasks",
+        "_tasks",
+}
+
+var SkippedFolders = []string{
+        ".git",
+        ".config",
+        ".idea",
+}
+
+func (u *pikdex) Init() error <span class="cov0" title="0">{
+        // add own executable name to uwudexable dirs
+        self, err := os.Executable()
+        if strings.HasSuffix(self, ".test") </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                _, _ = spool.Warn("%v\n", err)
+                return nil
+        }</span>
+        <span class="cov0" title="0">self = strings.TrimSuffix(self, ".exe")
+        Roots = append(Roots, "."+self, "_"+self)
+        return nil</span>
+}
+
+var Indexer = &amp;pikdex{mods: make(map[string]*SourceData)}
+
+type pikdex struct {
+        sync.Mutex
+        mods map[string]*SourceData
+}
+
+type SourceData struct {
+        Aliases []string
+        Icon    string
+        Path    string
+}
+
+func (u *pikdex) Index(absPath string, f fs.FS, runners []model.Runner) ([]model.Target, error) <span class="cov0" title="0">{
+        wants, root, err := u.WantsWalk(f)
+        if !wants </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">var targets []model.Target
+        mod := u.mods[absPath]
+        if mod == nil </span><span class="cov0" title="0">{
+                u.mods[absPath] = &amp;SourceData{
+                        Path: absPath,
+                }
+                mod = u.mods[absPath]
+        }</span>
+        <span class="cov0" title="0">err = fs.WalkDir(f, root, func(p string, d fs.DirEntry, err error) error </span><span class="cov0" title="0">{
+
+                if !d.IsDir() </span><span class="cov0" title="0">{
+                        for trigger, applier := range MetaFiles </span><span class="cov0" title="0">{
+
+                                // during the crawl, we might find meta files
+                                expectedLocation := filepath.Join(absPath, root, trigger)
+                                actualLocation := filepath.Join(absPath, p)
+                                if expectedLocation != actualLocation </span><span class="cov0" title="0">{
+                                        continue</span>
+                                }
+
+                                <span class="cov0" title="0">content, err := os.ReadFile(expectedLocation)
+                                if err != nil </span><span class="cov0" title="0">{
+                                        spool.Warn("%v\n", err)
+                                        continue</span>
+                                }
+                                <span class="cov0" title="0">applier(mod, string(content))</span>
+
+                        }
+                }
+
+                <span class="cov0" title="0">if d.IsDir() </span><span class="cov0" title="0">{
+                        _, dirName := path.Split(p)
+                        if slices.Contains(SkippedFolders, dirName) </span><span class="cov0" title="0">{
+                                return fs.SkipDir
+                        }</span>
+                }
+
+                <span class="cov0" title="0">for _, r := range runners </span><span class="cov0" title="0">{
+                        wants, err := r.Wants(f, p, d)
+                        if err != nil </span><span class="cov0" title="0">{
+                                spool.Warn("%v\n", err)
+                        }</span>
+                        <span class="cov0" title="0">if wants </span><span class="cov0" title="0">{
+                                t, err := r.CreateTarget(f, absPath, p, d)
+                                if err != nil </span><span class="cov0" title="0">{
+                                        spool.Warn("%v\n", err)
+                                }</span>
+                                <span class="cov0" title="0">targets = append(targets, t)
+                                return nil</span>
+                        }
+                        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                                spool.Warn("%v\n", err)
+                        }</span>
+                }
+                <span class="cov0" title="0">return nil</span>
+        })
+        <span class="cov0" title="0">u.Lock()
+        u.mods[absPath] = mod
+        u.Unlock()
+
+        return targets, err</span>
+}
+
+func (u *pikdex) WantsWalk(f fs.FS) (bool, string, error) <span class="cov8" title="1">{
+        entries, err := fs.ReadDir(f, ".")
+        if err != nil </span><span class="cov0" title="0">{
+                if errors.Is(err, fs.ErrNotExist) </span><span class="cov0" title="0">{
+                        return false, "", nil
+                }</span> else<span class="cov0" title="0"> {
+                        return false, "", err
+                }</span>
+        }
+
+        <span class="cov8" title="1">for _, e := range entries </span><span class="cov8" title="1">{
+                for _, r := range Roots </span><span class="cov8" title="1">{
+                        if e.Name() == r &amp;&amp; e.IsDir() </span><span class="cov8" title="1">{
+                                return true, r, nil
+                        }</span>
+                }
+        }
+
+        <span class="cov8" title="1">return false, "", nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package pikdex
+
+import (
+        "strings"
+)
+
+type MetaSetter func(s *SourceData, content string)
+
+var MetaFiles = map[string]MetaSetter{
+        ".alias": func(s *SourceData, content string) <span class="cov0" title="0">{
+                split := strings.Split(content, "\n")
+                s.Aliases = make([]string, 0, len(split))
+                for _, line := range split </span><span class="cov0" title="0">{
+                        stripped := strip(line)
+                        if stripped != "" </span><span class="cov0" title="0">{
+                                s.Aliases = append(s.Aliases, stripped)
+                        }</span>
+                }
+        },
+        ".icon": func(s *SourceData, content string) <span class="cov0" title="0">{
+                s.Icon = string([]rune(strip(content))[0:2])
+        }</span>,
+}
+
+func strip(input string) string <span class="cov0" title="0">{
+        return strings.TrimSpace(input)
+}</span>
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package main
+
+import (
+        _ "embed"
+        "fmt"
+        "github.com/spf13/pflag"
+        "os"
+        "pik/cache"
+        "pik/crawl"
+        "pik/flags"
+        "pik/git"
+        "pik/indexers/pikdex"
+        "pik/menu"
+        "pik/model"
+        "pik/paths"
+        "pik/run"
+        "pik/runner/gnumake"
+        "pik/runner/just"
+        "pik/runner/python"
+        "pik/runner/shell"
+        "pik/search"
+        "pik/spool"
+        "sync"
+)
+
+// preInitializers are ran before the initializers.
+// useful for initializing stuff like paths, preparing directories, and reading the environment
+var preInitializers = []model.Initializer{
+        paths.Paths,
+}
+
+// initializers are ran before indexing with the indexers,
+// data from the preInitializers can be accessed at this time.
+var initializers = []model.Initializer{
+        pikdex.Indexer,
+        python.Python,
+        git.Git,
+}
+
+// indexers are methods which scan a directory and return a number of targets.
+var indexers = []model.Indexer{
+        pikdex.Indexer,
+        just.Indexer,
+        gnumake.Indexer,
+}
+
+// runners are modules which know how to turn a file into an exec.Cmd
+// all indexers have access to these but only pikdex uses it
+var runners = []model.Runner{
+        shell.Runner,
+        python.Python,
+}
+
+// hydrators are ran when the menu is required
+// for example adding git info, descriptions, icons...
+var hydrators = []model.Modder{
+        pikdex.Indexer,
+        git.Git,
+}
+
+// ForceConfirm means we will have to ask for confirmation before running no matter what
+var ForceConfirm = false
+
+// SourcesWithoutResults is a failed cache from the previous iteration
+// used for stripping out results to prevent double-index
+var SourcesWithoutResults cache.Cache
+
+//go:embed version.txt
+var version string
+
+func main() <span class="cov0" title="0">{
+        pflag.Parse()
+
+        switch </span>{
+        case *flags.Version:<span class="cov0" title="0">
+                _, _ = spool.Print("%s\n", version)
+                os.Exit(0)</span>
+        }
+
+        <span class="cov0" title="0">wg := sync.WaitGroup{}
+        for _, i := range preInitializers </span><span class="cov0" title="0">{
+                wg.Go(func() </span><span class="cov0" title="0">{
+                        err := i.Init()
+                        if err != nil </span><span class="cov0" title="0">{
+                                _, _ = spool.Warn("%v\n", err)
+                        }</span>
+                })
+        }
+        <span class="cov0" title="0">wg.Wait()
+
+        wg = sync.WaitGroup{}
+        for _, i := range initializers </span><span class="cov0" title="0">{
+                wg.Go(func() </span><span class="cov0" title="0">{
+                        err := i.Init()
+                        if err != nil </span><span class="cov0" title="0">{
+                                _, _ = spool.Warn("%v\n", err)
+                        }</span>
+                })
+        }
+        <span class="cov0" title="0">wg.Wait()
+
+        here, err := os.Getwd()
+        if err != nil </span><span class="cov0" title="0">{
+                _, _ = spool.Warn("%v\n", err)
+                os.Exit(1)
+        }</span>
+        <span class="cov0" title="0">locs := crawl.RichLocations(here)
+        last := locs[len(locs)-1]
+        root, err := os.OpenRoot(last)
+        if root == nil </span><span class="cov0" title="0">{
+                _, _ = spool.Warn("%v\n", err)
+                os.Exit(1)
+        }</span>
+        <span class="cov0" title="0">fs := root.FS()
+        if err != nil </span><span class="cov0" title="0">{
+                _, _ = spool.Warn("%v\n", err)
+                os.Exit(1)
+        }</span>
+        <span class="cov0" title="0">var st *model.State
+        var stateErrors []error
+
+        var c cache.Cache
+        if !*flags.All </span><span class="cov0" title="0">{
+                st, stateErrors = model.NewState(fs, locs, indexers, runners)
+        }</span> else<span class="cov0" title="0"> {
+                c, err = cache.LoadFile(fs, cache.Path[1:])
+                c.Strip(SourcesWithoutResults)
+                if err != nil </span><span class="cov0" title="0">{
+                        _, _ = spool.Warn("%v\n", err)
+                        os.Exit(1)
+                }</span>
+                <span class="cov0" title="0">st, stateErrors = cache.LoadState(fs, c, indexers, runners)</span>
+        }
+        <span class="cov0" title="0">if stateErrors != nil </span><span class="cov0" title="0">{
+                _, _ = spool.Warn("%v\n", stateErrors)
+        }</span> else<span class="cov0" title="0"> {
+                err = cache.SaveFile(cache.Path, st, c)
+                if err != nil </span><span class="cov0" title="0">{
+                        _, _ = spool.Warn("%v", err)
+                }</span>
+        }
+
+        <span class="cov0" title="0">if *flags.List </span><span class="cov0" title="0">{
+                for _, s := range st.Sources </span><span class="cov0" title="0">{
+                        for _, t := range s.Targets </span><span class="cov0" title="0">{
+                                _, _ = spool.Print(t.ShortestId() + paths.Ifs)
+                        }</span>
+                }
+                <span class="cov0" title="0">os.Exit(0)</span>
+        }
+
+        <span class="cov0" title="0">args := pflag.Args()
+
+        if len(args) == 0 </span><span class="cov0" title="0">{
+                source, target, err := menu.Show(st, hydrators)
+                if err != nil </span><span class="cov0" title="0">{
+                        _, _ = spool.Warn("%v\n", err)
+                        os.Exit(1)
+                }</span>
+                <span class="cov0" title="0">if target == nil </span><span class="cov0" title="0">{
+                        _, _ = spool.Warn("no target selected.\n")
+                        os.Exit(0)
+                }</span>
+                <span class="cov0" title="0">err = run.Run(source.Source, target, args...)
+                if err != nil </span><span class="cov0" title="0">{
+                        _, _ = spool.Warn("%v\n", err)
+                        os.Exit(1)
+                }</span>
+
+                <span class="cov0" title="0">return</span>
+        }
+
+        <span class="cov0" title="0">result := search.Search(st, args...)
+        // TODO: Move auto-all logic into Search?
+        if !*flags.All &amp;&amp; result.Target == nil &amp;&amp; len(result.Args) &gt; 0 </span><span class="cov0" title="0">{
+                ForceConfirm = true
+                if err != nil </span><span class="cov0" title="0">{
+                        _, _ = spool.Warn("%v\n", err)
+                        os.Exit(1)
+                }</span>
+                <span class="cov0" title="0">SourcesWithoutResults = c
+                main()
+                return</span>
+        }
+
+        <span class="cov0" title="0">if result.Target == nil </span><span class="cov0" title="0">{
+                _, _ = spool.Print("target not found.")
+                os.Exit(1)
+                return
+        }</span>
+
+        <span class="cov0" title="0">if result.NeedsConfirmation || ForceConfirm </span><span class="cov0" title="0">{
+                _, _ = fmt.Fprintf(os.Stderr, "this target is out of tree.\n")
+                if !menu.Confirm(os.Stdin, result.Source, result.Target, args...) </span><span class="cov0" title="0">{
+                        os.Exit(0)
+                }</span>
+        }
+        <span class="cov0" title="0">if result.Overridden </span><span class="cov0" title="0">{
+                _, _ = fmt.Fprintln(os.Stderr, menu.OverrideWarning(result.Target))
+        }</span>
+        <span class="cov0" title="0">err = run.Run(result.Source, result.Target, result.Args...)
+        if err != nil </span><span class="cov0" title="0">{
+                _, _ = spool.Warn("%v\n", err)
+                os.Exit(1)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package menu
+
+import (
+        "github.com/charmbracelet/lipgloss"
+        "os/exec"
+        "pik/flags"
+        "pik/menu/style"
+        "pik/model"
+        "pik/paths"
+        "strings"
+)
+
+var (
+        BannerStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle()
+        }</span>)
+        BannerSourceLabelStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle().Faint(true).MarginRight(1)
+        }</span>)
+        BannerSubItemStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle().Faint(true).MarginRight(1)
+        }</span>)
+        BannerSubStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle()
+        }</span>)
+        BannerSelfStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle().MarginRight(1).Bold(true)
+        }</span>)
+        BannerPromptStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle()
+        }</span>)
+        BannerArgsStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle().MarginLeft(1)
+        }</span>)
+        BannerArgStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle()
+        }</span>)
+        BannerTerminatorColor = lipgloss.Color("1")
+        BannerTerminatorStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle().Faint(true).Foreground(BannerTerminatorColor)
+        }</span>)
+        BannerDryColor = lipgloss.Color("1")
+        BannerDryStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle().Foreground(BannerDryColor).Bold(true).MarginRight(1)
+        }</span>)
+        BannerDefaultStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle().Faint(true).MarginLeft(1)
+        }</span>)
+)
+
+func Banner(source *model.Source, target model.Target, args ...string) string <span class="cov0" title="0">{
+        var parts, argParts []string
+        if *flags.Dry </span><span class="cov0" title="0">{
+                parts = append(parts, BannerDryStyle.Render("DRY"))
+        }</span>
+        <span class="cov0" title="0">parts = append(parts, BannerPromptStyle.Render("&gt; "))
+        parts = append(parts, BannerSelfStyle.Render("pik"))
+        parts = append(parts, BannerSourceLabelStyle.Render(source.Label()))
+        def := false
+        if sub := target.Sub(); sub != nil </span><span class="cov0" title="0">{
+
+                // remove "default" invocations
+                if sub[len(sub)-1] == target.ShortestId() </span><span class="cov0" title="0">{
+                        sub = sub[:len(sub)-1]
+                        def = true
+                }</span>
+
+                <span class="cov0" title="0">for i, s := range sub </span><span class="cov0" title="0">{
+                        sub[i] = BannerSubItemStyle.Render(s)
+                }</span>
+                <span class="cov0" title="0">parts = append(parts, BannerSubStyle.Render(sub...))</span>
+        }
+        <span class="cov0" title="0">parts = append(parts, target.ShortestId())
+        if args != nil </span><span class="cov0" title="0">{
+                needsTerminator := false
+                for _, a := range args </span><span class="cov0" title="0">{
+                        if strings.HasPrefix(a, "-") </span><span class="cov0" title="0">{
+                                needsTerminator = true
+                        }</span>
+                        <span class="cov0" title="0">argParts = append(argParts, BannerArgStyle.Render(a))</span>
+                }
+
+                <span class="cov0" title="0">if needsTerminator </span><span class="cov0" title="0">{
+                        argParts = append([]string{BannerTerminatorStyle.Render("--")}, argParts...)
+                }</span>
+
+                <span class="cov0" title="0">parts = append(parts, BannerArgsStyle.Render(argParts...))</span>
+        }
+        <span class="cov0" title="0">if def </span><span class="cov0" title="0">{
+                parts = append(parts, BannerDefaultStyle.Render("# "+target.Label()))
+        }</span>
+        <span class="cov0" title="0">result := BannerStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left, parts...))
+        return result</span>
+}
+
+var (
+        CmdStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle().Faint(true)
+        }</span>)
+        CmdDirStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle()
+        }</span>)
+        CmdArgStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle()
+        }</span>)
+)
+
+func InlineCmd(cmd *exec.Cmd) string <span class="cov0" title="0">{
+        var args []string
+        for _, a := range cmd.Args </span><span class="cov0" title="0">{
+                args = append(args, paths.ReplaceHome(a))
+        }</span>
+        <span class="cov0" title="0">return CmdStyle.Render("  # "+CmdDirStyle.Render(paths.ReplaceHome(cmd.Dir)+":"), CmdArgStyle.Render(args...))</span>
+}
+
+var (
+        OverrideStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle()
+        }</span>)
+        OverrideCaretColor = lipgloss.Color("1")
+        OverrideCaretStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle().Foreground(OverrideCaretColor).Bold(true)
+        }</span>)
+        OverrideTextStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle().Faint(true)
+        }</span>)
+)
+
+func OverrideWarning(t model.Target) string <span class="cov0" title="0">{
+        return OverrideStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left,
+                OverrideCaretStyle.Render("! "),
+                OverrideTextStyle.Render("overridden by "+t.Label()),
+        ))
+}</span>
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package menu
+
+import (
+        "bufio"
+        "fmt"
+        "github.com/charmbracelet/lipgloss"
+        "io"
+        "os"
+        "pik/flags"
+        "pik/menu/style"
+        "pik/model"
+        "slices"
+)
+
+var confirmations = []rune{
+        'y',
+        'Y',
+        ' ',
+        '\n',
+}
+
+var (
+        PromptColor = lipgloss.Color("1")
+        PromptStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                st := lipgloss.NewStyle()
+                if !*flags.Yes </span><span class="cov0" title="0">{
+                        st.Foreground(PromptColor)
+                }</span>
+                <span class="cov0" title="0">return st</span>
+        })
+        ConfirmStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle()
+        }</span>)
+        AnswerStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle()
+        }</span>)
+        YesStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle().Faint(true)
+        }</span>)
+)
+
+func Confirm(r io.Reader, source *model.Source, target model.Target, args ...string) bool <span class="cov0" title="0">{
+        parts := []string{
+                ConfirmStyle.Render(PromptStyle.Render("[Y/n]")),
+                Banner(source, target, args...),
+                "? ",
+        }
+        banner := BannerStyle.Render(parts...)
+        _, _ = fmt.Fprint(os.Stderr, banner)
+
+        if *flags.Yes </span><span class="cov0" title="0">{
+                _, _ = fmt.Fprintln(os.Stderr, AnswerStyle.Render("Y", YesStyle.Render("(--yes)")))
+                return true
+        }</span>
+
+        <span class="cov0" title="0">scanner := bufio.NewScanner(r)
+        scanner.Split(bufio.ScanRunes)
+        scanner.Scan()
+        if slices.Contains(confirmations, []rune(scanner.Text())[0]) </span><span class="cov0" title="0">{
+                return true
+        }</span> else<span class="cov0" title="0"> {
+                _, _ = fmt.Fprint(os.Stderr, "confirmation was not given.")
+        }</span>
+        <span class="cov0" title="0">return false</span>
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package menu
+
+import (
+        "github.com/charmbracelet/lipgloss"
+        "pik/menu/style"
+        "strings"
+)
+
+var (
+        IconStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                st := lipgloss.NewStyle().Width(2).Height(1)
+                return st
+        }</span>)
+)
+
+func Icon(input string) string <span class="cov0" title="0">{
+        if strings.TrimSpace(input) == "" </span><span class="cov0" title="0">{
+                return ""
+        }</span>
+        <span class="cov0" title="0">return IconStyle.Render(input)</span>
+}
+
+func PaddedIcon(input string) string <span class="cov0" title="0">{
+        if strings.TrimSpace(input) == "" </span><span class="cov0" title="0">{
+                return Icon("  ")
+        }</span>
+        <span class="cov0" title="0">return Icon(input)</span>
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package menu
+
+import tea "github.com/charmbracelet/bubbletea"
+
+func (m *Model) HandleInput(msg tea.KeyMsg) (tea.Cmd, error) <span class="cov0" title="0">{
+        var cmd tea.Cmd
+        switch msg.String() </span>{
+        case "h", "left":<span class="cov0" title="0">
+                m.Leap(-1)</span>
+        case "l", "right":<span class="cov0" title="0">
+                m.Leap(1)</span>
+        case "up", "k":<span class="cov0" title="0">
+                m.Index--</span>
+        case "down", "j":<span class="cov0" title="0">
+                m.Index++</span>
+        case "q", "esc", "ctrl+c":<span class="cov0" title="0">
+                m.Quit = true
+                cmd = tea.Quit</span>
+        case "space", " ", "enter", "ctrl+d":<span class="cov0" title="0">
+                cmd = tea.Quit</span>
+        }
+
+        <span class="cov0" title="0">m.Validate()
+
+        return cmd, nil</span>
+}
+
+func (m *Model) Leap(direction int) <span class="cov0" title="0">{
+        for </span><span class="cov0" title="0">{
+                source, target := m.Result()
+                m.Index += direction
+                m.Validate()
+                newSource, newTarget := m.Result()
+                if target == newTarget </span><span class="cov0" title="0">{
+                        return
+                }</span>
+
+                <span class="cov0" title="0">if source != newSource </span><span class="cov0" title="0">{
+                        return
+                }</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package menu
+
+import (
+        "errors"
+        tea "github.com/charmbracelet/bubbletea"
+        "pik/flags"
+        "pik/model"
+        "pik/spool"
+)
+
+var WrongModelTypeError = errors.New("wrong model type")
+var NoSourcesIndexedError = errors.New("no sources indexed")
+
+func Show(st *model.State, hydrators []model.Modder) (*model.HydratedSource, model.HydratedTarget, error) <span class="cov0" title="0">{
+        if len(st.Sources) == 0 </span><span class="cov0" title="0">{
+                return nil, nil, NoSourcesIndexedError
+        }</span>
+        <span class="cov0" title="0">md := NewModel(st, hydrators)
+        var opts []tea.ProgramOption
+        if !*flags.Inline </span><span class="cov0" title="0">{
+                opts = append(opts, tea.WithAltScreen())
+        }</span>
+        <span class="cov0" title="0">program := tea.NewProgram(md, opts...)
+        resultModel, err := program.Run()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, nil, err
+        }</span>
+        <span class="cov0" title="0">result, ok := resultModel.(*Model)
+        if !ok </span><span class="cov0" title="0">{
+                return nil, nil, WrongModelTypeError
+        }</span>
+
+        <span class="cov0" title="0">src, t := result.Result()
+        return src, t, nil</span>
+}
+
+func Hydrate(st *model.State, hydrators []model.Modder) *model.HydratedState <span class="cov0" title="0">{
+        hyd := &amp;model.HydratedState{
+                State:           st,
+                HydratedSources: make([]*model.HydratedSource, len(st.Sources)),
+        }
+        for i, s := range st.Sources </span><span class="cov0" title="0">{
+                hydSrc := s.Hydrate(hydrators)
+
+                for _, h := range hydrators </span><span class="cov0" title="0">{
+                        err := h.Mod(s, hydSrc)
+                        if err != nil </span><span class="cov0" title="0">{
+                                spool.Warn("%v\n", err)
+                                continue</span>
+                        }
+                }
+
+                <span class="cov0" title="0">hyd.HydratedSources[i] = hydSrc</span>
+        }
+        <span class="cov0" title="0">return hyd</span>
+}
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package menu
+
+import (
+        tea "github.com/charmbracelet/bubbletea"
+        "pik/model"
+        "pik/spool"
+)
+
+type Model struct {
+        *model.HydratedState
+        Index         int
+        Indices       map[int]model.HydratedTarget
+        SourceIndices map[int]*model.HydratedSource
+        Quit          bool
+}
+
+func (m *Model) Init() tea.Cmd <span class="cov0" title="0">{
+        return nil
+}</span>
+
+func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) <span class="cov0" title="0">{
+        var err error
+        var result tea.Cmd
+        switch mt := msg.(type) </span>{
+        case tea.KeyMsg:<span class="cov0" title="0">
+                result, err = m.HandleInput(mt)</span>
+        case tea.Cmd:<span class="cov0" title="0">
+                result, err = m.HandleSignal(mt)</span>
+        }
+        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                spool.Warn("%v\n", err)
+        }</span>
+        <span class="cov0" title="0">return m, result</span>
+}
+
+func (m *Model) HandleSignal(cmd tea.Cmd) (tea.Cmd, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+
+func (m *Model) View() string <span class="cov0" title="0">{
+        return m.State(m.HydratedState)
+}</span>
+
+func (m *Model) Result() (*model.HydratedSource, model.HydratedTarget) <span class="cov0" title="0">{
+        if m.Quit </span><span class="cov0" title="0">{
+                return nil, nil
+        }</span>
+        <span class="cov0" title="0">return m.SourceIndices[m.Index], m.Indices[m.Index]</span>
+}
+
+func (m *Model) Validate() <span class="cov0" title="0">{
+        if m.Index &lt; 0 </span><span class="cov0" title="0">{
+                m.Index = 0
+        }</span>
+        <span class="cov0" title="0">if m.Index &gt; len(m.Indices)-1 </span><span class="cov0" title="0">{
+                m.Index = len(m.Indices) - 1
+        }</span>
+}
+
+func NewModel(st *model.State, hydrators []model.Modder) *Model <span class="cov0" title="0">{
+        m := &amp;Model{
+                HydratedState: Hydrate(st, hydrators),
+                Index:         0,
+                Indices:       make(map[int]model.HydratedTarget),
+                SourceIndices: make(map[int]*model.HydratedSource),
+        }
+        idx := 0
+        for _, src := range st.Sources </span><span class="cov0" title="0">{
+                hydSrc := src.Hydrate(hydrators)
+                for _, target := range src.Targets </span><span class="cov0" title="0">{
+
+                        if !target.Visible() </span><span class="cov0" title="0">{
+                                continue</span>
+                        }
+
+                        <span class="cov0" title="0">hydTarget, err := target.Hydrate(src)
+                        m.Indices[idx] = hydTarget
+                        if err != nil </span><span class="cov0" title="0">{
+                                spool.Warn("%v\n", err)
+                        }</span>
+                        <span class="cov0" title="0">m.SourceIndices[idx] = hydSrc
+
+                        idx++</span>
+                }
+        }
+        <span class="cov0" title="0">return m</span>
+}
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package menu
+
+import (
+        "github.com/charmbracelet/lipgloss"
+        "pik/menu/style"
+        "pik/model"
+        "strconv"
+)
+
+var (
+        SourceStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                st := lipgloss.NewStyle().PaddingBottom(1)
+                return st
+        }</span>)
+        SourceHeaderBackground = lipgloss.Color("5")
+        SourceHeaderStyle      = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                st := lipgloss.NewStyle()
+                return st
+
+        }</span>)
+        SourceLabelStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                st := lipgloss.NewStyle().Border(lipgloss.OuterHalfBlockBorder(), false, false, false, true).Background(SourceHeaderBackground).BorderBackground(SourceHeaderBackground).PaddingRight(1).PaddingLeft(1).MarginRight(1)
+                return st
+
+        }</span>)
+        SourceTargetsStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                st := lipgloss.NewStyle()
+                return st
+        }</span>)
+        SourcePathStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                st := lipgloss.NewStyle().Faint(true)
+                return st
+        }</span>)
+)
+
+func (m *Model) Source(src *model.HydratedSource) string <span class="cov0" title="0">{
+        targets := make([]string, 0, len(src.Targets))
+        for _, t := range src.HydratedTargets </span><span class="cov0" title="0">{
+                targets = append(targets, m.Target(t))
+        }</span>
+
+        <span class="cov0" title="0">targetContent := lipgloss.JoinVertical(lipgloss.Top, targets...)
+
+        icon := PaddedIcon(src.Icon)
+
+        parts := []string{
+                SourceHeaderStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left, SourceLabelStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left, icon, src.Label()), SourcePathStyle.Render(src.ShortPath())))),
+                SourceTargetsStyle.Render(targetContent),
+        }
+
+        if src.Git != nil </span><span class="cov0" title="0">{
+                parts = append(parts, Git(src.Git))
+        }</span>
+
+        <span class="cov0" title="0">return SourceStyle.Render(lipgloss.JoinVertical(lipgloss.Top,
+                parts...,
+        ))</span>
+}
+
+var (
+        StateStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle().MarginBottom(1)
+        }</span>)
+)
+
+func (m *Model) State(st *model.HydratedState) string <span class="cov0" title="0">{
+        sources := make([]string, 0, len(st.Sources))
+        for _, hs := range st.HydratedSources </span><span class="cov0" title="0">{
+                sources = append(sources, m.Source(hs))
+        }</span>
+
+        <span class="cov0" title="0">return StateStyle.Render(lipgloss.JoinVertical(lipgloss.Top, sources...))</span>
+}
+
+var (
+        GitColor     = lipgloss.Color("4")
+        GitInfoStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle().Background(GitColor).Border(lipgloss.OuterHalfBlockBorder(), false, false, false, true).BorderBackground(GitColor).Padding(0, 1)
+        }</span>)
+        GitStatusStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle().Bold(true).Background(GitColor).PaddingLeft(1)
+        }</span>)
+        GitAddColor = lipgloss.Color("2")
+        GitAddStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return GitStatusStyle.Get().Foreground(GitAddColor)
+        }</span>)
+        GitRemoveColor = lipgloss.Color("1")
+        GitRemoveStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return GitStatusStyle.Get().Foreground(GitRemoveColor)
+        }</span>)
+        GitChangeColor = lipgloss.Color("5")
+        GitChangeStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return GitStatusStyle.Get().Foreground(GitChangeColor)
+        }</span>)
+)
+
+func Git(info *model.GitInfo) string <span class="cov0" title="0">{
+        var parts = []string{
+                "  ",
+                info.Branch,
+        }
+
+        if info.Insertions &gt; 0 </span><span class="cov0" title="0">{
+                parts = append(parts, GitAddStyle.Render("+"+strconv.Itoa(info.Insertions)))
+        }</span>
+        <span class="cov0" title="0">if info.Deletions &gt; 0 </span><span class="cov0" title="0">{
+                parts = append(parts, GitRemoveStyle.Render("-"+strconv.Itoa(info.Deletions)))
+        }</span>
+        <span class="cov0" title="0">if info.Changes &gt; 0 </span><span class="cov0" title="0">{
+                parts = append(parts, GitChangeStyle.Render("~"+strconv.Itoa(info.Changes)))
+        }</span>
+        <span class="cov0" title="0">if info.Changes == 0 &amp;&amp; info.Deletions == 0 &amp;&amp; info.Insertions == 0 </span><span class="cov0" title="0">{
+                parts = append(parts, GitAddStyle.Render("clean"))
+        }</span>
+
+        <span class="cov0" title="0">return GitInfoStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left,
+                parts...,
+        ))</span>
+}
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package style
+
+import "github.com/charmbracelet/lipgloss"
+
+type Builder func() lipgloss.Style
+
+type Style struct {
+        style   *lipgloss.Style
+        builder Builder
+}
+
+func New(builder Builder) Style <span class="cov0" title="0">{
+        return Style{
+                builder: builder,
+        }
+}</span>
+
+func (s *Style) Get() lipgloss.Style <span class="cov0" title="0">{
+
+        if s.style == nil </span><span class="cov0" title="0">{
+                st := s.builder()
+                s.style = &amp;st
+        }</span>
+
+        <span class="cov0" title="0">return *s.style</span>
+}
+
+func (s *Style) Render(input ...string) string <span class="cov0" title="0">{
+        return s.Get().Render(input...)
+}</span>
+</pre>
+		
+		<pre class="file" id="file18" style="display: none">package menu
+
+import (
+        "github.com/charmbracelet/lipgloss"
+        "pik/menu/style"
+        "pik/model"
+)
+
+var (
+        TargetBackgroundColor         = lipgloss.Color("8")
+        SelectedTargetBackgroundColor = lipgloss.Color("2")
+        TargetStyle                   = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                st := lipgloss.NewStyle().Border(lipgloss.OuterHalfBlockBorder(), false, false, false, true)
+                return st
+        }</span>)
+        SelectedTargetStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return TargetStyle.Get().BorderBackground(SelectedTargetBackgroundColor).Background(SelectedTargetBackgroundColor)
+        }</span>)
+        TargetLabelStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                st := lipgloss.NewStyle().MarginRight(1)
+                return st
+        }</span>)
+        TargetDescriptionStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                st := lipgloss.NewStyle().Faint(true).MarginLeft(1)
+                return st
+        }</span>)
+        SelectedTargetDescriptionStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                st := TargetDescriptionStyle.Get().Faint(false)
+                return st
+        }</span>)
+        TargetIconStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                st := lipgloss.NewStyle().PaddingLeft(1)
+                return st
+        }</span>)
+        TargetSubStyle = style.New(func() lipgloss.Style <span class="cov0" title="0">{
+                return lipgloss.NewStyle()
+        }</span>)
+)
+
+func (m *Model) Target(t model.HydratedTarget) string <span class="cov0" title="0">{
+        icon := TargetIconStyle.Render(PaddedIcon(t.Icon()))
+        selectionStyle := TargetStyle
+        selectionDescriptionStyle := TargetDescriptionStyle
+        _, sel := m.Result()
+        if sel != nil &amp;&amp; sel.Target() == t.Target() </span><span class="cov0" title="0">{
+                selectionStyle = SelectedTargetStyle
+                selectionDescriptionStyle = SelectedTargetDescriptionStyle
+        }</span>
+        <span class="cov0" title="0">var labelParts []string
+        labelParts = append(labelParts, icon)
+        if t.Sub() != nil </span><span class="cov0" title="0">{
+                labelParts = append(labelParts, TargetSubStyle.Render(t.Sub()...))
+        }</span>
+        <span class="cov0" title="0">labelParts = append(labelParts, TargetLabelStyle.Render(t.Label()))
+        return lipgloss.JoinHorizontal(lipgloss.Left, selectionStyle.Render(labelParts...), selectionDescriptionStyle.Render(t.Description()))</span>
+}
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package model
+
+import (
+        "errors"
+        "io/fs"
+        "path/filepath"
+        "pik/flags"
+        "pik/identity"
+        "strings"
+        "sync"
+)
+
+func NewState(f fs.FS, locations []string, indexers []Indexer, runners []Runner) (*State, []error) <span class="cov0" title="0">{
+        var errs []error
+        st := &amp;State{
+                All: *flags.All,
+        }
+        wg := sync.WaitGroup{}
+        var sources = make([]*Source, len(locations), len(locations))
+        for i, loc := range locations </span><span class="cov0" title="0">{
+                wg.Go(func() </span><span class="cov0" title="0">{
+                        _, dirName := filepath.Split(strings.TrimSuffix(loc, "/"))
+                        src := &amp;Source{
+                                Path:     loc,
+                                Identity: identity.New(dirName),
+                        }
+                        sources[i] = src
+                        loc = strings.TrimSuffix(loc, "/")
+                        loc = strings.TrimPrefix(loc, "/")
+
+                        if loc == "" </span><span class="cov0" title="0">{
+                                return
+                        }</span>
+
+                        <span class="cov0" title="0">myWg := sync.WaitGroup{}
+                        var targets = make([][]Target, len(indexers), len(indexers))
+                        for ti, indexer := range indexers </span><span class="cov0" title="0">{
+                                myWg.Go(func() </span><span class="cov0" title="0">{
+                                        s, err := fs.Sub(f, loc)
+                                        if err != nil &amp;&amp; !errors.Is(err, fs.ErrNotExist) </span><span class="cov0" title="0">{
+                                                errs = append(errs, err)
+                                                return
+                                        }</span>
+                                        <span class="cov0" title="0">result, err := indexer.Index("/"+loc, s, runners)
+                                        if err != nil &amp;&amp; !errors.Is(err, fs.ErrNotExist) </span><span class="cov0" title="0">{
+                                                errs = append(errs, err)
+                                                return
+                                        }</span>
+                                        <span class="cov0" title="0">targets[ti] = result</span>
+                                })
+                        }
+                        <span class="cov0" title="0">myWg.Wait()
+
+                        for _, t := range targets </span><span class="cov0" title="0">{
+                                if t == nil </span><span class="cov0" title="0">{
+                                        continue</span>
+                                }
+                                <span class="cov0" title="0">sources[i].Targets = append(sources[i].Targets, t...)</span>
+                        }
+
+                })
+
+        }
+        <span class="cov0" title="0">wg.Wait()
+
+        for _, s := range sources </span><span class="cov0" title="0">{
+                if s == nil || s.Targets == nil </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov0" title="0">st.Sources = append(st.Sources, s)</span>
+        }
+
+        <span class="cov0" title="0">return st, errs</span>
+}
+</pre>
+		
+		<pre class="file" id="file20" style="display: none">package model
+
+import (
+        "pik/identity"
+        "pik/paths"
+        "pik/spool"
+)
+
+type Source struct {
+        identity.Identity
+        Tags
+        Path    string
+        Targets []Target
+}
+
+type HydratedSource struct {
+        *Source
+        HydratedTargets []HydratedTarget
+        Aliases         []string
+        Icon            string
+        Git             *GitInfo
+}
+
+func (s *Source) Label() string <span class="cov0" title="0">{
+        return s.Identity.Full
+}</span>
+
+func (s *HydratedSource) Label() string <span class="cov0" title="0">{
+        if len(s.Aliases) &gt; 0 </span><span class="cov0" title="0">{
+                return s.Aliases[0]
+        }</span>
+        <span class="cov0" title="0">return s.Identity.Full</span>
+}
+
+func (s *Source) Hydrate(hydrators []Modder) *HydratedSource <span class="cov0" title="0">{
+        hs := &amp;HydratedSource{
+                Source:          s,
+                HydratedTargets: make([]HydratedTarget, 0, len(s.Targets)),
+        }
+        for _, h := range hydrators </span><span class="cov0" title="0">{
+                err := h.Mod(s, hs)
+                if err != nil </span><span class="cov0" title="0">{
+                        spool.Warn("%v", err)
+                }</span>
+        }
+        <span class="cov0" title="0">for _, t := range s.Targets </span><span class="cov0" title="0">{
+                if !t.Visible() </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov0" title="0">ht, err := t.Hydrate(s)
+                if err != nil </span><span class="cov0" title="0">{
+                        spool.Warn("%v", err)
+                        continue</span>
+                }
+                <span class="cov0" title="0">hs.HydratedTargets = append(hs.HydratedTargets, ht)</span>
+        }
+        <span class="cov0" title="0">return hs</span>
+}
+
+func (s *Source) ShortPath() string <span class="cov0" title="0">{
+        return paths.ReplaceHome(s.Path)
+}</span>
+</pre>
+		
+		<pre class="file" id="file21" style="display: none">package model
+
+import (
+        "slices"
+        "strings"
+)
+
+type Tag *string
+type TagAction func(src *Source)
+
+func New(input string) Tag <span class="cov8" title="1">{
+        result := &amp;input
+        TagMap[input] = result
+        TagList = append(TagList, result)
+        return result
+}</span>
+
+var (
+        Here     = New("here")
+        Pre      = New("pre")
+        Post     = New("post")
+        Final    = New("final")
+        Hidden   = New("hidden")
+        Single   = New("single")
+        Override = New("override")
+)
+
+var TagList []Tag
+
+var TagMap = map[string]Tag{}
+
+type Tags []Tag
+
+func (t Tags) AnyOf(expected ...Tag) bool <span class="cov8" title="1">{
+        if len(expected) &gt; 1 &amp;&amp; len(t) == 0 </span><span class="cov8" title="1">{
+                return false
+        }</span>
+        <span class="cov8" title="1">if len(expected) == 0 </span><span class="cov8" title="1">{
+                return true
+        }</span>
+        <span class="cov8" title="1">for _, e := range expected </span><span class="cov8" title="1">{
+                if slices.Contains(t, e) </span><span class="cov8" title="1">{
+                        return true
+                }</span>
+        }
+        <span class="cov8" title="1">return false</span>
+}
+
+func (t Tags) Has(expected Tag) bool <span class="cov8" title="1">{
+        return slices.Contains(t, expected)
+}</span>
+
+func TagsFromFilename(filename string) Tags <span class="cov8" title="1">{
+        var tags Tags
+        // if hidden
+        if strings.HasPrefix(filename, ".") </span><span class="cov8" title="1">{
+                filename = strings.TrimPrefix(filename, ".")
+                tags = append(tags, Hidden)
+        }</span>
+
+        <span class="cov8" title="1">parts := strings.Split(filename, ".")
+        if len(parts) == 1 </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        <span class="cov8" title="1">for _, p := range parts </span><span class="cov8" title="1">{
+                p = strings.ToLower(p)
+                if TagMap[p] != nil </span><span class="cov8" title="1">{
+                        tags = append(tags, TagMap[p])
+                }</span>
+        }
+
+        <span class="cov8" title="1">return tags</span>
+}
+
+func (t Tags) Visible() bool <span class="cov8" title="1">{
+        return !t.AnyOf(Hidden, Pre, Post, Final)
+}</span>
+</pre>
+		
+		<pre class="file" id="file22" style="display: none">package paths
+
+import (
+        "github.com/adrg/xdg"
+        "os"
+        "path/filepath"
+        "strings"
+)
+
+var (
+        Home   = xdg.Home
+        This   = "pik"
+        Cache  = filepath.Join(xdg.CacheHome, This)
+        Config = filepath.Join(xdg.ConfigHome, This)
+        Ifs    = os.Getenv("IFS")
+)
+
+type paths struct {
+}
+
+var Paths = &amp;paths{}
+
+func (p paths) Init() error <span class="cov0" title="0">{
+        err := os.MkdirAll(Cache, 0700)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">err = os.MkdirAll(Config, 0700)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">if Ifs == "" </span><span class="cov0" title="0">{
+                Ifs = "\n"
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func ReplaceHome(input string) string <span class="cov0" title="0">{
+        return strings.Replace(input, Home, "~", 1)
+}</span>
+</pre>
+		
+		<pre class="file" id="file23" style="display: none">package run
+
+import (
+        "fmt"
+        "os"
+        "pik/env"
+        "pik/flags"
+        "pik/menu"
+        "pik/model"
+        "slices"
+)
+
+func Run(source *model.Source, target model.Target, args ...string) error <span class="cov0" title="0">{
+        tags := target.Tags()
+        skipTriggers := tags.Has(model.Single) || *flags.Single
+
+        if !skipTriggers </span><span class="cov0" title="0">{
+                err := Pre(source, target)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        }
+        <span class="cov0" title="0">err := Exec(source, target, args...)
+        fmt.Println()
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">if !skipTriggers </span><span class="cov0" title="0">{
+                err := Post(source, target)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">err = Final(source, target)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+
+func Pre(source *model.Source, target model.Target) error <span class="cov0" title="0">{
+        return ExecWithTrigger(source, target, model.Pre)
+}</span>
+
+func Post(source *model.Source, target model.Target) error <span class="cov0" title="0">{
+        return ExecWithTrigger(source, target, model.Post)
+}</span>
+
+func Final(source *model.Source, target model.Target) error <span class="cov0" title="0">{
+        return ExecWithTrigger(source, target, model.Final)
+}</span>
+
+func ExecWithTrigger(source *model.Source, target model.Target, tag model.Tag) error <span class="cov0" title="0">{
+        for _, t := range source.Targets </span><span class="cov0" title="0">{
+                if t.Tags().Has(tag) </span><span class="cov0" title="0">{
+                        triggerSub := t.Sub()
+                        targetSub := target.Sub()
+
+                        for _, targetSubPart := range triggerSub </span><span class="cov0" title="0">{
+                                if !slices.Contains(targetSub, targetSubPart) </span><span class="cov0" title="0">{
+                                        continue</span>
+                                }
+                        }
+
+                        <span class="cov0" title="0">err := Exec(source, t)
+                        fmt.Println()
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+                }
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+
+func Exec(source *model.Source, target model.Target, args ...string) error <span class="cov0" title="0">{
+        _, _ = fmt.Fprint(os.Stderr, menu.Banner(source, target, args...))
+        loc := source.Path
+        tags := target.Tags()
+        if *flags.At != "" </span><span class="cov0" title="0">{
+                loc = *flags.At
+        }</span> else<span class="cov0" title="0"> if tags.Has(model.Here) || *flags.Here </span><span class="cov0" title="0">{
+                wd, err := os.Getwd()
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">loc = wd</span>
+        }
+        <span class="cov0" title="0">cmd := target.Create(source)
+        cmd.Dir = loc
+        cmd.Stdout = os.Stdout
+        cmd.Stdin = os.Stdin
+        cmd.Stderr = os.Stderr
+        cmd.Args = append(cmd.Args, args...)
+
+        e := env.Get(source)
+        if len(e) &gt; 0 </span><span class="cov0" title="0">{
+                cmd.Env = append(os.Environ(), e...)
+        }</span>
+
+        <span class="cov0" title="0">if *flags.Dry </span><span class="cov0" title="0">{
+                _, _ = fmt.Fprintln(os.Stderr, menu.InlineCmd(cmd))
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">if *flags.Root </span><span class="cov0" title="0">{
+                cmd.Args = append([]string{"sudo"}, cmd.Args...)
+        }</span>
+        <span class="cov0" title="0">_, _ = fmt.Fprintln(os.Stderr)
+        return cmd.Run()</span>
+}
+</pre>
+		
+		<pre class="file" id="file24" style="display: none">package runner
+
+import (
+        "os/exec"
+        "pik/identity"
+        "pik/model"
+)
+
+// BaseTarget is an embeddable type which contains some of the information we need for (almost) every target.
+type BaseTarget struct {
+        identity.Identity
+        MyTags model.Tags
+        Sub    []string
+}
+
+func (t *BaseTarget) Tags() model.Tags <span class="cov0" title="0">{
+        return t.MyTags
+}</span>
+
+func (t *BaseTarget) Matches(input string) bool <span class="cov0" title="0">{
+        return t.Identity.Is(input)
+}</span>
+
+func (t *BaseTarget) ShortestId() string <span class="cov0" title="0">{
+        return t.Reduced
+}</span>
+
+func (b *BaseTarget) Visible() bool <span class="cov0" title="0">{
+        return b.Tags().Visible()
+}</span>
+
+func (b *BaseTarget) Invocation(src *model.Source) []string <span class="cov0" title="0">{
+        return append([]string{src.Identity.Reduced}, append(b.Sub, b.Identity.Reduced)...)
+}</span>
+
+func Hydrated[T model.Target](in T) BaseHydration[T] <span class="cov0" title="0">{
+        return BaseHydration[T]{
+                BaseTarget: in,
+        }
+}</span>
+
+type BaseHydration[T model.Target] struct {
+        BaseTarget T
+}
+
+func (b BaseHydration[T]) Matches(input string) bool <span class="cov0" title="0">{
+        return b.BaseTarget.Matches(input)
+}</span>
+
+func (b BaseHydration[T]) Create(s *model.Source) *exec.Cmd <span class="cov0" title="0">{
+        return b.BaseTarget.Create(s)
+}</span>
+
+func (b BaseHydration[T]) Sub() []string <span class="cov0" title="0">{
+        return b.BaseTarget.Sub()
+}</span>
+
+func (b BaseHydration[T]) Label() string <span class="cov0" title="0">{
+        return b.BaseTarget.Label()
+}</span>
+
+func (b BaseHydration[T]) Hydrate(src *model.Source) (model.HydratedTarget, error) <span class="cov0" title="0">{
+        return b, nil
+}</span>
+
+func (b BaseHydration[T]) Invocation(src *model.Source) []string <span class="cov0" title="0">{
+        return b.BaseTarget.Invocation(src)
+}</span>
+
+func (b BaseHydration[T]) Visible() bool <span class="cov0" title="0">{
+        return b.BaseTarget.Visible()
+}</span>
+
+func (b BaseHydration[T]) Tags() model.Tags <span class="cov0" title="0">{
+        return b.BaseTarget.Tags()
+}</span>
+
+func (b BaseHydration[T]) ShortestId() string <span class="cov0" title="0">{
+        return b.BaseTarget.ShortestId()
+}</span>
+
+func (b BaseHydration[T]) Icon() string <span class="cov0" title="0">{
+        return "  "
+}</span>
+
+func (b BaseHydration[T]) Description() string <span class="cov0" title="0">{
+        return ""
+}</span>
+
+func (b BaseHydration[T]) Target() model.Target <span class="cov0" title="0">{
+        return b.BaseTarget
+}</span>
+</pre>
+		
+		<pre class="file" id="file25" style="display: none">package gnumake
+
+import (
+        "errors"
+        "io/fs"
+        "os/exec"
+        "pik/identity"
+        "pik/model"
+        "pik/runner"
+        "regexp"
+        "slices"
+        "strings"
+)
+
+type make struct {
+        path string
+}
+
+var Indexer = &amp;make{}
+
+var Makefiles = []string{
+        "Makefile",
+        "makefile",
+}
+
+func (m *make) Index(path string, f fs.FS, _ []model.Runner) ([]model.Target, error) <span class="cov0" title="0">{
+
+        entries, err := fs.ReadDir(f, ".")
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">makefile := ""
+        for _, e := range entries </span><span class="cov0" title="0">{
+                if !e.IsDir() &amp;&amp; slices.Contains(Makefiles, strings.ToLower(e.Name())) </span><span class="cov0" title="0">{
+                        content, err := fs.ReadFile(f, e.Name())
+                        if err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+                        <span class="cov0" title="0">makefile = string(content)
+                        break</span>
+                }
+        }
+
+        <span class="cov0" title="0">if makefile == "" </span><span class="cov0" title="0">{
+                return nil, nil
+        }</span>
+
+        <span class="cov0" title="0">err = m.findMake()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return ParseOutput(makefile), nil</span>
+}
+
+var makeRegex = regexp.MustCompile("^([a-zA-Z-]*):((.*?)# (.*))?")
+
+func ParseOutput(input string) []model.Target <span class="cov0" title="0">{
+        var targets []string
+        match := makeRegex.FindAllString(input, len(input))
+        for _, m := range match </span><span class="cov0" title="0">{
+                targets = append(targets, m)
+        }</span>
+
+        <span class="cov0" title="0">var result []model.Target
+        for _, t := range targets </span><span class="cov0" title="0">{
+                split := strings.SplitN(t, "#", 2)
+                name := split[0]
+                name = strings.TrimSpace(name)
+                name = strings.TrimSuffix(name, ":")
+                tgt := &amp;Target{
+                        BaseTarget: runner.BaseTarget{
+                                Identity: identity.New(name),
+                                MyTags:   nil,
+                        },
+                        Name: name,
+                }
+                if len(split) &gt; 1 </span><span class="cov0" title="0">{
+                        tgt.Description = strings.TrimSpace(split[1])
+                }</span>
+                <span class="cov0" title="0">result = append(result, tgt)</span>
+        }
+        <span class="cov0" title="0">return result</span>
+}
+
+var NoJustError = errors.New("no make in $PATH but source contains makefile")
+
+func (m *make) findMake() error <span class="cov0" title="0">{
+        loc, err := exec.LookPath("make")
+        if errors.Is(err, exec.ErrNotFound) </span><span class="cov0" title="0">{
+                return NoJustError
+        }</span> else<span class="cov0" title="0"> if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">m.path = loc
+        return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file26" style="display: none">package gnumake
+
+import (
+        "os/exec"
+        "pik/model"
+        "pik/runner"
+)
+
+type Target struct {
+        runner.BaseTarget
+        Name        string
+        Description string
+}
+
+func (j *Target) Create(s *model.Source) *exec.Cmd <span class="cov0" title="0">{
+        return exec.Command(Indexer.path, j.Identity.Full)
+}</span>
+
+var makeSub = []string{
+        "make",
+}
+
+func (j *Target) Sub() []string <span class="cov0" title="0">{
+        return makeSub
+}</span>
+
+func (j *Target) Label() string <span class="cov0" title="0">{
+        return j.Identity.Full
+}</span>
+
+func (j *Target) Hydrate(src *model.Source) (model.HydratedTarget, error) <span class="cov0" title="0">{
+        return &amp;Hydrated{
+                BaseHydration: runner.Hydrated(j),
+        }, nil
+}</span>
+
+type Hydrated struct {
+        runner.BaseHydration[*Target]
+}
+
+func (h *Hydrated) Icon() string <span class="cov0" title="0">{
+        return "\uE673"
+}</span>
+
+func (h *Hydrated) Description() string <span class="cov0" title="0">{
+        return h.BaseTarget.Description
+}</span>
+</pre>
+		
+		<pre class="file" id="file27" style="display: none">package just
+
+import (
+        "errors"
+        "io/fs"
+        "os/exec"
+        "pik/identity"
+        "pik/model"
+        "pik/runner"
+        "strings"
+)
+
+type just struct {
+        path string
+}
+
+var Indexer = &amp;just{}
+
+func (j *just) Index(path string, f fs.FS, runners []model.Runner) ([]model.Target, error) <span class="cov0" title="0">{
+
+        entries, err := fs.ReadDir(f, ".")
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">hasJustfile := false
+        for _, e := range entries </span><span class="cov0" title="0">{
+                if !e.IsDir() &amp;&amp; strings.ToLower(e.Name()) == "justfile" </span><span class="cov0" title="0">{
+                        hasJustfile = true
+                        break</span>
+                }
+        }
+
+        <span class="cov0" title="0">if !hasJustfile </span><span class="cov0" title="0">{
+                return nil, nil
+        }</span>
+
+        <span class="cov0" title="0">err = j.findJust()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">cmd := exec.Command(j.path, "--list")
+        cmd.Dir = path
+        out, err := cmd.CombinedOutput()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return ParseOutput(string(out)), nil</span>
+}
+
+func ParseOutput(input string) []model.Target <span class="cov0" title="0">{
+        categories := make(map[string][]string)
+        currentCategory := ""
+        for _, line := range strings.Split(input, "\n") </span><span class="cov0" title="0">{
+                // strip comment
+                line = strings.SplitN(line, "#", 2)[0]
+                line = strings.TrimSpace(line)
+
+                if strings.HasPrefix(line, "[") &amp;&amp; strings.HasSuffix(line, "]") </span><span class="cov0" title="0">{
+                        currentCategory = line[1 : len(line)-1]
+                        continue</span>
+                }
+
+                <span class="cov0" title="0">tgt := strings.SplitN(line, " ", 2)[0]
+
+                if tgt == "" </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+
+                <span class="cov0" title="0">categories[currentCategory] = append(categories[currentCategory], tgt)</span>
+        }
+
+        <span class="cov0" title="0">var result []model.Target
+        for c, targets := range categories </span><span class="cov0" title="0">{
+                for _, t := range targets </span><span class="cov0" title="0">{
+                        result = append(result, &amp;Target{
+                                BaseTarget: runner.BaseTarget{
+                                        Identity: identity.New(t),
+                                },
+                                Category: c,
+                        })
+                }</span>
+        }
+        <span class="cov0" title="0">return result</span>
+}
+
+var NoJustError = errors.New("no just in $PATH but source contains justfile")
+
+func (j *just) findJust() error <span class="cov0" title="0">{
+        loc, err := exec.LookPath("just")
+        if errors.Is(err, exec.ErrNotFound) </span><span class="cov0" title="0">{
+                return NoJustError
+        }</span> else<span class="cov0" title="0"> if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">j.path = loc
+        return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file28" style="display: none">package just
+
+import (
+        "os/exec"
+        "pik/model"
+        "pik/runner"
+)
+
+type Target struct {
+        runner.BaseTarget
+        Category string
+}
+
+func (j Target) Create(s *model.Source) *exec.Cmd <span class="cov0" title="0">{
+        return exec.Command(Indexer.path, j.Identity.Full)
+}</span>
+
+func (j Target) Sub() []string <span class="cov0" title="0">{
+        if j.Category != "" </span><span class="cov0" title="0">{
+                return []string{j.Category}
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (j Target) Label() string <span class="cov0" title="0">{
+        return j.Identity.Full
+}</span>
+
+func (j *Target) Hydrate(src *model.Source) (model.HydratedTarget, error) <span class="cov0" title="0">{
+        return &amp;Hydrated{
+                BaseHydration: runner.Hydrated(j),
+        }, nil
+}</span>
+
+type Hydrated struct {
+        runner.BaseHydration[*Target]
+}
+
+func (h *Hydrated) Icon() string <span class="cov0" title="0">{
+        return "\uF039"
+}</span>
+</pre>
+		
+		<pre class="file" id="file29" style="display: none">package python
+
+import (
+        "os/exec"
+        "path/filepath"
+        "pik/model"
+        "pik/runner"
+)
+
+type File struct {
+        runner.BaseTarget
+        File string
+}
+
+type HydratedFileTarget struct {
+        runner.BaseHydration[*File]
+}
+
+func (h *HydratedFileTarget) Icon() string <span class="cov0" title="0">{
+        return "\uE606"
+}</span>
+
+func (p *File) Create(s *model.Source) *exec.Cmd <span class="cov0" title="0">{
+        var cmd []string
+        if Python.Uv != "" </span><span class="cov0" title="0">{
+                cmd = []string{Python.Uv, "run", "--", p.File}
+        }</span> else<span class="cov0" title="0"> if venv := Python.VenvFor(s); venv != "" </span><span class="cov0" title="0">{
+                cmd = []string{filepath.Join(s.Path, venv, "bin", "python3"), p.File}
+        }</span> else<span class="cov0" title="0"> {
+                sysPath, err := exec.LookPath("python3")
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil
+                }</span>
+                <span class="cov0" title="0">cmd = []string{sysPath, p.File}</span>
+        }
+        <span class="cov0" title="0">return exec.Command(cmd[0], cmd[1:]...)</span>
+}
+
+func (p *File) Sub() []string <span class="cov0" title="0">{
+        return nil
+}</span>
+
+func (p *File) Label() string <span class="cov0" title="0">{
+        return p.Full
+}</span>
+
+func (p *File) Hydrate(src *model.Source) (model.HydratedTarget, error) <span class="cov0" title="0">{
+        return &amp;HydratedFileTarget{
+                BaseHydration: runner.Hydrated(p),
+        }, nil
+}</span>
+</pre>
+		
+		<pre class="file" id="file30" style="display: none">package python
+
+import (
+        "github.com/pelletier/go-toml/v2"
+        "io/fs"
+        "os"
+        "path/filepath"
+        "pik/model"
+)
+
+type pyproj struct {
+        Project struct {
+                Scripts map[string]string
+        }
+}
+
+func (p python) Index(path string, f fs.FS, runners []model.Runner) ([]model.Target, error) <span class="cov0" title="0">{
+        for _, pt := range VenvPaths </span><span class="cov0" title="0">{
+                if stat, err := fs.Stat(f, filepath.Join(pt)); err == nil </span><span class="cov0" title="0">{
+                        if stat.IsDir() </span><span class="cov0" title="0">{
+                                p.Venvs[path] = filepath.Join(path, pt)
+                        }</span>
+                }
+        }
+        <span class="cov0" title="0">content, err := fs.ReadFile(f, "pyproject.toml")
+        if os.IsNotExist(err) </span><span class="cov0" title="0">{
+                return nil, nil
+        }</span> else<span class="cov0" title="0"> if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">pp := &amp;pyproj{}
+
+        err = toml.Unmarshal(content, pp)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">var targets = make([]model.Target, 0, len(pp.Project.Scripts))
+        for n, s := range pp.Project.Scripts </span><span class="cov0" title="0">{
+                targets = append(targets, Python.CreateProjTarget(n, s))
+        }</span>
+        <span class="cov0" title="0">return targets, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file31" style="display: none">package python
+
+import (
+        "os/exec"
+        "path/filepath"
+        "pik/model"
+        "pik/runner"
+)
+
+type Project struct {
+        runner.BaseTarget
+        Cmd string
+}
+
+type Hydrated struct {
+        runner.BaseHydration[*Project]
+}
+
+func (h *Hydrated) Icon() string <span class="cov0" title="0">{
+        return "\uE606"
+}</span>
+
+func (h *Hydrated) Description() string <span class="cov0" title="0">{
+        return h.BaseTarget.Cmd
+}</span>
+
+func (p *Project) Create(s *model.Source) *exec.Cmd <span class="cov0" title="0">{
+        var cmd []string
+        if Python.Uv != "" </span><span class="cov0" title="0">{
+                cmd = []string{Python.Uv, "run", "--", p.Cmd}
+        }</span> else<span class="cov0" title="0"> if venv := Python.VenvFor(s); venv != "" </span><span class="cov0" title="0">{
+                cmd = []string{filepath.Join(s.Path, venv, "bin", "python"), p.Cmd}
+        }</span>
+        <span class="cov0" title="0">return exec.Command(cmd[0], cmd[1:]...)</span>
+}
+
+func (p *Project) Sub() []string <span class="cov0" title="0">{
+        return nil
+}</span>
+
+func (p *Project) Label() string <span class="cov0" title="0">{
+        return p.Cmd
+}</span>
+
+func (p *Project) Hydrate(src *model.Source) (model.HydratedTarget, error) <span class="cov0" title="0">{
+        return &amp;Hydrated{
+                BaseHydration: runner.Hydrated(p),
+        }, nil
+}</span>
+</pre>
+		
+		<pre class="file" id="file32" style="display: none">package python
+
+import (
+        "errors"
+        "io/fs"
+        "os/exec"
+        "path/filepath"
+        "pik/identity"
+        "pik/model"
+        "pik/runner"
+)
+
+type python struct {
+        Venvs  map[string]string
+        Uv     string
+        System string
+}
+
+func (p python) Init() error <span class="cov0" title="0">{
+        uv, err := exec.LookPath("uv")
+        if err != nil &amp;&amp; !errors.Is(err, exec.ErrNotFound) </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">p.Uv = uv
+        sys, err := exec.LookPath("python3")
+        if err == nil </span><span class="cov0" title="0">{
+                p.System = sys
+        }</span>
+        <span class="cov0" title="0">return err</span>
+}
+
+func (p python) Hydrate(target model.Target) (model.HydratedTarget, error) <span class="cov0" title="0">{
+        //TODO implement me
+        panic("implement me")</span>
+}
+
+func (p python) Wants(fs fs.FS, file string, entry fs.DirEntry) (bool, error) <span class="cov0" title="0">{
+        return !entry.IsDir() &amp;&amp; filepath.Ext(entry.Name()) == ".py", nil
+}</span>
+
+func (p python) VenvFor(src *model.Source) string <span class="cov0" title="0">{
+        venvPath := p.Venvs[src.Path]
+        if venvPath != "" </span><span class="cov0" title="0">{
+                return venvPath
+        }</span>
+        <span class="cov0" title="0">return ""</span>
+}
+
+func (p python) PyFor(src *model.Source) []string <span class="cov0" title="0">{
+        if p.Uv != "" </span><span class="cov0" title="0">{
+                return []string{p.Uv, "run", "--"}
+        }</span>
+        <span class="cov0" title="0">if venv := p.VenvFor(src); venv != "" </span><span class="cov0" title="0">{
+                return []string{filepath.Join(src.Path, venv, "bin", "python")}
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (p python) CreateProjTarget(name string, cmd string) model.Target <span class="cov0" title="0">{
+        return &amp;Project{
+                BaseTarget: runner.BaseTarget{
+                        Identity: identity.New(name),
+                },
+                Cmd: cmd,
+        }
+}</span>
+
+func (p python) CreateTarget(fs fs.FS, source string, file string, entry fs.DirEntry) (model.Target, error) <span class="cov0" title="0">{
+        _, filename := filepath.Split(file)
+        return &amp;File{
+                BaseTarget: runner.BaseTarget{
+                        Identity: identity.New(filename),
+                        MyTags:   model.TagsFromFilename(filename),
+                },
+                File: file,
+        }, nil
+}</span>
+
+var VenvPaths = []string{
+        ".venv",
+        "venv",
+}
+
+var Python = &amp;python{
+        Venvs: map[string]string{},
+}
+</pre>
+		
+		<pre class="file" id="file33" style="display: none">package shell
+
+import (
+        "errors"
+        "pik/describe"
+        "pik/model"
+        "pik/runner"
+        "pik/spool"
+)
+
+type Hydrated struct {
+        runner.BaseHydration[*Target]
+}
+
+func (h *Hydrated) Icon() string <span class="cov0" title="0">{
+        return "\uF489"
+}</span>
+
+func (h *Hydrated) Description() string <span class="cov0" title="0">{
+        desc, err := describe.Describe(h.BaseTarget, h.BaseTarget.Script)
+        if err != nil </span><span class="cov0" title="0">{
+                spool.Warn("%v\n", err)
+                return ""
+        }</span>
+        <span class="cov0" title="0">return desc</span>
+}
+
+var WrongTargetError = errors.New("wrong target type")
+
+func (s *shell) Hydrate(target model.Target) (model.HydratedTarget, error) <span class="cov0" title="0">{
+        cast, ok := target.(*Target)
+        if !ok </span><span class="cov0" title="0">{
+                return nil, WrongTargetError
+        }</span>
+        <span class="cov0" title="0">hyd := &amp;Hydrated{BaseHydration: runner.Hydrated(cast)}
+        return hyd, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file34" style="display: none">package shell
+
+import (
+        "bufio"
+        "errors"
+        "io/fs"
+        "os/exec"
+        "path/filepath"
+        "pik/identity"
+        "pik/indexers/pikdex"
+        "pik/model"
+        "pik/runner"
+        "pik/spool"
+        "slices"
+        "strings"
+        "sync"
+)
+
+//TODO: Clean up shell selection? Maybe default to bash?
+
+var NoContentError = errors.New("not enough content in target")
+var NoShellError = errors.New("could not find any shell interpreters")
+
+var ExtShellMap = map[string]string{
+        ".sh":  "bash",
+        ".ps1": "powershell",
+}
+
+var Shells = []string{"bash", "bash.exe", "zsh", "fish", "powershell", "powershell.exe", "cmd.exe"}
+
+var Runner = &amp;shell{
+        Locations: map[string]string{},
+}
+
+type shell struct {
+        sync.Mutex
+        Locations map[string]string
+}
+
+func (s *shell) Wants(f fs.FS, file string, entry fs.DirEntry) (bool, error) <span class="cov0" title="0">{
+        if entry != nil &amp;&amp; entry.IsDir() </span><span class="cov0" title="0">{
+                return false, nil
+        }</span>
+
+        <span class="cov0" title="0">fd, err := f.Open(file)
+        if err != nil </span><span class="cov0" title="0">{
+                return false, err
+        }</span>
+        <span class="cov0" title="0">scanner := bufio.NewScanner(fd)
+        scanner.Split(bufio.ScanRunes)
+        if !scanner.Scan() </span><span class="cov0" title="0">{
+                return false, nil
+        }</span>
+        <span class="cov0" title="0">txt := scanner.Text()
+        if txt == "#" </span><span class="cov0" title="0">{ //
+                return true, nil
+        }</span>
+        <span class="cov0" title="0">for k, _ := range ExtShellMap </span><span class="cov0" title="0">{
+                if strings.HasSuffix(file, k) </span><span class="cov0" title="0">{
+                        return true, nil
+                }</span>
+        }
+        <span class="cov0" title="0">return false, nil</span>
+}
+
+func (s *shell) Find(shell string) (string, error) <span class="cov8" title="1">{
+        if s.Locations[shell] != "" </span><span class="cov8" title="1">{
+                return s.Locations[shell], nil
+        }</span>
+
+        <span class="cov0" title="0">if p, err := exec.LookPath(shell); err == nil </span><span class="cov0" title="0">{
+                s.Lock()
+                s.Locations[shell] = p
+                s.Unlock()
+                return shell, nil
+        }</span> else<span class="cov0" title="0"> {
+                return "", err
+        }</span>
+}
+
+func (s *shell) CreateTarget(fs fs.FS, src string, file string, _ fs.DirEntry) (model.Target, error) <span class="cov0" title="0">{
+        shell, err := s.ShellFor(fs, file)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">_, filename := filepath.Split(file)
+        var sub []string
+        split := strings.Split(file, "/")
+        for _, p := range split </span><span class="cov0" title="0">{
+                if slices.Contains(pikdex.Roots, p) </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov0" title="0">if filename == p </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov0" title="0">sub = append(sub, p)</span>
+        }
+        <span class="cov0" title="0">return &amp;Target{
+                BaseTarget: runner.BaseTarget{
+                        Identity: identity.New(filename),
+                        MyTags:   model.TagsFromFilename(filename),
+                },
+                Shell:    shell,
+                Script:   filepath.Join(src, file),
+                SubValue: sub,
+        }, nil</span>
+}
+
+func (s *shell) ShellFor(fs fs.FS, file string) (string, error) <span class="cov0" title="0">{
+
+        var shell, shebang string
+
+        // low-hanging fruit - indicative filename
+        if byFile := s.ShellByFilename(file); byFile != "" </span><span class="cov0" title="0">{
+                return byFile, nil
+        }</span>
+
+        <span class="cov0" title="0">fd, err := fs.Open(file)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+        <span class="cov0" title="0">scanner := bufio.NewScanner(fd)
+        scanner.Split(bufio.ScanLines)
+        if !scanner.Scan() </span><span class="cov0" title="0">{
+                return "", NoContentError
+        }</span>
+        <span class="cov0" title="0">txt := scanner.Text()
+        if strings.HasPrefix(txt, "#!") </span><span class="cov0" title="0">{
+                // shebang found
+                for _, potentialShell := range Shells </span><span class="cov0" title="0">{
+                        if strings.Contains(txt, potentialShell) </span><span class="cov0" title="0">{
+                                shebang = shell
+                                if loc, err := s.Find(potentialShell); err == nil </span><span class="cov0" title="0">{
+                                        shell = loc
+                                }</span> else<span class="cov0" title="0"> {
+                                        _, _ = spool.Warn("script has %s but could not find %s (%s)\n", shebang, potentialShell)
+                                }</span>
+                        }
+                }
+        }
+
+        <span class="cov0" title="0">if shebang == "" </span><span class="cov0" title="0">{
+                // if no shebang, just send the first one we find
+                for _, s := range Shells </span><span class="cov0" title="0">{
+                        if p, err := exec.LookPath(s); err != nil </span><span class="cov0" title="0">{
+                                shell = p
+                        }</span>
+                }
+        }
+
+        <span class="cov0" title="0">if shell == "" </span><span class="cov0" title="0">{
+                return "", NoShellError
+        }</span>
+
+        <span class="cov0" title="0">return shell, nil</span>
+
+}
+
+func (s *shell) ShellByFilename(file string) string <span class="cov8" title="1">{
+        ext := filepath.Ext(file)
+        if ExtShellMap[ext] != "" </span><span class="cov8" title="1">{
+                sh, err := s.Find(ExtShellMap[ext])
+                if err == nil </span><span class="cov8" title="1">{
+                        return sh
+                }</span>
+        }
+
+        <span class="cov8" title="1">return ""</span>
+}
+</pre>
+		
+		<pre class="file" id="file35" style="display: none">package shell
+
+import (
+        "os/exec"
+        "pik/model"
+        "pik/runner"
+)
+
+type Target struct {
+        runner.BaseTarget
+        Shell    string
+        Script   string
+        SubValue []string
+}
+
+func (s *Target) String() string <span class="cov0" title="0">{
+        return s.Label()
+}</span>
+
+func (s *Target) Hydrate(_ *model.Source) (model.HydratedTarget, error) <span class="cov0" title="0">{
+        return Runner.Hydrate(s)
+}</span>
+
+func (s *Target) Sub() []string <span class="cov0" title="0">{
+        return s.SubValue
+}</span>
+
+func (s *Target) Label() string <span class="cov0" title="0">{
+        return s.Identity.Full
+}</span>
+
+func (s *Target) Create(src *model.Source) *exec.Cmd <span class="cov0" title="0">{
+        return exec.Command(s.Shell, s.Script)
+}</span>
+</pre>
+		
+		<pre class="file" id="file36" style="display: none">//go:build test
+
+package runner
+
+import (
+        "os/exec"
+        "pik/model"
+)
+
+// Stub is the most minimal and useless implementation of the target interface. It only panics. Use if you need a target-compliant struct.
+type Stub struct {
+}
+
+func (s Stub) Matches(input string) bool <span class="cov0" title="0">{
+        //TODO implement me
+        panic("implement me")</span>
+}
+
+func (s Stub) Create(src *model.Source) *exec.Cmd <span class="cov0" title="0">{
+        //TODO implement me
+        panic("implement me")</span>
+}
+
+func (s Stub) Sub() []string <span class="cov0" title="0">{
+        //TODO implement me
+        panic("implement me")</span>
+}
+
+func (s Stub) Label() string <span class="cov0" title="0">{
+        //TODO implement me
+        panic("implement me")</span>
+}
+
+func (s Stub) Hydrate(src *model.Source) (model.HydratedTarget, error) <span class="cov0" title="0">{
+        //TODO implement me
+        panic("implement me")</span>
+}
+
+func (s Stub) Tags() model.Tags <span class="cov0" title="0">{
+        return nil
+}</span>
+
+func (s Stub) ShortestId() string <span class="cov0" title="0">{
+        //TODO implement me
+        panic("implement me")</span>
+}
+
+func (s Stub) Visible() bool <span class="cov0" title="0">{
+        //TODO implement me
+        panic("implement me")</span>
+}
+
+func (s Stub) Invocation(src *model.Source) []string <span class="cov0" title="0">{
+        //TODO implement me
+        panic("implement me")</span>
+}
+</pre>
+		
+		<pre class="file" id="file37" style="display: none">package search
+
+import (
+        "pik/model"
+        "slices"
+)
+
+type Result struct {
+        Target            model.Target
+        Source            *model.Source
+        NeedsConfirmation bool
+        Overridden        bool
+        Sub               []string
+        Args              []string
+}
+
+// Search is the meat of pik
+func Search(s *model.State, args ...string) *Result <span class="cov8" title="1">{
+        var target model.Target
+        var targetSource *model.Source
+        var confirm bool
+        var overridden bool
+        var subdir []string
+        var forward []string
+        var suspect model.Target
+        var suspectSource *model.Source
+
+args_loop:
+        for _, arg := range args </span><span class="cov8" title="1">{
+                for _, src := range s.Sources </span><span class="cov8" title="1">{
+
+                        if targetSource == nil </span><span class="cov8" title="1">{
+                                if src.Is(arg) </span><span class="cov8" title="1">{
+                                        targetSource = src
+
+                                        // try to look for arg target with the same name as the source
+                                        // "default target" of sorts
+                                        for _, t := range targetSource.Targets </span><span class="cov8" title="1">{
+                                                if t.Matches(arg) </span><span class="cov8" title="1">{
+                                                        target = t
+                                                        continue args_loop</span>
+                                                }
+                                        }
+
+                                        <span class="cov8" title="1">continue args_loop</span>
+                                }
+                        }
+
+                        <span class="cov8" title="1">if target == nil &amp;&amp; targetSource == nil </span><span class="cov8" title="1">{
+
+                                // uncertain about source, check ours to see if any match
+                                for _, t := range src.Targets </span><span class="cov8" title="1">{
+                                        if t.Matches(arg) </span><span class="cov8" title="1">{
+                                                target = t
+                                                targetSource = src
+                                                continue args_loop</span>
+                                        }
+                                }
+
+                        } else<span class="cov8" title="1"> if target == nil </span><span class="cov8" title="1">{ // &amp;&amp; targetSource == nil (but it is always true)
+
+                                // source located,
+                                for _, t := range targetSource.Targets </span><span class="cov8" title="1">{
+                                        if t.Matches(arg) </span><span class="cov8" title="1">{
+                                                target = t
+                                                continue args_loop</span>
+                                        }
+                                }
+                                // if we find the right target
+                                <span class="cov8" title="1">for _, t := range src.Targets </span><span class="cov8" title="1">{
+                                        if t.Matches(arg) </span><span class="cov8" title="1">{
+                                                confirm = true
+                                                suspect = t
+                                                suspectSource = src
+                                                continue args_loop</span>
+                                        }
+                                }
+                        }
+
+                }
+
+                <span class="cov8" title="1">if target == nil </span><span class="cov8" title="1">{
+                        subdir = append(subdir, arg)
+                        continue args_loop</span>
+                } else<span class="cov8" title="1"> if targetSource != nil </span><span class="cov8" title="1">{
+                        forward = append(forward, arg)
+                        continue args_loop</span>
+                }
+        }
+
+        <span class="cov8" title="1">if suspect != nil &amp;&amp; target == nil </span><span class="cov8" title="1">{
+                target = suspect
+                targetSource = suspectSource
+                confirm = true
+        }</span>
+
+        <span class="cov8" title="1">if target != nil &amp;&amp; target.Sub() != nil &amp;&amp; subdir != nil &amp;&amp; !slices.Equal(target.Sub(), subdir) </span><span class="cov8" title="1">{
+                confirm = true
+        }</span>
+
+        <span class="cov8" title="1">if target == nil </span><span class="cov0" title="0">{
+                forward = args
+        }</span>
+
+        <span class="cov8" title="1">if target != nil &amp;&amp; targetSource != nil </span><span class="cov8" title="1">{
+                for _, t := range targetSource.Targets </span><span class="cov8" title="1">{
+                        if slices.Equal(t.Invocation(targetSource), target.Invocation(targetSource)) </span><span class="cov8" title="1">{
+                                if t.Tags().Has(model.Override) </span><span class="cov0" title="0">{
+                                        overridden = true
+                                        target = t
+                                }</span>
+                        }
+                }
+        }
+
+        <span class="cov8" title="1">return &amp;Result{
+                Target:            target,
+                Source:            targetSource,
+                NeedsConfirmation: confirm,
+                Overridden:        overridden,
+                Sub:               subdir,
+                Args:              forward,
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file38" style="display: none">//go:build test
+
+package testx
+
+import (
+        "github.com/stretchr/testify/assert"
+        "os/exec"
+        "pik/identity"
+        "pik/model"
+        "pik/runner"
+        "testing"
+)
+
+func TTarget(name string, sub ...string) model.Target <span class="cov8" title="1">{
+        t := TestTarget{Id: identity.New(name), MyTags: model.TagsFromFilename(name), SubValue: sub}
+        return &amp;t
+}</span>
+
+func TSource(name string, targets ...string) *model.Source <span class="cov8" title="1">{
+        src := &amp;model.Source{
+                Path:     name,
+                Identity: identity.New(name),
+        }
+        for _, t := range targets </span><span class="cov8" title="1">{
+                src.Targets = append(src.Targets, TTarget(t))
+        }</span>
+        <span class="cov8" title="1">return src</span>
+}
+
+func TState(sources ...*model.Source) *model.State <span class="cov0" title="0">{
+        return &amp;model.State{
+                Sources: sources,
+        }
+}</span>
+
+type TestTarget struct {
+        runner.Stub
+        Id       identity.Identity
+        SubValue []string
+        MyTags   model.Tags
+}
+
+func (t TestTarget) Invocation(src *model.Source) []string <span class="cov0" title="0">{
+        return []string{src.Identity.Reduced, t.Id.Reduced}
+}</span>
+
+func (t TestTarget) Matches(input string) bool <span class="cov8" title="1">{
+        return t.Id.Is(input)
+}</span>
+
+func (t TestTarget) Visible() bool <span class="cov0" title="0">{
+        return true
+}</span>
+
+func (t TestTarget) Hydrate(src *model.Source) (model.HydratedTarget, error) <span class="cov0" title="0">{
+        //TODO implement me
+        panic("implement me")</span>
+}
+
+func (t TestTarget) Sub() []string <span class="cov0" title="0">{
+        return t.SubValue
+}</span>
+
+func (t TestTarget) Label() string <span class="cov8" title="1">{
+        return t.Id.Full
+}</span>
+
+func (t TestTarget) Create(s *model.Source) *exec.Cmd <span class="cov0" title="0">{
+        panic("whadafak")</span>
+}
+
+func AssertTargetIs(t *testing.T, input string, target model.Target) <span class="cov8" title="1">{
+        assert.Equal(t, input, target.Label())
+}</span>
+func AssertTargetIsNot(t *testing.T, input string, target model.Target) <span class="cov8" title="1">{
+        assert.NotEqual(t, input, target.Label())
+}</span>
+func AssertSourceIs(t *testing.T, input string, src *model.Source) <span class="cov8" title="1">{
+        assert.NotNil(t, src.Identity)
+        assert.Equal(t, input, src.Identity.Reduced)
+}</span>
+func AssertSourceIsNot(t *testing.T, input string, src *model.Source) <span class="cov8" title="1">{
+        assert.NotNil(t, src.Identity)
+        assert.NotEqual(t, input, src.Identity.Reduced)
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
