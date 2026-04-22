@@ -7,6 +7,10 @@ type Identity struct {
 	Reduced string
 }
 
+func (i Identity) I(other Identity) bool {
+	return i.Reduced == other.Reduced
+}
+
 func (i Identity) Is(input string) bool {
 	reduced := Reduce(input)
 	return i.Reduced == reduced
@@ -23,6 +27,7 @@ func New(input string) Identity {
 
 func Reduce(input string) string {
 	reduced := input
+	reduced = strings.TrimPrefix(input, ".")
 	if !strings.HasPrefix(reduced, ".") {
 		reduced = strings.Split(reduced, ".")[0]
 	}
