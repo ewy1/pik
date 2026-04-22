@@ -5,9 +5,11 @@ import (
 	"strings"
 )
 
+// Tag is some text which is contained in a filename which triggers pik functionality
 type Tag *string
 type TagAction func(src *Source)
 
+// New creates a new tag and registers it in the subsystems
 func New(input string) Tag {
 	result := &input
 	TagMap[input] = result
@@ -16,12 +18,19 @@ func New(input string) Tag {
 }
 
 var (
-	Here     = New("here")
-	Pre      = New("pre")
-	Post     = New("post")
-	Final    = New("final")
-	Hidden   = New("hidden")
-	Single   = New("single")
+	// Here will force the target to run in the current directory instead of the source directory
+	Here = New("here")
+	// Pre turns the target into a trigger, causing it to be triggered before another target gets ran
+	Pre = New("pre")
+	// Post turns the target into a trigger, causing it to be triggered after another target gets ran and exits succesfully
+	Post = New("post")
+	// Final turns the target into a trigger, causing it to be triggered after another target gets ran
+	Final = New("final")
+	// Hidden means the target is not visible in the menu
+	Hidden = New("hidden")
+	// Single means this target will not use any triggers
+	Single = New("single")
+	// Override means this should be selected instead of a non-override target, if possible
 	Override = New("override")
 )
 

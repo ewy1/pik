@@ -6,6 +6,8 @@ import (
 	"pik/spool"
 )
 
+// Source is a location containing stuff we can run
+// these get created when we find a makefile, .pik folder, etc.
 type Source struct {
 	identity.Identity
 	Tags
@@ -13,6 +15,9 @@ type Source struct {
 	Targets []Target
 }
 
+// HydratedSource is a Source with additional hydration
+// for the menu.
+// these do not get created unless we show the menu
 type HydratedSource struct {
 	*Source
 	HydratedTargets []HydratedTarget
