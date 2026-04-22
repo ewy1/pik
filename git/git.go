@@ -65,7 +65,7 @@ func (g *gitMod) Branch(source *model.Source) (string, error) {
 
 var UnknownResponseError = errors.New("unknown response")
 
-func (g *gitMod) Diff(source *model.Source) (int, int, int, error) {
+func (g *gitMod) Diff(source *model.Source) (changes int, insertions int, deletions int, err error) {
 	cmd := exec.Command(g.Git, "diff", "--shortstat")
 	cmd.Dir = source.Path
 	b, err := cmd.CombinedOutput()
@@ -73,9 +73,6 @@ func (g *gitMod) Diff(source *model.Source) (int, int, int, error) {
 		return 0, 0, 0, err
 	}
 	split := strings.Split(string(b), ",")
-	changes := 0
-	insertions := 0
-	deletions := 0
 	for _, s := range split {
 		if strings.TrimSpace(s) == "" {
 			return 0, 0, 0, nil
