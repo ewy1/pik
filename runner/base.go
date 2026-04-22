@@ -6,9 +6,11 @@ import (
 	"pik/model"
 )
 
+// BaseTarget is an embeddable type which contains some of the information we need for (almost) every target.
 type BaseTarget struct {
 	identity.Identity
 	MyTags model.Tags
+	Sub    []string
 }
 
 func (t *BaseTarget) Tags() model.Tags {
