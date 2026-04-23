@@ -17,71 +17,65 @@
     <meta content="file-based task runner" property="og:description" />
 
     <meta content="#f2cae2" data-react-helmet="true" name="theme-color" />
-    <style>
-        @media (prefers-color-scheme: dark) {
-            html {
-                background-color: #3e3b37;
-                color: rgb(222, 213, 200);
-            }
-        }
-
-        body {
-            max-width: 44em;
-            margin: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-
-            & p {
-                padding: 4px 0;
-            }
-        }
-
-        main {
-            min-height: 105vh;
-            display: flex;
-            gap: 16px;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        header {
-            display: flex;
-            align-items: baseline;
-            gap: 16px;
-            justify-content: space-between;
-
-            & a {
-                text-decoration: none;
-            }
-
-            & h1 {
-                font-family: monospace
-            }
-        }
-
-        a {
-            color: #f2cae2;
-        }
-
-        section {
-            & blockquote {
-                text-align: center;
-            }
-            & img {
-                border: solid black 2px;
-            }
-        }
-
-    </style>
+    <link type="text/css" rel="stylesheet" href="https://ewy.one/terminal.css" />
     <title>pik - file based task runner</title>
+    <style>
+        img {
+            box-sizing: border-box;
+            max-width: 100%;
+            border: solid 2px black;
+        }
+
+        .warranty {
+            padding-top: 256px;
+            text-align: justify;
+        }
+
+        .important {
+            text-align: center;
+        }
+
+        .links {
+            font-size: 2em;
+        }
+    </style>
 </head>
 <body>
 <header>
-    <h1>pik</h1>
+    <h1><a href="/" class="fakelink">pik</a></h1>
     <span>file-based task runner</span>
 </header>
 <main>
+    <section class="important">
+        <p>
+            targets are files
+        </p>
+        <p>
+            integrates with build systems and other task runners
+        </p>
+        <p>
+            can be creatively invoked and associated
+        </p>
+        <p>
+            has a tui that both reminds and teaches you
+        </p>
+        <p>
+            persistent memory allows calling from anywhere
+        </p>
+    </section>
+    <section class="important links">
+        <ul>
+            <li>
+                <a href="https://git.ewy.one/">Repository</a>
+            </li>
+            <li>
+                <a href="https://github.com/ewy1/pik">Github mirror</a>
+            </li>
+            <li>
+                <a href="https://mepik.dev/coverage.html">Test coverage</a>
+            </li>
+        </ul>
+    </section>
     <section>
         <figure>
             <img src="https://uwu.ewy.one/satty-20260417-00:10:15.png" />
@@ -94,22 +88,18 @@
             <blockquote>fig. 2: the pik experience</blockquote>
         </figure>
     </section>
-    <p>
-        <a href="https://mepik.dev/coverage.html">Test coverage</a>
-    </p>
-    <p>
-        <a href="https://git.ewy.one/">Repository</a>
-    </p>
-    <p>
-        <a href="https://github.com/ewy1/pik">Github mirror</a>
-    </p>
 </main>
 <footer>
-    THERE IS NO WARRANTY FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN
-    WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE SOFTWARE “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER
-    EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-    PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH THE CUSTOMER. SHOULD
-    THE SOFTWARE PROVE DEFECTIVE, THE CUSTOMER ASSUMES THE COST OF ALL NECESSARY SERVICING, REPAIR, OR CORRECTION.
+    <section>
+        proudly powered by <a href="https://ewy.one">ewy</a>
+    </section>
+    <section class="warranty">
+        THERE IS NO WARRANTY FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN
+        WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE SOFTWARE “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER
+        EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+        PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH THE CUSTOMER. SHOULD
+        THE SOFTWARE PROVE DEFECTIVE, THE CUSTOMER ASSUMES THE COST OF ALL NECESSARY SERVICING, REPAIR, OR CORRECTION.
+    </section>
 </footer>
 </body>
 </html>
