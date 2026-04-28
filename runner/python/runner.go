@@ -14,6 +14,7 @@ type python struct {
 	Venvs  map[string]string
 	Uv     string
 	System string
+	files  map[string]string
 }
 
 func (p python) Init() error {
@@ -72,7 +73,7 @@ func (p python) CreateTarget(fs fs.FS, source string, file string, entry fs.DirE
 			Identity: identity.New(filename),
 			MyTags:   model.TagsFromFilename(filename),
 		},
-		File: file,
+		Path: file,
 	}, nil
 }
 

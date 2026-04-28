@@ -12,6 +12,10 @@ type Target struct {
 	Script string
 }
 
+func (s *Target) File(src *model.Source) string {
+	return s.Script
+}
+
 func (s *Target) String() string {
 	return s.Label()
 }

@@ -48,7 +48,7 @@ var (
 	})
 )
 
-func (m *Model) Target(t model.HydratedTarget, header bool) string {
+func (m *Model) Target(src *model.HydratedSource, t model.HydratedTarget, header bool) string {
 	_, selection := m.Result()
 	selected := selection != nil && selection.Target() == t.Target()
 	icon := ""
@@ -67,12 +67,12 @@ func (m *Model) Target(t model.HydratedTarget, header bool) string {
 	}
 	var labelParts []string
 	labelParts = append(labelParts, icon)
-	sub := t.Sub()
-	if sub != nil && sub[len(sub)-1] != t.ShortestId() {
+	sub := t.Target().Sub()
+	if sub != nil && sub[len(sub)-1] != t.Target().ShortestId() {
 		labelParts = append(labelParts, TargetSubStyle.Render(sub...))
 	}
-	labelParts = append(labelParts, TargetLabelStyle.Render(t.Label()))
-	return lipgloss.JoinHorizontal(lipgloss.Left, selectionStyle.Render(labelParts...), selectionDescriptionStyle.Render(t.Description()))
+	labelParts = append(labelParts, TargetLabelStyle.Render(t.Target().Label()))
+	return lipgloss.JoinHorizontal(lipgloss.Left, selectionStyle.Render(labelParts...), selectionDescriptionStyle.Render(t.Description(src)))
 }
 
 func (m *Model) Category(input string, desc string) string {

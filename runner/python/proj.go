@@ -12,16 +12,20 @@ type Project struct {
 	Cmd string
 }
 
+func (p *Project) File(src *model.Source) string {
+	return Python.files[src.Path]
+}
+
 type Hydrated struct {
 	runner.BaseHydration[*Project]
 }
 
-func (h *Hydrated) Icon() string {
-	return "\uE606"
+func (h *Hydrated) Description(src *model.HydratedSource) string {
+	return h.Self.Cmd
 }
 
-func (h *Hydrated) Description() string {
-	return h.BaseTarget.Cmd
+func (h *Hydrated) Icon() string {
+	return "\uE606"
 }
 
 func (p *Project) Create(s *model.Source) *exec.Cmd {

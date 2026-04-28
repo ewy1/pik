@@ -3,17 +3,31 @@ package python
 import (
 	"os/exec"
 	"path/filepath"
+	"pik/describe"
 	"pik/model"
 	"pik/runner"
+	"pik/spool"
 )
 
 type File struct {
 	runner.BaseTarget
-	File string
+	Path string
+}
+
+func (p *File) File(src *model.Source) string {
+	return p.Path
 }
 
 type HydratedFileTarget struct {
 	runner.BaseHydration[*File]
+}
+
+func (h *HydratedFileTarget) Description(src *model.HydratedSource) string {
+	desc, err := describe.Describe(h.Target(), h.Self.Path)
+	if err != nil {
+		spool.Warn("%v\n", err)
+	}
+	return desc
 }
 
 func (h *HydratedFileTarget) Icon() string {
@@ -23,15 +37,15 @@ func (h *HydratedFileTarget) Icon() string {
 func (p *File) Create(s *model.Source) *exec.Cmd {
 	var cmd []string
 	if Python.Uv != "" {
-		cmd = []string{Python.Uv, "run", "--", p.File}
+		cmd = []string{Python.Uv, "run", "--", p.Path}
 	} else if venv := Python.VenvFor(s); venv != "" {
-		cmd = []string{filepath.Join(s.Path, venv, "bin", "python3"), p.File}
+		cmd = []string{filepath.Join(s.Path, venv, "bin", "python3"), p.Path}
 	} else {
 		sysPath, err := exec.LookPath("python3")
 		if err != nil {
 			return nil
 		}
-		cmd = []string{sysPath, p.File}
+		cmd = []string{sysPath, p.Path}
 	}
 	return exec.Command(cmd[0], cmd[1:]...)
 }

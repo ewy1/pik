@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/fs"
 	"os/exec"
+	"path/filepath"
 	"pik/identity"
 	"pik/model"
 	"pik/runner"
@@ -13,10 +14,13 @@ import (
 )
 
 type gnumake struct {
-	path string
+	path  string
+	files map[string]string
 }
 
-var Indexer = &gnumake{}
+var Indexer = &gnumake{
+	files: make(map[string]string),
+}
 
 var Makefiles = []string{
 	"Makefile",
@@ -32,6 +36,7 @@ func (m *gnumake) Index(path string, f fs.FS, _ []model.Runner) ([]model.Target,
 	makefile := ""
 	for _, e := range entries {
 		if !e.IsDir() && slices.Contains(Makefiles, strings.ToLower(e.Name())) {
+			m.files[path] = filepath.Join(path, e.Name())
 			content, err := fs.ReadFile(f, e.Name())
 			if err != nil {
 				return nil, err

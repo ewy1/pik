@@ -161,7 +161,7 @@ func main() {
 			_, _ = spool.Warn("no target selected.\n")
 			os.Exit(0)
 		}
-		err = run.Run(source.Source, target, args...)
+		err = run.Run(source.Source, target.Target(), args...)
 		if err != nil {
 			_, _ = spool.Warn("%v\n", err)
 			os.Exit(1)
@@ -198,7 +198,11 @@ func main() {
 	if result.Overridden {
 		_, _ = fmt.Fprintln(os.Stderr, menu.OverrideWarning(result.Target))
 	}
-	err = run.Run(result.Source, result.Target, result.Args...)
+	if *flags.Edit {
+		err = run.Edit(result.Target, result.Source)
+	} else {
+		err = run.Run(result.Source, result.Target, result.Args...)
+	}
 	if err != nil {
 		_, _ = spool.Warn("%v\n", err)
 		os.Exit(1)

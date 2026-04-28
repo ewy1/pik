@@ -16,8 +16,8 @@ func (h *Hydrated) Icon() string {
 	return "\uF489"
 }
 
-func (h *Hydrated) Description() string {
-	desc, err := describe.Describe(h.BaseTarget, h.BaseTarget.Script)
+func (h *Hydrated) Description(src *model.HydratedSource) string {
+	desc, err := describe.Describe(h.Target(), h.Target().File(src.Source))
 	if err != nil {
 		spool.Warn("%v\n", err)
 		return ""

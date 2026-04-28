@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/fs"
 	"os/exec"
+	"path/filepath"
 	"pik/identity"
 	"pik/model"
 	"pik/runner"
@@ -11,10 +12,13 @@ import (
 )
 
 type just struct {
-	path string
+	path  string
+	files map[string]string
 }
 
-var Indexer = &just{}
+var Indexer = &just{
+	files: make(map[string]string),
+}
 
 func (j *just) Index(path string, f fs.FS, runners []model.Runner) ([]model.Target, error) {
 
@@ -25,6 +29,7 @@ func (j *just) Index(path string, f fs.FS, runners []model.Runner) ([]model.Targ
 	hasJustfile := false
 	for _, e := range entries {
 		if !e.IsDir() && strings.ToLower(e.Name()) == "justfile" {
+			j.files[path] = filepath.Join(path, e.Name())
 			hasJustfile = true
 			break
 		}

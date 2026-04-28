@@ -14,7 +14,7 @@ type pyproj struct {
 	}
 }
 
-func (p python) Index(path string, f fs.FS, runners []model.Runner) ([]model.Target, error) {
+func (p *python) Index(path string, f fs.FS, runners []model.Runner) ([]model.Target, error) {
 	for _, pt := range VenvPaths {
 		if stat, err := fs.Stat(f, filepath.Join(pt)); err == nil {
 			if stat.IsDir() {
@@ -28,6 +28,8 @@ func (p python) Index(path string, f fs.FS, runners []model.Runner) ([]model.Tar
 	} else if err != nil {
 		return nil, err
 	}
+
+	p.files[path] = filepath.Join(path, "pyproject.toml")
 
 	pp := &pyproj{}
 

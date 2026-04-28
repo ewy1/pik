@@ -38,16 +38,16 @@ func (m *Model) Source(src *model.HydratedSource) string {
 	targets := make([]string, 0, len(src.Targets))
 	var sub []string
 	for _, t := range src.HydratedTargets {
-		ts := t.Sub()
+		ts := t.Target().Sub()
 		header := !slices.Equal(sub, ts)
 		if header {
 			sub = ts
 		}
-		if header && strings.Join(ts, " ") != t.ShortestId() {
+		if header && strings.Join(ts, " ") != t.Target().ShortestId() {
 			targets = append(targets, m.Category(strings.Join(ts, " "), ""))
 			header = false
 		}
-		targets = append(targets, m.Target(t, header))
+		targets = append(targets, m.Target(src, t, header))
 	}
 
 	targetContent := lipgloss.JoinVertical(lipgloss.Top, targets...)

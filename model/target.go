@@ -20,15 +20,15 @@ type Target interface {
 	Visible() bool
 	// Invocation should return the "canonical invocation": simple to remember
 	Invocation(src *Source) []string
+	File(src *Source) string
 }
 
 // HydratedTarget is something we want to show in the menu
 type HydratedTarget interface {
-	Target
 	// Icon is some text which will be used as an icon
 	Icon() string
 	// Description is a one-line description of what this does
-	Description() string
+	Description(src *HydratedSource) string
 	// Target returns our inner target
 	Target() Target
 }

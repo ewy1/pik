@@ -11,6 +11,10 @@ type Target struct {
 	Category string
 }
 
+func (j Target) File(src *model.Source) string {
+	return Indexer.files[src.Path]
+}
+
 func (j Target) Create(s *model.Source) *exec.Cmd {
 	return exec.Command(Indexer.path, j.Identity.Full)
 }
@@ -34,6 +38,10 @@ func (j *Target) Hydrate(src *model.Source) (model.HydratedTarget, error) {
 
 type Hydrated struct {
 	runner.BaseHydration[*Target]
+}
+
+func (h *Hydrated) Description(src *model.HydratedSource) string {
+	return ""
 }
 
 func (h *Hydrated) Icon() string {
