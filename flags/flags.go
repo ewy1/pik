@@ -24,5 +24,5 @@ var (
 	// List means we should output available targets separated by $IFS
 	List = pflag.BoolP("list", "l", false, "list available targets and exit")
 	// Inline means pik does not go to the terminal alt screen
-	Inline = pflag.BoolP("inline", "i", false, "do not use terminal alt screen")
+	Inline = pflag.BoolP("inline", "i", false, "if true, will force alt screen; if forced false, will disable alt screen")
 )
