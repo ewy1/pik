@@ -99,10 +99,10 @@ func (s *shell) CreateTarget(fs fs.FS, src string, file string, _ fs.DirEntry) (
 		BaseTarget: runner.BaseTarget{
 			Identity: identity.New(filename),
 			MyTags:   model.TagsFromFilename(filename),
+			Sub:      sub,
 		},
-		Shell:    shell,
-		Script:   filepath.Join(src, file),
-		SubValue: sub,
+		Shell:  shell,
+		Script: filepath.Join(src, file),
 	}, nil
 }
 

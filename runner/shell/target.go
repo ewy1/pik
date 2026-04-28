@@ -8,9 +8,8 @@ import (
 
 type Target struct {
 	runner.BaseTarget
-	Shell    string
-	Script   string
-	SubValue []string
+	Shell  string
+	Script string
 }
 
 func (s *Target) String() string {
@@ -22,13 +21,13 @@ func (s *Target) Hydrate(_ *model.Source) (model.HydratedTarget, error) {
 }
 
 func (s *Target) Sub() []string {
-	return s.SubValue
+	return s.BaseTarget.Sub
 }
 
 func (s *Target) Label() string {
 	return s.Identity.Full
 }
 
-func (s *Target) Create(src *model.Source) *exec.Cmd {
+func (s *Target) Create(_ *model.Source) *exec.Cmd {
 	return exec.Command(s.Shell, s.Script)
 }

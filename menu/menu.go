@@ -3,7 +3,6 @@ package menu
 import (
 	"errors"
 	tea "github.com/charmbracelet/bubbletea"
-	"pik/flags"
 	"pik/model"
 	"pik/spool"
 )
@@ -17,9 +16,6 @@ func Show(st *model.State, hydrators []model.Modder) (*model.HydratedSource, mod
 	}
 	md := NewModel(st, hydrators)
 	var opts []tea.ProgramOption
-	if !*flags.Inline {
-		opts = append(opts, tea.WithAltScreen())
-	}
 	program := tea.NewProgram(md, opts...)
 	resultModel, err := program.Run()
 	if err != nil {

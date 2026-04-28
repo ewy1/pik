@@ -4,12 +4,13 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"pik/menu/style"
 	"pik/model"
-	"strconv"
+	"slices"
+	"strings"
 )
 
 var (
 	SourceStyle = style.New(func() lipgloss.Style {
-		st := lipgloss.NewStyle().PaddingBottom(1)
+		st := lipgloss.NewStyle()
 		return st
 	})
 	SourceHeaderBackground = lipgloss.Color("5")
@@ -35,8 +36,18 @@ var (
 
 func (m *Model) Source(src *model.HydratedSource) string {
 	targets := make([]string, 0, len(src.Targets))
+	var sub []string
 	for _, t := range src.HydratedTargets {
-		targets = append(targets, m.Target(t))
+		ts := t.Sub()
+		header := !slices.Equal(sub, ts)
+		if header {
+			sub = ts
+		}
+		if header && strings.Join(ts, " ") != t.ShortestId() {
+			targets = append(targets, m.Category(strings.Join(ts, " "), ""))
+			header = false
+		}
+		targets = append(targets, m.Target(t, header))
 	}
 
 	targetContent := lipgloss.JoinVertical(lipgloss.Top, targets...)
@@ -53,67 +64,6 @@ func (m *Model) Source(src *model.HydratedSource) string {
 	}
 
 	return SourceStyle.Render(lipgloss.JoinVertical(lipgloss.Top,
-		parts...,
-	))
-}
-
-var (
-	StateStyle = style.New(func() lipgloss.Style {
-		return lipgloss.NewStyle().MarginBottom(1)
-	})
-)
-
-func (m *Model) State(st *model.HydratedState) string {
-	sources := make([]string, 0, len(st.Sources))
-	for _, hs := range st.HydratedSources {
-		sources = append(sources, m.Source(hs))
-	}
-
-	return StateStyle.Render(lipgloss.JoinVertical(lipgloss.Top, sources...))
-}
-
-var (
-	GitColor     = lipgloss.Color("4")
-	GitInfoStyle = style.New(func() lipgloss.Style {
-		return lipgloss.NewStyle().Background(GitColor).Border(lipgloss.OuterHalfBlockBorder(), false, false, false, true).BorderBackground(GitColor).Padding(0, 1)
-	})
-	GitStatusStyle = style.New(func() lipgloss.Style {
-		return lipgloss.NewStyle().Bold(true).Background(GitColor).PaddingLeft(1)
-	})
-	GitAddColor = lipgloss.Color("2")
-	GitAddStyle = style.New(func() lipgloss.Style {
-		return GitStatusStyle.Get().Foreground(GitAddColor)
-	})
-	GitRemoveColor = lipgloss.Color("1")
-	GitRemoveStyle = style.New(func() lipgloss.Style {
-		return GitStatusStyle.Get().Foreground(GitRemoveColor)
-	})
-	GitChangeColor = lipgloss.Color("5")
-	GitChangeStyle = style.New(func() lipgloss.Style {
-		return GitStatusStyle.Get().Foreground(GitChangeColor)
-	})
-)
-
-func Git(info *model.GitInfo) string {
-	var parts = []string{
-		"  ",
-		info.Branch,
-	}
-
-	if info.Insertions > 0 {
-		parts = append(parts, GitAddStyle.Render("+"+strconv.Itoa(info.Insertions)))
-	}
-	if info.Deletions > 0 {
-		parts = append(parts, GitRemoveStyle.Render("-"+strconv.Itoa(info.Deletions)))
-	}
-	if info.Changes > 0 {
-		parts = append(parts, GitChangeStyle.Render("~"+strconv.Itoa(info.Changes)))
-	}
-	if info.Changes == 0 && info.Deletions == 0 && info.Insertions == 0 {
-		parts = append(parts, GitAddStyle.Render("clean"))
-	}
-
-	return GitInfoStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left,
 		parts...,
 	))
 }

@@ -121,7 +121,20 @@ func (u *pikdex) Index(absPath string, f fs.FS, runners []model.Runner) ([]model
 				if err != nil {
 					spool.Warn("%v\n", err)
 				}
-				targets = append(targets, t)
+				sub := t.Sub()
+				if strings.Join(sub, " ") == t.ShortestId() {
+					desiredIndex := 0
+					for i := len(targets) - 1; i >= 0; i-- {
+						if slices.Equal(targets[i].Sub(), sub) {
+							desiredIndex = i
+						} else {
+							break
+						}
+					}
+					targets = slices.Insert(targets, desiredIndex, t)
+				} else {
+					targets = append(targets, t)
+				}
 				return nil
 			}
 			if err != nil {
