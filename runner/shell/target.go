@@ -25,7 +25,7 @@ func (s *Target) Hydrate(_ *model.Source) (model.HydratedTarget, error) {
 }
 
 func (s *Target) Sub() []string {
-	return s.BaseTarget.Sub
+	return s.BaseTarget.MySub
 }
 
 func (s *Target) Label() string {

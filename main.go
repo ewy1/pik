@@ -14,6 +14,7 @@ import (
 	"pik/model"
 	"pik/paths"
 	"pik/run"
+	"pik/runner/exc"
 	"pik/runner/gnumake"
 	"pik/runner/just"
 	"pik/runner/python"
@@ -49,6 +50,7 @@ var indexers = []model.Indexer{
 var runners = []model.Runner{
 	shell.Runner,
 	python.Python,
+	exc.Exc,
 }
 
 // hydrators are ran when the menu is required

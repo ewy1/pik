@@ -21,6 +21,8 @@ var Messages = []string{
 	"create a target with the same base name but containing .override. to prefer it over the other during invocations",
 	"pik crawls both the regular and symlink evaluated locations, if they are different",
 	"unsure about what you're doing? use --dry to check what you're running",
+	"use --edit to open a target in your $EDITOR",
+	"pik indexes executable files too, if you want to run something arbitrary",
 }
 
 func One() string {

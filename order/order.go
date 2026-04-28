@@ -31,6 +31,7 @@ func FromFile(f fs.FS, path string) (Order, error) {
 }
 
 func FromReader(r io.Reader) (Order, error) {
+	o := &Order{}
 	scanner := bufio.NewScanner(r)
 	scanner.Split(bufio.ScanLines)
 	for scanner.Scan() {
@@ -45,6 +46,18 @@ func FromReader(r io.Reader) (Order, error) {
 				continue
 			}
 		}
+
+		spl := strings.SplitN(line, "#", 2)
+
+		e := &Element{
+			Identifier: identity.New(spl[0]),
+		}
+		if len(spl) > 1 {
+			e.Description = spl[1]
+		}
+
+		o.Elements = append(o.Elements, *e)
 	}
 
+	return *o, nil
 }
