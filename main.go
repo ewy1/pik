@@ -140,7 +140,7 @@ func main() {
 	if *flags.List {
 		for _, s := range st.Sources {
 			for _, t := range s.Targets {
-				_, _ = spool.Print(t.ShortestId() + paths.Ifs)
+				_, _ = spool.Print("%v\n", t.ShortestId()+paths.Ifs)
 			}
 		}
 		os.Exit(0)

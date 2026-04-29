@@ -130,10 +130,10 @@ func TestMerge(t *testing.T) {
 		Path:  "/new/mypath",
 		Label: "mypath",
 	}
-	base := Cache{Entries: []Entry{
+	base := &Cache{Entries: []Entry{
 		a, b,
 	}}
-	other := Cache{Entries: []Entry{
+	other := &Cache{Entries: []Entry{
 		b, c,
 	}}
 	result := base.Merge(other)
@@ -162,7 +162,7 @@ func TestNew(t *testing.T) {
 func TestLoadFile_NotExist(t *testing.T) {
 	f := fstest.MapFS{}
 	c, err := LoadFile(f, "anything is fine")
-	assert.Nil(t, c.Entries)
+	assert.Nil(t, c)
 	assert.NoError(t, err)
 
 }
@@ -170,8 +170,7 @@ func TestLoadFile_NotExist(t *testing.T) {
 func TestSaveFile(t *testing.T) {
 	dir := t.TempDir()
 	loc := filepath.Join(dir, "savefile")
-	st := TState(TSource("source_one", "target"), TSource("second_source", "t1", "t2", "t3"))
-	c := Cache{Entries: []Entry{
+	c := &Cache{Entries: []Entry{
 		{
 			Path:  "path",
 			Label: "label",
@@ -181,6 +180,6 @@ func TestSaveFile(t *testing.T) {
 			Label: "",
 		},
 	}}
-	err := SaveFile(loc, st, c)
+	err := SaveFile(loc, c)
 	assert.NoError(t, err)
 }
