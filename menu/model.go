@@ -4,6 +4,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/term"
 	"github.com/spf13/pflag"
+	"os"
 	"pik/model"
 	"pik/motd"
 	"pik/spool"
@@ -97,13 +98,24 @@ func (m *Model) Validate() {
 	}
 }
 
+var ForcedInlineTerminals = map[string]string{
+	"TERMINAL_EMULATOR": "JetBrains-JediTerm",
+}
+
 func NewModel(st *model.State, hydrators []model.Modder) *Model {
+	isBanned := false
+	for k, v := range ForcedInlineTerminals {
+		if os.Getenv(k) == v {
+			isBanned = true
+			break
+		}
+	}
 	m := &Model{
 		HydratedState: Hydrate(st, hydrators),
 		Index:         0,
 		Indices:       make(map[int]model.HydratedTarget),
 		SourceIndices: make(map[int]*model.HydratedSource),
-		AutoAlt:       !pflag.Lookup("inline").Changed,
+		AutoAlt:       !pflag.Lookup("inline").Changed && !isBanned,
 		Motd:          motd.One(),
 	}
 	idx := 0
