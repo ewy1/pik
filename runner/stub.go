@@ -11,6 +11,11 @@ import (
 type Stub struct {
 }
 
+func (s Stub) File(src *model.Source) string {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (s Stub) Matches(input string) bool {
 	//TODO implement me
 	panic("implement me")
@@ -108,7 +113,7 @@ func (h HydratedStub) Icon() string {
 	panic("implement me")
 }
 
-func (h HydratedStub) Description() string {
+func (h HydratedStub) Description(src *model.HydratedSource) string {
 	//TODO implement me
 	panic("implement me")
 }

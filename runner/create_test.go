@@ -1,6 +1,6 @@
 //go:build test
 
-package testx
+package runner
 
 import (
 	"github.com/stretchr/testify/assert"

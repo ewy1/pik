@@ -1,13 +1,12 @@
 //go:build test
 
-package testx
+package runner
 
 import (
 	"github.com/stretchr/testify/assert"
 	"os/exec"
 	"pik/identity"
 	"pik/model"
-	"pik/runner"
 	"testing"
 )
 
@@ -34,7 +33,7 @@ func TState(sources ...*model.Source) *model.State {
 }
 
 type TestTarget struct {
-	runner.Stub
+	Stub
 	Id       identity.Identity
 	SubValue []string
 	MyTags   model.Tags
@@ -53,7 +52,7 @@ func (t TestTarget) Visible() bool {
 }
 
 func (t TestTarget) Hydrate(src *model.Source) (model.HydratedTarget, error) {
-	return runner.HydratedStub{}, nil
+	return HydratedStub{}, nil
 }
 
 func (t TestTarget) Sub() []string {

@@ -16,13 +16,38 @@ type Cache struct {
 	Entries []Entry
 }
 
+type cacheInit struct{}
+
+// Path is the file path to the "contexts" cache file
+var Path string
+
+// FsPath is the Path with the leading slash removed, to be opened from fs.FS
+var FsPath string
+
+var Init model.Initializer = &cacheInit{}
+
+func (i *cacheInit) Init() error {
+	Path = path.Join(paths.Cache, "contexts")
+	FsPath = Path[1:]
+	return nil
+}
+
 // Merge combines two caches and filters duplicate keys
-func (c Cache) Merge(other Cache) Cache {
+func (c *Cache) Merge(other *Cache) *Cache {
+	if other == nil && c != nil {
+		return c
+	}
+	if c == nil && other != nil {
+		return other
+	}
+	if c == nil {
+		return nil
+	}
 	mp := make(map[string]string)
 	for _, e := range append(c.Entries, other.Entries...) {
 		mp[e.Path] = e.Label
 	}
-	result := Cache{}
+	result := &Cache{}
 	for p, l := range mp {
 		result.Entries = append(result.Entries, Entry{Label: l, Path: p})
 	}
@@ -36,22 +61,16 @@ type Entry struct {
 
 var Empty = Cache{}
 
-// Path is the file path to the "contexts" cache file
-var Path = path.Join(paths.Cache, "contexts")
-
-// FsPath is the Path with the leading slash removed, to be opened from fs.FS
-var FsPath = Path[1:]
-
 var UnexpectedEntryError = errors.New("unexpected cache entry")
 
 // LoadFile creates a Cache from a file or an empty one if the file does not exist
 // this handles opening a reader for Unmarshal
-func LoadFile(root fs.FS, path string) (Cache, error) {
+func LoadFile(root fs.FS, path string) (*Cache, error) {
 	fd, err := root.Open(path)
 	if errors.Is(err, fs.ErrNotExist) {
-		return Cache{}, nil
+		return nil, nil
 	} else if err != nil {
-		return Cache{}, err
+		return nil, err
 	}
 	if fd != nil {
 		defer fd.Close()
@@ -60,8 +79,8 @@ func LoadFile(root fs.FS, path string) (Cache, error) {
 }
 
 // Unmarshal attempts to create a Cache from reader content
-func Unmarshal(r io.Reader) (Cache, error) {
-	c := Cache{}
+func Unmarshal(r io.Reader) (*Cache, error) {
+	c := &Cache{}
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
@@ -86,7 +105,7 @@ func Unmarshal(r io.Reader) (Cache, error) {
 }
 
 // Marshal returns the file representation of the Cache
-func (c Cache) Marshal() []byte {
+func (c *Cache) Marshal() []byte {
 	b := strings.Builder{}
 	for _, e := range c.Entries {
 		b.WriteString(e.Path)
@@ -97,12 +116,10 @@ func (c Cache) Marshal() []byte {
 	return []byte(b.String())
 }
 
-func (c Cache) String() string {
+func (c *Cache) String() string {
 	return string(c.Marshal())
 }
-
-// New creates a new Cache from a model.State
-func New(st *model.State) Cache {
+func New(st *model.State) *Cache {
 	c := &Cache{}
 	for _, s := range st.Sources {
 		c.Entries = append(c.Entries, Entry{
@@ -110,11 +127,22 @@ func New(st *model.State) Cache {
 			Label: s.Label(),
 		})
 	}
-	return *c
+	return c
+}
+
+func Insert(in *model.State) error {
+	f := os.DirFS("/")
+	loaded, err := LoadFile(f, FsPath)
+	if err != nil {
+		return err
+	}
+	insert := New(in)
+	result := loaded.Merge(insert)
+	return SaveFile(Path, result)
 }
 
 // SaveFile helps you use Save with a file path instead of a reader
-func SaveFile(path string, s *model.State, loaded Cache) error {
+func SaveFile(path string, loaded *Cache) error {
 	fd, err := os.Create(path)
 	if err != nil {
 		return err
@@ -122,19 +150,18 @@ func SaveFile(path string, s *model.State, loaded Cache) error {
 	if fd != nil {
 		defer fd.Close()
 	}
-	return Save(s, fd, loaded)
+	return Save(fd, loaded)
 }
 
-// Save writes the cache combined with the "loaded" cache to the writer.
-func Save(s *model.State, w io.Writer, loaded Cache) error {
-	result := New(s).Merge(loaded)
-	_, err := w.Write([]byte(result.Marshal()))
+// Save writes a cache to the contexts file
+func Save(w io.Writer, loaded *Cache) error {
+	_, err := w.Write(loaded.Marshal())
 	return err
 
 }
 
 // LoadState creates a state with model.NewState based on cache content
-func LoadState(f fs.FS, cache Cache, indexers []model.Indexer, runners []model.Runner) (*model.State, []error) {
+func LoadState(f fs.FS, cache *Cache, indexers []model.Indexer, runners []model.Runner) (*model.State, []error) {
 	var locs []string
 	for _, e := range cache.Entries {
 		locs = append(locs, e.Path)
@@ -144,7 +171,7 @@ func LoadState(f fs.FS, cache Cache, indexers []model.Indexer, runners []model.R
 
 // Strip removes the needle's entries from the receiver's entries when they have matching paths.
 // used to skip already indexed locations when auto-all-ing
-func (c Cache) Strip(needle Cache) Cache {
+func (c *Cache) Strip(needle Cache) Cache {
 	var result []Entry
 outer:
 	for _, e := range c.Entries {

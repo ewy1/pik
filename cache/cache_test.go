@@ -5,7 +5,7 @@ package cache
 import (
 	"github.com/stretchr/testify/assert"
 	"path/filepath"
-	. "pik/testx"
+	. "pik/runner"
 	"strings"
 	"testing"
 	"testing/fstest"

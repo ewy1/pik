@@ -24,14 +24,15 @@ import (
 	"sync"
 )
 
-// preInitializers are ran before the initializers.
+// syncInitializers are ran before the initializers.
 // useful for initializing stuff like paths, preparing directories, and reading the environment
-var preInitializers = []model.Initializer{
+var syncInitializers = []model.Initializer{
 	paths.Paths,
+	cache.Init,
 }
 
 // initializers are ran before indexing with the indexers,
-// data from the preInitializers can be accessed at this time.
+// data from the syncInitializers can be accessed at this time.
 var initializers = []model.Initializer{
 	pikdex.Indexer,
 	python.Python,
@@ -65,7 +66,7 @@ var ForceConfirm = false
 
 // SourcesWithoutResults is a failed cache from the previous iteration
 // used for stripping out results to prevent double-index
-var SourcesWithoutResults cache.Cache
+var SourcesWithoutResults *cache.Cache
 
 //go:embed version.txt
 var version string
@@ -79,18 +80,14 @@ func main() {
 		os.Exit(0)
 	}
 
-	wg := sync.WaitGroup{}
-	for _, i := range preInitializers {
-		wg.Go(func() {
-			err := i.Init()
-			if err != nil {
-				_, _ = spool.Warn("%v\n", err)
-			}
-		})
+	for _, i := range syncInitializers {
+		err := i.Init()
+		if err != nil {
+			_, _ = spool.Warn("%v\n", err)
+		}
 	}
-	wg.Wait()
 
-	wg = sync.WaitGroup{}
+	wg := sync.WaitGroup{}
 	for _, i := range initializers {
 		wg.Go(func() {
 			err := i.Init()
@@ -121,12 +118,15 @@ func main() {
 	var st *model.State
 	var stateErrors []error
 
-	var c cache.Cache
+	var c *cache.Cache
 	if !*flags.All {
 		st, stateErrors = model.NewState(fs, locs, indexers, runners)
+		err = cache.Insert(st)
+		if err != nil {
+			spool.Warn("%v\n", err)
+		}
 	} else {
 		c, err = cache.LoadFile(fs, cache.Path[1:])
-		c.Strip(SourcesWithoutResults)
 		if err != nil {
 			_, _ = spool.Warn("%v\n", err)
 			os.Exit(1)
@@ -135,11 +135,6 @@ func main() {
 	}
 	if stateErrors != nil {
 		_, _ = spool.Warn("%v\n", stateErrors)
-	} else {
-		err = cache.SaveFile(cache.Path, st, c)
-		if err != nil {
-			_, _ = spool.Warn("%v", err)
-		}
 	}
 
 	if *flags.List {
@@ -186,7 +181,7 @@ func main() {
 	}
 
 	if result.Target == nil {
-		_, _ = spool.Print("target not found.")
+		_, _ = spool.Warn("target not found.")
 		os.Exit(1)
 		return
 	}

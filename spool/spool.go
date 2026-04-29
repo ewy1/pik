@@ -5,8 +5,15 @@ import (
 	"os"
 )
 
-var Print = fmt.Printf
+var (
+	Stderr = os.Stderr
+	Stdout = os.Stdout
+)
+
+var Print = func(format string, values ...any) (any, error) {
+	return fmt.Fprintf(Stdout, format, values...)
+}
 
 var Warn = func(format string, values ...any) (any, error) {
-	return fmt.Fprintf(os.Stderr, format, values...)
+	return fmt.Fprintf(Stderr, format, values...)
 }

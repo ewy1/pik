@@ -52,9 +52,9 @@ func Crop(input string, lines []string, height int) (output string, scrollStart 
 	}
 
 	if end >= size {
-		diff := size - 1 - end
-		start += diff
-		end += diff
+		diff := end - size
+		start -= diff
+		end -= diff
 	}
 
 	scrollStart = float32(start) / float32(size)

@@ -4,7 +4,7 @@ package pikdex
 
 import (
 	"github.com/stretchr/testify/assert"
-	"pik/testx"
+	"pik/runner"
 	"testing"
 )
 
@@ -19,7 +19,7 @@ func TestHydrate(t *testing.T) {
 			},
 		},
 	}
-	src := testx.TSource("asdf", "target")
+	src := runner.TSource("asdf", "target")
 	hyd := src.Hydrate(nil)
 	assert.NotNil(t, hyd)
 	err := p.Mod(src, hyd)
