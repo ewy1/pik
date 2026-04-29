@@ -18,7 +18,7 @@ var Messages = []string{
 	"the target's first line will be used as description, if it is a comment",
 	"create the .pik/.alias file to add additional names to the project for pik",
 	"put some utf-8 in .pik/.icon to add an icon to your pik-enabled project",
-	"create a target with the same base name but containing .override. to prefer it over the other during invocations",
+	"copy and include .override. to prefer it over the other during invocations",
 	"pik crawls both the regular and symlink evaluated locations, if they are different",
 	"unsure about what you're doing? use --dry to check what you're running",
 	"use --edit to open a target in your $EDITOR",
