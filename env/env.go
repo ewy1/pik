@@ -1,10 +1,10 @@
 package env
 
 import (
-	"git.ewy.one/pik/flags"
-	"git.ewy.one/pik/indexers/pikdex"
-	"git.ewy.one/pik/model"
-	"git.ewy.one/pik/spool"
+	"git.ewy.one/pik.git/flags"
+	"git.ewy.one/pik.git/indexers/pikdex"
+	"git.ewy.one/pik.git/model"
+	"git.ewy.one/pik.git/spool"
 	"github.com/joho/godotenv"
 	"io/fs"
 	"os"

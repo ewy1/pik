@@ -1,9 +1,9 @@
 package runner
 
 import (
-	"git.ewy.one/pik/identity"
-	"git.ewy.one/pik/indexers/pikdex"
-	"git.ewy.one/pik/model"
+	"git.ewy.one/pik.git/identity"
+	"git.ewy.one/pik.git/indexers/pikdex"
+	"git.ewy.one/pik.git/model"
 	"path/filepath"
 	"slices"
 	"strings"

@@ -3,7 +3,7 @@
 package describe
 
 import (
-	"git.ewy.one/pik/runner"
+	"git.ewy.one/pik.git/runner"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"path/filepath"

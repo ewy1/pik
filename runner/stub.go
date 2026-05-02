@@ -3,7 +3,7 @@
 package runner
 
 import (
-	"git.ewy.one/pik/model"
+	"git.ewy.one/pik.git/model"
 	"os/exec"
 )
 

@@ -1,9 +1,9 @@
 package model
 
 import (
-	"git.ewy.one/pik/identity"
-	"git.ewy.one/pik/paths"
-	"git.ewy.one/pik/spool"
+	"git.ewy.one/pik.git/identity"
+	"git.ewy.one/pik.git/paths"
+	"git.ewy.one/pik.git/spool"
 )
 
 // Source is a location containing stuff we can run

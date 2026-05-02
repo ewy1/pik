@@ -1,8 +1,8 @@
 package shell
 
 import (
-	"git.ewy.one/pik/model"
-	"git.ewy.one/pik/runner"
+	"git.ewy.one/pik.git/model"
+	"git.ewy.one/pik.git/runner"
 	"os/exec"
 )
 

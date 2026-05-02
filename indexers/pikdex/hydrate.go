@@ -1,7 +1,7 @@
 package pikdex
 
 import (
-	"git.ewy.one/pik/model"
+	"git.ewy.one/pik.git/model"
 	"strings"
 )
 

@@ -3,9 +3,9 @@ package menu
 import (
 	"bufio"
 	"fmt"
-	"git.ewy.one/pik/flags"
-	"git.ewy.one/pik/menu/style"
-	"git.ewy.one/pik/model"
+	"git.ewy.one/pik.git/flags"
+	"git.ewy.one/pik.git/menu/style"
+	"git.ewy.one/pik.git/model"
 	"github.com/charmbracelet/lipgloss"
 	"io"
 	"os"

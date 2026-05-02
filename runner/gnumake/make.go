@@ -2,9 +2,9 @@ package gnumake
 
 import (
 	"errors"
-	"git.ewy.one/pik/identity"
-	"git.ewy.one/pik/model"
-	"git.ewy.one/pik/runner"
+	"git.ewy.one/pik.git/identity"
+	"git.ewy.one/pik.git/model"
+	"git.ewy.one/pik.git/runner"
 	"io/fs"
 	"os/exec"
 	"path/filepath"

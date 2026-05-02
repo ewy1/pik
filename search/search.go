@@ -1,7 +1,7 @@
 package search
 
 import (
-	"git.ewy.one/pik/model"
+	"git.ewy.one/pik.git/model"
 	"slices"
 )
 

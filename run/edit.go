@@ -2,7 +2,7 @@ package run
 
 import (
 	"errors"
-	"git.ewy.one/pik/model"
+	"git.ewy.one/pik.git/model"
 	"os"
 	"os/exec"
 )

@@ -2,8 +2,8 @@ package menu
 
 import (
 	"errors"
-	"git.ewy.one/pik/model"
-	"git.ewy.one/pik/spool"
+	"git.ewy.one/pik.git/model"
+	"git.ewy.one/pik.git/spool"
 	tea "github.com/charmbracelet/bubbletea"
 )
 

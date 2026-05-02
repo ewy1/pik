@@ -2,8 +2,8 @@ package order
 
 import (
 	"bufio"
-	"git.ewy.one/pik/describe"
-	"git.ewy.one/pik/identity"
+	"git.ewy.one/pik.git/describe"
+	"git.ewy.one/pik.git/identity"
 	"io"
 	"io/fs"
 	"os"

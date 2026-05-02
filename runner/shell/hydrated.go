@@ -2,10 +2,10 @@ package shell
 
 import (
 	"errors"
-	"git.ewy.one/pik/describe"
-	"git.ewy.one/pik/model"
-	"git.ewy.one/pik/runner"
-	"git.ewy.one/pik/spool"
+	"git.ewy.one/pik.git/describe"
+	"git.ewy.one/pik.git/model"
+	"git.ewy.one/pik.git/runner"
+	"git.ewy.one/pik.git/spool"
 )
 
 type Hydrated struct {
