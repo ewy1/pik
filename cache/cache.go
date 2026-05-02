@@ -9,6 +9,7 @@ import (
 	"io/fs"
 	"os"
 	"path"
+	"slices"
 	"strings"
 )
 
@@ -138,6 +139,9 @@ func Insert(in *model.State) error {
 	}
 	insert := New(in)
 	result := loaded.Merge(insert)
+	if slices.Equal(loaded.Entries, result.Entries) {
+		return nil
+	}
 	return SaveFile(Path, result)
 }
 
