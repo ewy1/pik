@@ -67,6 +67,8 @@ pik reads the first comment line from your targets and informs you in the tui!
       and `asdf.env` if they exist.
     * env files are reread for every trigger, meaning you can have a pre-trigger fetch credentials and save it in .env
 * create any kind of target: high-level support for shell and python, and arbitrary shells with the shebang.
+* tab completion
+  * currently bring-your-own integrations: `pik --completion` echoes bash completion logic
 
 ### tui
 * tui for viewing and running targets
