@@ -76,11 +76,18 @@ pik reads the first comment line from your targets and informs you in the tui!
 * external targets will also show up in the tui
 * search with `/` and `?`, scroll results with `n` and `N`
 
+### supported pik runners
+* python
+* shell
+* executable files
+* java- and typescript
 
 ### supported external runners
 
 * `just`
 * `make`
+* `pyproject.toml`
+* 
 * if you want any more let me know and it should be done very fast
 
 ## planned features
@@ -89,9 +96,6 @@ As this program has already gone through a number of iterations and forms, this 
 time to catch up with all the features it used to have. This list is not exhaustive, but it is ordered by importance I
 attach to these features.
 
-* runner for executable files
-    * this will also enable arbitrary shells like node by way of the shebang
-* indexers for other target types such as `npm`
 * whitelists for external runners in `.pik`
     * adding descriptions to external targets
 * expand tui:

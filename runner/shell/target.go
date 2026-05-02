@@ -21,7 +21,9 @@ func (s *Target) String() string {
 }
 
 func (s *Target) Hydrate(_ *model.Source) (model.HydratedTarget, error) {
-	return Runner.Hydrate(s)
+	return &Hydrated{
+		BaseHydration: runner.Hydrated(s),
+	}, nil
 }
 
 func (s *Target) Sub() []string {

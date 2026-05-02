@@ -9,14 +9,6 @@ import (
 	"path/filepath"
 )
 
-func (e *exc) Hydrate(target model.Target) (model.HydratedTarget, error) {
-	return &Hydrated{
-		BaseHydration: &runner.BaseHydration[*Executable]{
-			Self: target.(*Executable),
-		},
-	}, nil
-}
-
 func (e *exc) Wants(fs fs.FS, file string, entry fs.DirEntry) (bool, error) {
 	if entry.IsDir() {
 		return false, nil

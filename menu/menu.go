@@ -10,24 +10,23 @@ import (
 var WrongModelTypeError = errors.New("wrong model type")
 var NoSourcesIndexedError = errors.New("no sources indexed")
 
-func Show(st *model.State, hydrators []model.Modder) (*model.HydratedSource, model.HydratedTarget, error) {
+func Show(st *model.State, hydrators []model.Modder) (*Model, error) {
 	if len(st.Sources) == 0 {
-		return nil, nil, NoSourcesIndexedError
+		return nil, NoSourcesIndexedError
 	}
 	md := NewModel(st, hydrators)
 	var opts []tea.ProgramOption
 	program := tea.NewProgram(md, opts...)
 	resultModel, err := program.Run()
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	result, ok := resultModel.(*Model)
 	if !ok {
-		return nil, nil, WrongModelTypeError
+		return nil, WrongModelTypeError
 	}
 
-	src, t := result.Result()
-	return src, t, nil
+	return result, nil
 }
 
 func Hydrate(st *model.State, hydrators []model.Modder) *model.HydratedState {

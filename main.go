@@ -14,6 +14,7 @@ import (
 	"github.com/ewy1/pik/run"
 	"github.com/ewy1/pik/runner/exc"
 	"github.com/ewy1/pik/runner/gnumake"
+	"github.com/ewy1/pik/runner/js"
 	"github.com/ewy1/pik/runner/just"
 	"github.com/ewy1/pik/runner/python"
 	"github.com/ewy1/pik/runner/shell"
@@ -36,6 +37,7 @@ var initializers = ComponentList[model.Initializer]{
 	pikdex.Indexer,
 	python.Python,
 	git.Git,
+	js.Js,
 }
 
 // indexers are methods which scan a directory and return a number of targets.
@@ -43,6 +45,7 @@ var indexers = ComponentList[model.Indexer]{
 	pikdex.Indexer,
 	just.Indexer,
 	gnumake.Indexer,
+	js.Js,
 }
 
 // runners are modules which know how to turn a file into an exec.Cmd
@@ -51,6 +54,7 @@ var runners = ComponentList[model.Runner]{
 	shell.Runner,
 	python.Python,
 	exc.Exc,
+	js.Js,
 }
 
 // hydrators are ran when the menu is required
@@ -131,13 +135,16 @@ func main() {
 	args := pflag.Args()
 
 	var result *search.Result
+	cancelled := false
 
 	if len(args) == 0 {
-		source, target, err := menu.Show(st, hydrators)
+		md, err := menu.Show(st, hydrators)
 		if err != nil {
 			_, _ = spool.Warn("%v\n", err)
 			os.Exit(1)
 		}
+		cancelled = md.Cancel
+		source, target := md.Result()
 		if target != nil {
 			t := target.Target()
 			result = &search.Result{
@@ -163,6 +170,12 @@ func main() {
 		}
 		SourcesWithoutResults = c
 		main()
+		return
+	}
+
+	if cancelled {
+		_, _ = spool.Warn("no target selected\n")
+		os.Exit(0)
 		return
 	}
 

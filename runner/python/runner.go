@@ -30,11 +30,6 @@ func (p python) Init() error {
 	return err
 }
 
-func (p python) Hydrate(target model.Target) (model.HydratedTarget, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
 func (p python) Wants(fs fs.FS, file string, entry fs.DirEntry) (bool, error) {
 	return !entry.IsDir() && filepath.Ext(entry.Name()) == ".py", nil
 }
