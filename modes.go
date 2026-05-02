@@ -15,10 +15,10 @@ type ModeMap[T any] map[*bool]T
 
 func (m ModeMap[T]) Traverse(then func(in T) error) {
 	for enabled, mode := range m {
-		var err error
-		if *enabled {
-			err = then(mode)
+		if !*enabled {
+			continue
 		}
+		err := then(mode)
 		if errors.Is(err, Continue) {
 			continue
 		} else if err != nil {
