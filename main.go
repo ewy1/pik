@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "embed"
+	"errors"
 	"fmt"
 	"github.com/ewy1/pik/cache"
 	"github.com/ewy1/pik/crawl"
@@ -22,6 +23,7 @@ import (
 	"github.com/ewy1/pik/spool"
 	"github.com/spf13/pflag"
 	"os"
+	"runtime/pprof"
 )
 
 // syncInitializers are ran before the initializers.
@@ -75,11 +77,43 @@ var SourcesWithoutResults *cache.Cache
 var version string
 
 func main() {
+	result := pik()
+	if profileFd != nil {
+		pprof.StopCPUProfile()
+		err := profileFd.Close()
+		if err != nil {
+			_, _ = spool.Warn("%v\n", err)
+		}
+	}
+	if result != 0 {
+		os.Exit(result)
+	}
+}
+
+func mode[T any](list ModeMap[T], fire func(mode T) error) *int {
+	err := list.Traverse(func(in T) error {
+		return fire(in)
+	})
+	if errors.Is(err, Success) {
+		zero := 0
+		return &zero
+	} else if err != nil {
+		_, _ = spool.Warn("%v\n", err)
+		one := 1
+		return &one
+	}
+	return nil
+}
+
+func pik() int {
 	pflag.Parse()
 
-	statelessModes.Traverse(func(in func() error) error {
-		return in()
+	code := mode(statelessModes, func(mode func() error) error {
+		return mode()
 	})
+	if code != nil {
+		return *code
+	}
 
 	syncInitializers.RunSync(func(initializer model.Initializer) error {
 		return initializer.Init()
@@ -92,19 +126,19 @@ func main() {
 	here, err := os.Getwd()
 	if err != nil {
 		_, _ = spool.Warn("%v\n", err)
-		os.Exit(1)
+		return 1
 	}
 	locs := crawl.RichLocations(here)
 	last := locs[len(locs)-1]
 	root, err := os.OpenRoot(last)
 	if root == nil {
 		_, _ = spool.Warn("%v\n", err)
-		os.Exit(1)
+		return 1
 	}
 	fs := root.FS()
 	if err != nil {
 		_, _ = spool.Warn("%v\n", err)
-		os.Exit(1)
+		return 1
 	}
 	var st *model.State
 	var stateErrors []error
@@ -112,15 +146,18 @@ func main() {
 	var c *cache.Cache
 	if !*flags.All {
 		st, stateErrors = model.NewState(fs, locs, indexers, runners)
-		err = cache.Insert(st)
-		if err != nil {
-			spool.Warn("%v\n", err)
-		}
+		go func() {
+			err := cache.Insert(st)
+			if err != nil {
+				spool.Warn("%v\n", err)
+			}
+
+		}()
 	} else {
 		c, err = cache.LoadFile(fs, cache.Path[1:])
 		if err != nil {
 			_, _ = spool.Warn("%v\n", err)
-			os.Exit(1)
+			return 1
 		}
 		st, stateErrors = cache.LoadState(fs, c, indexers, runners)
 	}
@@ -128,9 +165,12 @@ func main() {
 		_, _ = spool.Warn("%v\n", stateErrors)
 	}
 
-	statefulModes.Traverse(func(in func(st *model.State) error) error {
-		return in(st)
+	code = mode(statefulModes, func(mode func(st *model.State) error) error {
+		return mode(st)
 	})
+	if code != nil {
+		return *code
+	}
 
 	args := pflag.Args()
 
@@ -141,7 +181,7 @@ func main() {
 		md, err := menu.Show(st, hydrators)
 		if err != nil {
 			_, _ = spool.Warn("%v\n", err)
-			os.Exit(1)
+			return 1
 		}
 		cancelled = md.Cancel
 		source, target := md.Result()
@@ -166,43 +206,45 @@ func main() {
 		ForceConfirm = true
 		if err != nil {
 			_, _ = spool.Warn("%v\n", err)
-			os.Exit(1)
+			return 1
 		}
 		SourcesWithoutResults = c
-		main()
-		return
+		return pik()
 	}
 
 	if cancelled {
 		_, _ = spool.Warn("no target selected\n")
-		os.Exit(0)
-		return
+		return 0
 	}
 
 	if result.Target == nil {
 		_, _ = spool.Warn("target not found\n")
-		os.Exit(1)
-		return
+		return 1
 	}
 
 	if result.NeedsConfirmation || ForceConfirm {
 		_, _ = fmt.Fprintf(os.Stderr, "this target is out of tree.\n")
 		if !menu.Confirm(os.Stdin, result.Source, result.Target, args...) {
-			os.Exit(0)
+			return 0
 		}
 	}
 	if result.Overridden {
 		_, _ = fmt.Fprintln(os.Stderr, menu.OverrideWarning(result.Target))
 	}
 
-	selectionModes.Traverse(func(in func(st *model.State, src *model.Source, t model.Target) error) error {
-		return in(st, result.Source, result.Target)
+	code = mode(selectionModes, func(mode func(st *model.State, src *model.Source, t model.Target) error) error {
+		return mode(st, result.Source, result.Target)
 	})
+	if code != nil {
+		return *code
+	}
 
 	err = run.Run(result.Source, result.Target, result.Args...)
 
 	if err != nil {
 		_, _ = spool.Warn("%v\n", err)
-		os.Exit(1)
+		return 1
 	}
+
+	return 0
 }

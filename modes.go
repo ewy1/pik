@@ -9,6 +9,8 @@ import (
 	"github.com/ewy1/pik/run"
 	"github.com/ewy1/pik/spool"
 	"os"
+	"runtime"
+	"runtime/pprof"
 )
 
 // ModeMap maps flags to specific operation modes
@@ -16,14 +18,14 @@ type ModeMap[T any] map[*bool]T
 
 // Continue can be returned as an error to continue program flow
 var Continue = errors.New("not an error; continue flow")
+var Success = errors.New("not an error; finished operations")
 
 // Traverse checks the entries of the map. If any flags are set on,
-// run that mode. If Continue is returned, it's non-exclusive. Otherwise,
+// pik that mode. If Continue is returned, it's non-exclusive. Otherwise,
 // we quit after one mode.
 //
 // `then` should simply be the method call (necessary due to generics)
-// no additional error handling is required
-func (m ModeMap[T]) Traverse(then func(in T) error) {
+func (m ModeMap[T]) Traverse(then func(in T) error) error {
 	for enabled, mode := range m {
 		if !*enabled {
 			continue
@@ -32,13 +34,14 @@ func (m ModeMap[T]) Traverse(then func(in T) error) {
 		if errors.Is(err, Continue) {
 			continue
 		} else if err != nil {
-			_, _ = spool.Warn("%v\n", err)
-			os.Exit(1)
-		} else {
-			os.Exit(0)
+			return err
 		}
+		return Success
 	}
+	return nil
 }
+
+var profileFd *os.File
 
 // statelessModes are program modes which do not require state to operate.
 // like --version and --completion
@@ -49,7 +52,19 @@ var statelessModes = ModeMap[func() error]{
 	},
 	flags.Completion: func() error {
 		return completion.Echo()
-
+	},
+	flags.Profile: func() error {
+		fd, err := os.Create("pik-profile.out")
+		if err != nil {
+			return err
+		}
+		runtime.SetCPUProfileRate(1000)
+		err = pprof.StartCPUProfile(profileFd)
+		if err != nil {
+			return err
+		}
+		profileFd = fd
+		return Continue
 	},
 }
 
