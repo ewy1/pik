@@ -13,6 +13,12 @@ running `pik` in any repository will index its own file-based task system, as we
 
 ## installing
 
+### go install
+
+```go install github.com/ewy1/pik@latest```
+
+### manual install
+
 * `git clone https://git.ewy.one/pik/`
 * `cd pik`
 
@@ -31,10 +37,11 @@ by simply replacing the command with `pik`.
 
 1. create a `.pik` folder in your project
 2. put a script in there, for example: `.pik/build.sh` containing `go build .`
-3. you can now access this script from almost anywhere by calling `pik build`. If you want to trigger a specific
+3. run `pik` to view all targets or `pik build` to start the build script.
+4. you can now access this script from almost anywhere with `pik build`. If you want to trigger a specific
    projects build, specify `pik project build`, where `project` is the folder name.
 
-bear in mind scripts will always run in the project directory, not in the `.pik` folder.
+> scripts will always run in the project directory, not in the `.pik` folder.
 
 ## <span style="color: green">killer</span> features
 
