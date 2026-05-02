@@ -14,6 +14,10 @@ var (
 		st := lipgloss.NewStyle().Border(lipgloss.OuterHalfBlockBorder(), false, false, false, true)
 		return st
 	})
+	TargetHighlightedColor = lipgloss.Color("1")
+	TargetHighlightedStyle = style.New(func() lipgloss.Style {
+		return TargetStyle.Get().Foreground(TargetHighlightedColor)
+	})
 	SelectedTargetStyle = style.New(func() lipgloss.Style {
 		return TargetStyle.Get().BorderBackground(SelectedTargetBackgroundColor).Background(SelectedTargetBackgroundColor)
 	})
@@ -59,6 +63,11 @@ func (m *Model) Target(src *model.HydratedSource, t model.HydratedTarget, header
 	}
 	selectionStyle := TargetStyle
 	selectionDescriptionStyle := TargetDescriptionStyle
+
+	if m.Highlights(src, t) {
+		selectionStyle = TargetHighlightedStyle
+	}
+
 	if selected {
 		selectionStyle = SelectedTargetStyle
 		selectionDescriptionStyle = SelectedTargetDescriptionStyle

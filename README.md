@@ -21,7 +21,7 @@ if you were already using `pik`, `pik install` would suffice!
 thankfully you can `pik` yourself:
 * `bash .pik/install.sh`
 
-wow! you just learned about `pik`s most obvious usage!
+wow! you just learned about `pik`s simplest usage!
 
 ## getting started
 
@@ -58,8 +58,6 @@ pik reads the first comment line from your targets and informs you in the tui!
     * `--at` to run the target in an arbitrary location
 * target tags in filenames which trigger flag behaviours
 * aliases to sources through the `.alias` file
-* tui for viewing and running targets
-    * descriptions for targets based on first comment in a target
 * y/n confirmation with yes as default
     * will be used if we have an uncertain target guess
     * `--yes` to automatically confirm y/n prompts
@@ -69,6 +67,13 @@ pik reads the first comment line from your targets and informs you in the tui!
       and `asdf.env` if they exist.
     * env files are reread for every trigger, meaning you can have a pre-trigger fetch credentials and save it in .env
 * create any kind of target: high-level support for shell and python, and arbitrary shells with the shebang.
+
+### tui
+* tui for viewing and running targets
+* descriptions for targets based on first comment in a target
+* external targets will also show up in the tui
+* search with `/` and `?`, scroll results with `n` and `N`
+
 
 ### supported external runners
 
@@ -89,7 +94,6 @@ attach to these features.
     * adding descriptions to external targets
 * expand tui:
     * support for categories and ordering of targets through the `.order` file
-    * search
     * more hotkeys (filter jumping, toggle all, etc.)
 * git pre-commit and pre-push triggers
 * linking sources together by `.include` and `.wants` files

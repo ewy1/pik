@@ -64,14 +64,14 @@ func (s *shell) Wants(f fs.FS, file string, entry fs.DirEntry) (bool, error) {
 }
 
 func (s *shell) Find(shell string) (string, error) {
+	s.Lock()
+	defer s.Unlock()
 	if s.Locations[shell] != "" {
 		return s.Locations[shell], nil
 	}
 
 	if p, err := exec.LookPath(shell); err == nil {
-		s.Lock()
 		s.Locations[shell] = p
-		s.Unlock()
 		return shell, nil
 	} else {
 		return "", err

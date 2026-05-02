@@ -139,8 +139,9 @@ func main() {
 
 	if *flags.List {
 		for _, s := range st.Sources {
+			_, _ = spool.Print("%v", s.Label()+paths.Ifs)
 			for _, t := range s.Targets {
-				_, _ = spool.Print("%v\n", t.ShortestId()+paths.Ifs)
+				_, _ = spool.Print("%v", t.ShortestId()+paths.Ifs)
 			}
 		}
 		os.Exit(0)
@@ -169,7 +170,7 @@ func main() {
 
 	result := search.Search(st, args...)
 	// TODO: Move auto-all logic into Search?
-	if !*flags.All && result.Target == nil && len(result.Args) > 0 {
+	if !*flags.All && result.Target == nil && len(result.Args) > 0 && SourcesWithoutResults == nil && !ForceConfirm {
 		ForceConfirm = true
 		if err != nil {
 			_, _ = spool.Warn("%v\n", err)
@@ -181,7 +182,7 @@ func main() {
 	}
 
 	if result.Target == nil {
-		_, _ = spool.Warn("target not found.")
+		_, _ = spool.Warn("target not found.\n")
 		os.Exit(1)
 		return
 	}

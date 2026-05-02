@@ -3,8 +3,32 @@ package menu
 import tea "github.com/charmbracelet/bubbletea"
 
 func (m *Model) HandleInput(msg tea.KeyMsg) (tea.Cmd, error) {
+
+	if m.Search.Focused() {
+		var cmd tea.Cmd
+		switch msg.String() {
+		case "ctrl+c":
+			m.Search.SetValue("")
+			m.Search.Blur()
+		case "ctrl+d":
+			m.Search.Blur()
+		case "enter":
+			m.Search.Blur()
+		default:
+			result, c := m.Search.Update(msg)
+			cmd = c
+			m.Search = result
+		}
+		return cmd, nil
+	}
+
 	var cmd tea.Cmd
 	switch msg.String() {
+	case "/":
+		m.Search.SetValue("")
+		fallthrough
+	case "?":
+		return m.Search.Focus(), nil
 	case "i", "I":
 		if m.Alt {
 			m.Alt = false
@@ -23,6 +47,10 @@ func (m *Model) HandleInput(msg tea.KeyMsg) (tea.Cmd, error) {
 		m.Index--
 	case "down", "j":
 		m.Index++
+	case "n":
+		m.LeapFilter(1)
+	case "N":
+		m.LeapFilter(-1)
 	case "q", "esc", "ctrl+c":
 		m.Cancel = true
 		return tea.Quit, nil
@@ -31,9 +59,26 @@ func (m *Model) HandleInput(msg tea.KeyMsg) (tea.Cmd, error) {
 		return tea.Quit, nil
 	}
 
-	m.Validate()
+	_ = m.Validate()
 
 	return cmd, nil
+}
+
+func (m *Model) LeapFilter(direction int) {
+	startIndex := m.Index
+	for {
+		m.Index += direction
+		clamped := m.Validate()
+		if clamped {
+			m.Index = startIndex
+			return
+		}
+
+		source, target := m.Result()
+		if m.Highlights(source, target) {
+			return
+		}
+	}
 }
 
 func (m *Model) Leap(direction int) {
