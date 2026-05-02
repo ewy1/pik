@@ -1,6 +1,7 @@
 package pikdex
 
 import (
+	"github.com/charmbracelet/lipgloss"
 	"strings"
 )
 
@@ -18,7 +19,11 @@ var MetaFiles = map[string]MetaSetter{
 		}
 	},
 	".icon": func(s *SourceData, content string) {
-		s.Icon = string([]rune(strip(content))[0:2])
+		icon := strip(content)
+		desiredWidth := lipgloss.Width(icon)
+		diff := desiredWidth - len([]rune(icon))
+		icon += strings.Repeat(" ", diff)
+		s.Icon = icon
 	},
 }
 

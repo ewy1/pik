@@ -77,10 +77,12 @@ func (u *pikdex) Index(absPath string, f fs.FS, runners []model.Runner) ([]model
 	mod := u.mods[absPath]
 	u.Unlock()
 	if mod == nil {
+		u.Lock()
 		u.mods[absPath] = &SourceData{
 			Path: absPath,
 		}
 		mod = u.mods[absPath]
+		u.Unlock()
 	}
 	err = fs.WalkDir(f, root, func(p string, d fs.DirEntry, err error) error {
 

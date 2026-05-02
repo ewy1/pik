@@ -14,9 +14,6 @@ var (
 )
 
 func Icon(input string) string {
-	if strings.TrimSpace(input) == "" {
-		return ""
-	}
 	return IconStyle.Render(input)
 }
 

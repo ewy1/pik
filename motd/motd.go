@@ -6,7 +6,7 @@ var Messages = []string{
 	"use the -a flag to invoke from anywhere",
 	"combine -a with -y to invoke from anywhere without confirming",
 	"`--env dev` will include .env, .env.dev, .env-dev, and dev.env",
-	"pik will start in a viewport if the terminal is too thin",
+	"pik will start in a viewport if the terminal is too short",
 	"instead of .pik you can use .tasks, or .bin, or any of these with _",
 	"include .pre. in a pik target filename to make it run as a prerequisite for other targets",
 	"a pik target filename with .post. will make it run after another targets completes successfully",
