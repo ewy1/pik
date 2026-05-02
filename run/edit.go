@@ -2,9 +2,9 @@ package run
 
 import (
 	"errors"
+	"git.ewy.one/pik/model"
 	"os"
 	"os/exec"
-	"pik/model"
 )
 
 var NoEditorError = errors.New("$EDITOR not set")

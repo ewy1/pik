@@ -1,11 +1,11 @@
 package python
 
 import (
+	"git.ewy.one/pik/model"
 	"github.com/pelletier/go-toml/v2"
 	"io/fs"
 	"os"
 	"path/filepath"
-	"pik/model"
 )
 
 type pyproj struct {

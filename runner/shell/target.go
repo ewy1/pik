@@ -1,9 +1,9 @@
 package shell
 
 import (
+	"git.ewy.one/pik/model"
+	"git.ewy.one/pik/runner"
 	"os/exec"
-	"pik/model"
-	"pik/runner"
 )
 
 type Target struct {

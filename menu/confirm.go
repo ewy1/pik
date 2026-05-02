@@ -3,12 +3,12 @@ package menu
 import (
 	"bufio"
 	"fmt"
+	"git.ewy.one/pik/flags"
+	"git.ewy.one/pik/menu/style"
+	"git.ewy.one/pik/model"
 	"github.com/charmbracelet/lipgloss"
 	"io"
 	"os"
-	"pik/flags"
-	"pik/menu/style"
-	"pik/model"
 	"slices"
 )
 

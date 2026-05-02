@@ -3,9 +3,9 @@
 package cache
 
 import (
+	. "git.ewy.one/pik/runner"
 	"github.com/stretchr/testify/assert"
 	"path/filepath"
-	. "pik/runner"
 	"strings"
 	"testing"
 	"testing/fstest"

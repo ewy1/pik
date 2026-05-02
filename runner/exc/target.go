@@ -1,11 +1,11 @@
 package exc
 
 import (
+	"git.ewy.one/pik/describe"
+	"git.ewy.one/pik/model"
+	"git.ewy.one/pik/runner"
+	"git.ewy.one/pik/spool"
 	"os/exec"
-	"pik/describe"
-	"pik/model"
-	"pik/runner"
-	"pik/spool"
 )
 
 type Executable struct {

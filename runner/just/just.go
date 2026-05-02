@@ -2,12 +2,12 @@ package just
 
 import (
 	"errors"
+	"git.ewy.one/pik/identity"
+	"git.ewy.one/pik/model"
+	"git.ewy.one/pik/runner"
 	"io/fs"
 	"os/exec"
 	"path/filepath"
-	"pik/identity"
-	"pik/model"
-	"pik/runner"
 	"strings"
 )
 

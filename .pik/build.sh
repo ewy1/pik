@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# build uwu
-echo "$@"
+# build pik
 CGO_ENABLED=0 go build -v "$@" .
-echo "Congratulations!"
+echo "Congratulations! You just built $(./pik --version)"

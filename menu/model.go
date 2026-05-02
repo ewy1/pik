@@ -1,14 +1,14 @@
 package menu
 
 import (
+	"git.ewy.one/pik/model"
+	"git.ewy.one/pik/motd"
+	"git.ewy.one/pik/spool"
+	"git.ewy.one/pik/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/term"
 	"github.com/spf13/pflag"
 	"os"
-	"pik/model"
-	"pik/motd"
-	"pik/spool"
-	"pik/viewport"
 )
 
 type Model struct {

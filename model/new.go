@@ -2,10 +2,10 @@ package model
 
 import (
 	"errors"
+	"git.ewy.one/pik/flags"
+	"git.ewy.one/pik/identity"
 	"io/fs"
 	"path/filepath"
-	"pik/flags"
-	"pik/identity"
 	"strings"
 	"sync"
 )

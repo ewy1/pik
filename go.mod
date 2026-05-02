@@ -1,4 +1,4 @@
-module pik
+module git.ewy.one/pik
 
 go 1.26.1
 

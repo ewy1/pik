@@ -2,11 +2,11 @@ package run
 
 import (
 	"fmt"
+	"git.ewy.one/pik/env"
+	"git.ewy.one/pik/flags"
+	"git.ewy.one/pik/menu"
+	"git.ewy.one/pik/model"
 	"os"
-	"pik/env"
-	"pik/flags"
-	"pik/menu"
-	"pik/model"
 	"slices"
 )
 

@@ -2,9 +2,9 @@ package describe
 
 import (
 	"bufio"
+	"git.ewy.one/pik/model"
 	"io"
 	"os"
-	"pik/model"
 	"strings"
 )
 

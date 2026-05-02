@@ -11,4 +11,10 @@ if [ -f "$DEST" ] ; then
 fi
 
 go build -o "$DEST" "$@" .
-echo "congratulations!"
+
+if [[ $PATH != *"$DEST_FOLDER"* ]] ; then
+  echo "installed pik but $DEST_FOLDER is not in \$PATH"
+  exit 1
+fi
+
+echo "congratulations! You are now using pik $(pik --version)"

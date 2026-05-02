@@ -3,12 +3,12 @@ package cache
 import (
 	"bufio"
 	"errors"
+	"git.ewy.one/pik/model"
+	"git.ewy.one/pik/paths"
 	"io"
 	"io/fs"
 	"os"
 	"path"
-	"pik/model"
-	"pik/paths"
 	"strings"
 )
 

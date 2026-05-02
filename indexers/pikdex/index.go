@@ -2,12 +2,12 @@ package pikdex
 
 import (
 	"errors"
+	"git.ewy.one/pik/model"
+	"git.ewy.one/pik/spool"
 	"io/fs"
 	"os"
 	"path"
 	"path/filepath"
-	"pik/model"
-	"pik/spool"
 	"slices"
 	"strings"
 	"sync"

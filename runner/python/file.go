@@ -1,12 +1,12 @@
 package python
 
 import (
+	"git.ewy.one/pik/describe"
+	"git.ewy.one/pik/model"
+	"git.ewy.one/pik/runner"
+	"git.ewy.one/pik/spool"
 	"os/exec"
 	"path/filepath"
-	"pik/describe"
-	"pik/model"
-	"pik/runner"
-	"pik/spool"
 )
 
 type File struct {

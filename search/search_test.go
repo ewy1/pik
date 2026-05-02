@@ -3,8 +3,8 @@
 package search
 
 import (
+	"git.ewy.one/pik/runner"
 	"github.com/stretchr/testify/assert"
-	"pik/runner"
 	"testing"
 )
 

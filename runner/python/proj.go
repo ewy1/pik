@@ -1,10 +1,10 @@
 package python
 
 import (
+	"git.ewy.one/pik/model"
+	"git.ewy.one/pik/runner"
 	"os/exec"
 	"path/filepath"
-	"pik/model"
-	"pik/runner"
 )
 
 type Project struct {

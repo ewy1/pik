@@ -1,12 +1,12 @@
 package menu
 
 import (
+	"git.ewy.one/pik/flags"
+	"git.ewy.one/pik/menu/style"
+	"git.ewy.one/pik/model"
+	"git.ewy.one/pik/paths"
 	"github.com/charmbracelet/lipgloss"
 	"os/exec"
-	"pik/flags"
-	"pik/menu/style"
-	"pik/model"
-	"pik/paths"
 	"strings"
 )
 

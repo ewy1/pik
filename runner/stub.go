@@ -3,8 +3,8 @@
 package runner
 
 import (
+	"git.ewy.one/pik/model"
 	"os/exec"
-	"pik/model"
 )
 
 // Stub is the most minimal and useless implementation of the target interface. It only panics. Use if you need a target-compliant struct.

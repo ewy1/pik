@@ -2,11 +2,11 @@ package git
 
 import (
 	"errors"
+	"git.ewy.one/pik/model"
+	"git.ewy.one/pik/spool"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"pik/model"
-	"pik/spool"
 	"strconv"
 	"strings"
 )
