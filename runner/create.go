@@ -3,8 +3,8 @@
 package runner
 
 import (
-	"git.ewy.one/pik.git/identity"
-	"git.ewy.one/pik.git/model"
+	"github.com/ewy1/pik/identity"
+	"github.com/ewy1/pik/model"
 	"github.com/stretchr/testify/assert"
 	"os/exec"
 	"testing"

@@ -2,9 +2,9 @@ package python
 
 import (
 	"errors"
-	"git.ewy.one/pik.git/identity"
-	"git.ewy.one/pik.git/model"
-	"git.ewy.one/pik.git/runner"
+	"github.com/ewy1/pik/identity"
+	"github.com/ewy1/pik/model"
+	"github.com/ewy1/pik/runner"
 	"io/fs"
 	"os/exec"
 	"path/filepath"

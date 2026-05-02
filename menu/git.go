@@ -1,9 +1,9 @@
 package menu
 
 import (
-	"git.ewy.one/pik.git/menu/style"
-	"git.ewy.one/pik.git/model"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/ewy1/pik/menu/style"
+	"github.com/ewy1/pik/model"
 	"strconv"
 )
 

@@ -1,10 +1,10 @@
 package exc
 
 import (
-	"git.ewy.one/pik.git/identity"
-	"git.ewy.one/pik.git/model"
-	"git.ewy.one/pik.git/runner"
-	"git.ewy.one/pik.git/spool"
+	"github.com/ewy1/pik/identity"
+	"github.com/ewy1/pik/model"
+	"github.com/ewy1/pik/runner"
+	"github.com/ewy1/pik/spool"
 	"io/fs"
 	"path/filepath"
 )

@@ -1,7 +1,7 @@
 package python
 
 import (
-	"git.ewy.one/pik.git/model"
+	"github.com/ewy1/pik/model"
 	"github.com/pelletier/go-toml/v2"
 	"io/fs"
 	"os"

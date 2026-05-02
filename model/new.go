@@ -2,8 +2,8 @@ package model
 
 import (
 	"errors"
-	"git.ewy.one/pik.git/flags"
-	"git.ewy.one/pik.git/identity"
+	"github.com/ewy1/pik/flags"
+	"github.com/ewy1/pik/identity"
 	"io/fs"
 	"path/filepath"
 	"strings"

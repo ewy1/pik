@@ -1,12 +1,12 @@
 package menu
 
 import (
-	"git.ewy.one/pik.git/model"
-	"git.ewy.one/pik.git/motd"
-	"git.ewy.one/pik.git/spool"
-	"git.ewy.one/pik.git/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/term"
+	"github.com/ewy1/pik/model"
+	"github.com/ewy1/pik/motd"
+	"github.com/ewy1/pik/spool"
+	"github.com/ewy1/pik/viewport"
 	"github.com/spf13/pflag"
 	"os"
 )

@@ -3,7 +3,7 @@
 package env
 
 import (
-	"git.ewy.one/pik.git/model"
+	"github.com/ewy1/pik/model"
 	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/assert"
 	"os"

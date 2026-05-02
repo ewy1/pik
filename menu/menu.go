@@ -2,9 +2,9 @@ package menu
 
 import (
 	"errors"
-	"git.ewy.one/pik.git/model"
-	"git.ewy.one/pik.git/spool"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/ewy1/pik/model"
+	"github.com/ewy1/pik/spool"
 )
 
 var WrongModelTypeError = errors.New("wrong model type")

@@ -1,8 +1,8 @@
 package viewport
 
 import (
-	"git.ewy.one/pik.git/menu/style"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/ewy1/pik/menu/style"
 	"strings"
 )
 

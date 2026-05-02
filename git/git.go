@@ -2,8 +2,8 @@ package git
 
 import (
 	"errors"
-	"git.ewy.one/pik.git/model"
-	"git.ewy.one/pik.git/spool"
+	"github.com/ewy1/pik/model"
+	"github.com/ewy1/pik/spool"
 	"os"
 	"os/exec"
 	"path/filepath"

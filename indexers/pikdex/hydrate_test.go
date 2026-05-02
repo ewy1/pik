@@ -3,7 +3,7 @@
 package pikdex
 
 import (
-	"git.ewy.one/pik.git/runner"
+	"github.com/ewy1/pik/runner"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
