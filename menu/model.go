@@ -4,6 +4,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/term"
+	"github.com/ewy1/pik/flags"
 	"github.com/ewy1/pik/model"
 	"github.com/ewy1/pik/motd"
 	"github.com/ewy1/pik/spool"
@@ -145,6 +146,7 @@ func NewModel(st *model.State, hydrators []model.Modder) *Model {
 		Index:         0,
 		Indices:       make(map[int]model.HydratedTarget),
 		SourceIndices: make(map[int]*model.HydratedSource),
+		Alt:           !*flags.Inline,
 		AutoAlt:       !pflag.Lookup("inline").Changed && !isBanned,
 		Motd:          motd.One(),
 		Search:        textinput.New(),

@@ -15,8 +15,7 @@ func Show(st *model.State, hydrators []model.Modder) (*Model, error) {
 		return nil, NoSourcesIndexedError
 	}
 	md := NewModel(st, hydrators)
-	var opts []tea.ProgramOption
-	program := tea.NewProgram(md, opts...)
+	program := tea.NewProgram(md)
 	resultModel, err := program.Run()
 	if err != nil {
 		return nil, err
