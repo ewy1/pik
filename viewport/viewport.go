@@ -17,7 +17,15 @@ func Process(input string, height int) string {
 		cropped, top, bottom := Crop(input, lines, height)
 		return WithScroll(cropped, int(top*float32(height)), int(bottom*float32(height)))
 	}
-	return input
+	return TrimSpaceRight(input)
+}
+
+func TrimSpaceRight(input string) string {
+	lines := strings.Split(input, "\n")
+	for i, l := range lines {
+		lines[i] = strings.TrimRight(l, " ")
+	}
+	return strings.Join(lines, "\n")
 }
 
 func Focus(lines []string, needle string) int {

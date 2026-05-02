@@ -19,9 +19,12 @@ func (m *Model) State() string {
 	sources := make([]string, 0, len(st.Sources))
 	for i, hs := range st.HydratedSources {
 		src := m.Source(hs)
+
+		// do not pad the bottom source, the motd goes there
 		if i != len(st.HydratedSources)-1 {
 			src += "\n"
 		}
+
 		sources = append(sources, src)
 	}
 

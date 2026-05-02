@@ -18,7 +18,7 @@ var (
 		st := lipgloss.NewStyle()
 		return st
 
-	})
+	}).Debug()
 	SourceLabelStyle = style.New(func() lipgloss.Style {
 		st := lipgloss.NewStyle().Border(lipgloss.OuterHalfBlockBorder(), false, false, false, true).Background(SourceHeaderBackground).BorderBackground(SourceHeaderBackground).PaddingRight(1).PaddingLeft(1).MarginRight(1)
 		return st
@@ -63,7 +63,5 @@ func (m *Model) Source(src *model.HydratedSource) string {
 		parts = append(parts, Git(src.Git))
 	}
 
-	return SourceStyle.Render(lipgloss.JoinVertical(lipgloss.Top,
-		parts...,
-	))
+	return SourceStyle.Render(strings.Join(parts, "\n"))
 }
