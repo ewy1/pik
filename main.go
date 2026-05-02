@@ -130,26 +130,30 @@ func main() {
 
 	args := pflag.Args()
 
+	var result *search.Result
+
 	if len(args) == 0 {
 		source, target, err := menu.Show(st, hydrators)
 		if err != nil {
 			_, _ = spool.Warn("%v\n", err)
 			os.Exit(1)
 		}
-		if target == nil {
-			_, _ = spool.Warn("no target selected.\n")
-			os.Exit(0)
+		if target != nil {
+			t := target.Target()
+			result = &search.Result{
+				Target:            t,
+				Source:            source.Source,
+				NeedsConfirmation: false,
+				Overridden:        t.Tags().Has(model.Override),
+				Sub:               t.Sub(),
+			}
 		}
-		err = run.Run(source.Source, target.Target(), args...)
-		if err != nil {
-			_, _ = spool.Warn("%v\n", err)
-			os.Exit(1)
-		}
-
-		return
 	}
 
-	result := search.Search(st, args...)
+	if result == nil {
+		result = search.Search(st, args...)
+	}
+
 	// TODO: Move auto-all logic into Search?
 	if !*flags.All && result.Target == nil && len(result.Args) > 0 && SourcesWithoutResults == nil && !ForceConfirm {
 		ForceConfirm = true
