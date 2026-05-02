@@ -103,3 +103,5 @@ attach to these features.
 ## thanks
 
 this repository lives [here](https://git.ewy.one/pik/)
+
+this software is and was intentionally produced without llms

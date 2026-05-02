@@ -21,26 +21,25 @@ import (
 	"github.com/ewy1/pik/spool"
 	"github.com/spf13/pflag"
 	"os"
-	"sync"
 )
 
 // syncInitializers are ran before the initializers.
 // useful for initializing stuff like paths, preparing directories, and reading the environment
-var syncInitializers = []model.Initializer{
+var syncInitializers = ComponentList[model.Initializer]{
 	paths.Paths,
 	cache.Init,
 }
 
 // initializers are ran before indexing with the indexers,
 // data from the syncInitializers can be accessed at this time.
-var initializers = []model.Initializer{
+var initializers = ComponentList[model.Initializer]{
 	pikdex.Indexer,
 	python.Python,
 	git.Git,
 }
 
 // indexers are methods which scan a directory and return a number of targets.
-var indexers = []model.Indexer{
+var indexers = ComponentList[model.Indexer]{
 	pikdex.Indexer,
 	just.Indexer,
 	gnumake.Indexer,
@@ -48,7 +47,7 @@ var indexers = []model.Indexer{
 
 // runners are modules which know how to turn a file into an exec.Cmd
 // all indexers have access to these but only pikdex uses it
-var runners = []model.Runner{
+var runners = ComponentList[model.Runner]{
 	shell.Runner,
 	python.Python,
 	exc.Exc,
@@ -56,7 +55,7 @@ var runners = []model.Runner{
 
 // hydrators are ran when the menu is required
 // for example adding git info, descriptions, icons...
-var hydrators = []model.Modder{
+var hydrators = ComponentList[model.Modder]{
 	pikdex.Indexer,
 	git.Git,
 }
@@ -74,29 +73,17 @@ var version string
 func main() {
 	pflag.Parse()
 
-	switch {
-	case *flags.Version:
-		_, _ = spool.Print("%s\n", version)
-		os.Exit(0)
-	}
+	statelessModes.Traverse(func(in func() error) error {
+		return in()
+	})
 
-	for _, i := range syncInitializers {
-		err := i.Init()
-		if err != nil {
-			_, _ = spool.Warn("%v\n", err)
-		}
-	}
+	syncInitializers.RunSync(func(initializer model.Initializer) error {
+		return initializer.Init()
+	})
 
-	wg := sync.WaitGroup{}
-	for _, i := range initializers {
-		wg.Go(func() {
-			err := i.Init()
-			if err != nil {
-				_, _ = spool.Warn("%v\n", err)
-			}
-		})
-	}
-	wg.Wait()
+	initializers.RunAsync(func(initializer model.Initializer) error {
+		return initializer.Init()
+	})
 
 	here, err := os.Getwd()
 	if err != nil {
@@ -137,15 +124,9 @@ func main() {
 		_, _ = spool.Warn("%v\n", stateErrors)
 	}
 
-	if *flags.List {
-		for _, s := range st.Sources {
-			_, _ = spool.Print("%v", s.Label()+paths.Ifs)
-			for _, t := range s.Targets {
-				_, _ = spool.Print("%v", t.ShortestId()+paths.Ifs)
-			}
-		}
-		os.Exit(0)
-	}
+	statefulModes.Traverse(func(in func(st *model.State) error) error {
+		return in(st)
+	})
 
 	args := pflag.Args()
 
@@ -196,11 +177,13 @@ func main() {
 	if result.Overridden {
 		_, _ = fmt.Fprintln(os.Stderr, menu.OverrideWarning(result.Target))
 	}
-	if *flags.Edit {
-		err = run.Edit(result.Target, result.Source)
-	} else {
-		err = run.Run(result.Source, result.Target, result.Args...)
-	}
+
+	selectionModes.Traverse(func(in func(st *model.State, src *model.Source, t model.Target) error) error {
+		return in(st, result.Source, result.Target)
+	})
+
+	err = run.Run(result.Source, result.Target, result.Args...)
+
 	if err != nil {
 		_, _ = spool.Warn("%v\n", err)
 		os.Exit(1)
