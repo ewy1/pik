@@ -182,7 +182,7 @@ func main() {
 	}
 
 	if result.Target == nil {
-		_, _ = spool.Warn("target not found.\n")
+		_, _ = spool.Warn("target not found\n")
 		os.Exit(1)
 		return
 	}
