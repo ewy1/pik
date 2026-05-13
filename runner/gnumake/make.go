@@ -88,12 +88,12 @@ func ParseOutput(input string) []model.Target {
 	return result
 }
 
-var NoJustError = errors.New("no gnumake in $PATH but source contains makefile")
+var NoMakeError = errors.New("source contains makefile but no gnumake in $PATH")
 
 func (m *gnumake) findMake() error {
-	loc, err := exec.LookPath("gnumake")
+	loc, err := exec.LookPath("make")
 	if errors.Is(err, exec.ErrNotFound) {
-		return NoJustError
+		return NoMakeError
 	} else if err != nil {
 		return err
 	}
