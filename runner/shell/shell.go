@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"errors"
 	"github.com/ewy1/pik/identity"
-	"github.com/ewy1/pik/indexers/pikdex"
 	"github.com/ewy1/pik/model"
+	"github.com/ewy1/pik/paths"
 	"github.com/ewy1/pik/runner"
 	"github.com/ewy1/pik/spool"
 	"io/fs"
@@ -87,7 +87,7 @@ func (s *shell) CreateTarget(fs fs.FS, src string, file string, _ fs.DirEntry) (
 	var sub []string
 	split := strings.Split(file, "/")
 	for _, p := range split {
-		if slices.Contains(pikdex.Roots, p) {
+		if slices.Contains(paths.Roots, p) {
 			continue
 		}
 		if filename == p {
@@ -133,7 +133,7 @@ func (s *shell) ShellFor(fs fs.FS, file string) (string, error) {
 				if loc, err := s.Find(potentialShell); err == nil {
 					shell = loc
 				} else {
-					_, _ = spool.Warn("script has %s but could not find %s (%s)\n", shebang, potentialShell)
+					_, _ = spool.Warn("script has %s but could not find %s\n", shebang, potentialShell)
 				}
 			}
 		}

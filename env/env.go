@@ -2,8 +2,8 @@ package env
 
 import (
 	"github.com/ewy1/pik/flags"
-	"github.com/ewy1/pik/indexers/pikdex"
 	"github.com/ewy1/pik/model"
+	"github.com/ewy1/pik/paths"
 	"github.com/ewy1/pik/spool"
 	"github.com/joho/godotenv"
 	"io/fs"
@@ -36,7 +36,7 @@ func Files(f fs.FS, p string, deep bool) []string {
 		return nil
 	}
 	for _, e := range dir {
-		if e.IsDir() && slices.Contains(pikdex.Roots, e.Name()) && deep {
+		if e.IsDir() && slices.Contains(paths.Roots, e.Name()) && deep {
 			result = append(result, Files(f, e.Name(), false)...)
 		}
 		if !e.IsDir() && IsEnv(e.Name()) {

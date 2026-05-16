@@ -1,6 +1,7 @@
 package pikdex
 
 import (
+	"github.com/ewy1/pik/paths"
 	"github.com/stretchr/testify/assert"
 	"io/fs"
 	"testing"
@@ -8,7 +9,7 @@ import (
 )
 
 func TestUwudex_WantsWalk_AnyRoot(t *testing.T) {
-	for _, r := range Roots {
+	for _, r := range paths.Roots {
 		data := fstest.MapFS{
 			r: &fstest.MapFile{
 				Data: nil,
@@ -25,11 +26,11 @@ func TestUwudex_WantsWalk_AnyRoot(t *testing.T) {
 
 func TestUwudex_WantsWalk_TwoRoots(t *testing.T) {
 	data := fstest.MapFS{
-		Roots[0]: &fstest.MapFile{
+		paths.Roots[0]: &fstest.MapFile{
 			Data: nil,
 			Mode: fs.ModeDir,
 		},
-		Roots[1]: &fstest.MapFile{
+		paths.Roots[1]: &fstest.MapFile{
 			Data: nil,
 			Mode: fs.ModeDir,
 		},
@@ -37,7 +38,7 @@ func TestUwudex_WantsWalk_TwoRoots(t *testing.T) {
 	u := &pikdex{}
 	result, r, err := u.WantsWalk(data)
 	// no guarantee we pick any one lol
-	assert.Contains(t, Roots, r)
+	assert.Contains(t, paths.Roots, r)
 	assert.NoError(t, err)
 	assert.True(t, result)
 }

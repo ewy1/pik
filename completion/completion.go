@@ -19,11 +19,11 @@ var completionFormat = `
 %s
 `
 
-var completionComment = "\n# pik completion (installed by `pik --install-completion`)\n"
+var completionComment = "pik completion (installed by `pik --install-completion`)"
 
 var completionCodeByShell = map[string]string{
-	"bash": ". <(pik --completion)\n\n",
-	"zsh":  `autoload -Uz compinit && compinit && source <(pik --completion)\n\n`,
+	"bash": ". <(pik --completion)",
+	"zsh":  `autoload -Uz compinit && compinit && source <(pik --completion)`,
 }
 
 var completionFileByShell = map[string]string{
@@ -60,6 +60,6 @@ func successMessage(shell string, file string) {
 }
 
 func Echo() error {
-	_, err := spool.Print(completionCode)
+	_, err := spool.Print("%s", completionCode)
 	return err
 }
