@@ -10,7 +10,7 @@ var completionCode string
 
 var completionCodeByShell = map[string]string{
 	"bash": ". <(pik --completion)",
-	"zsh":  `autoload bashcompinit && bashcompinit && source <(pik --completion)`,
+	"zsh":  `autoload -Uz compinit && compinit && source <(pik --completion)`,
 }
 
 func Echo() error {
