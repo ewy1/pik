@@ -3,12 +3,13 @@
 package cache
 
 import (
-	. "github.com/ewy1/pik/runner"
-	"github.com/stretchr/testify/assert"
 	"path/filepath"
 	"strings"
 	"testing"
 	"testing/fstest"
+
+	. "github.com/ewy1/pik/runner"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLoadFile(t *testing.T) {
@@ -34,7 +35,7 @@ func TestLoadFile(t *testing.T) {
 }
 
 func TestFromReader_Blank(t *testing.T) {
-	input := `   
+	input := `
 `
 	sr := strings.NewReader(input)
 	c, err := Unmarshal(sr)
@@ -182,4 +183,24 @@ func TestSaveFile(t *testing.T) {
 	}}
 	err := SaveFile(loc, c)
 	assert.NoError(t, err)
+}
+
+func TestMergeEmptyNil(t *testing.T) {
+	empty := &Cache{}
+	empty.Merge(nil)
+}
+
+func TestMergeNormalNil(t *testing.T) {
+	c := &Cache{
+		Entries: []Entry{{Path: "123", Label: "/asdf"}},
+	}
+	c.Merge(nil)
+}
+
+func TestMergeNilNormal(t *testing.T) {
+	var e *Cache = nil
+	c := &Cache{
+		Entries: []Entry{{Path: "123", Label: "/asdf"}},
+	}
+	_ = e.Merge(c)
 }
