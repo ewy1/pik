@@ -7,7 +7,13 @@ import (
 	"strings"
 )
 
-var Home, This, Cache, Config, Ifs string
+var (
+	Ifs    string
+	Config string
+	Cache  string
+	This   string
+	Home   string
+)
 
 type paths struct {
 	Initialized bool
