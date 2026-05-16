@@ -2,8 +2,8 @@ package runner
 
 import (
 	"github.com/ewy1/pik/identity"
-	"github.com/ewy1/pik/indexers/pikdex"
 	"github.com/ewy1/pik/model"
+	"github.com/ewy1/pik/paths"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -21,7 +21,7 @@ func SubFromFile(file string) []string {
 	var sub []string
 	split := strings.Split(file, "/")
 	for _, p := range split {
-		if slices.Contains(pikdex.Roots, p) {
+		if slices.Contains(paths.Roots, p) {
 			continue
 		}
 		if filename == p {

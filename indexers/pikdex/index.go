@@ -3,6 +3,7 @@ package pikdex
 import (
 	"errors"
 	"github.com/ewy1/pik/model"
+	"github.com/ewy1/pik/paths"
 	"github.com/ewy1/pik/spool"
 	"io/fs"
 	"os"
@@ -12,26 +13,6 @@ import (
 	"strings"
 	"sync"
 )
-
-var Roots = []string{
-
-	// current name
-	".pik",
-	"_pik",
-
-	// program names from a previous life
-	".godo",
-	"_godo",
-	".pik",
-	"_uwu",
-
-	//utility
-	".bin",
-	"_bin",
-	"tasks",
-	".tasks",
-	"_tasks",
-}
 
 var SkippedFolders = []string{
 	".git",
@@ -50,7 +31,7 @@ func (u *pikdex) Init() error {
 		return nil
 	}
 	self = strings.TrimSuffix(self, ".exe")
-	Roots = append(Roots, "."+self, "_"+self)
+	paths.Roots = append(paths.Roots, "."+self, "_"+self)
 	return nil
 }
 
@@ -163,7 +144,7 @@ func (u *pikdex) WantsWalk(f fs.FS) (bool, string, error) {
 	}
 
 	for _, e := range entries {
-		for _, r := range Roots {
+		for _, r := range paths.Roots {
 			if e.Name() == r && e.IsDir() {
 				return true, r, nil
 			}

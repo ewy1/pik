@@ -210,16 +210,17 @@ func TestMergeNilNormal(t *testing.T) {
 func TestCacheInit_Init(t *testing.T) {
 	d := t.TempDir()
 	paths.SetAll(d)
+	defer paths.Reset()
 	c := &cacheInit{}
 	err := c.Init()
 	assert.NoError(t, err)
-	assert.Contains(t, paths.ContextsFile, d)
+	assert.Contains(t, paths.ContextsFile.String(), d)
 }
 
 func TestInsert(t *testing.T) {
 	d := t.TempDir()
 	st := TState(TSource("source", "target"))
-	paths.SetAll(d)
+	paths.Set(paths.CacheDir, d)
 	defer paths.Reset()
 	err := MergeAndSave(st)
 	assert.NoError(t, err)
@@ -228,6 +229,7 @@ func TestInsert(t *testing.T) {
 func TestInsertNonExistent(t *testing.T) {
 	st := TState(TSource("source", "target"))
 	paths.SetAll("/../")
+	defer paths.Reset()
 	err := MergeAndSave(st)
 	assert.Error(t, err)
 }
