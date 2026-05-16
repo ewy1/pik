@@ -29,7 +29,7 @@ import (
 // syncInitializers are ran before the initializers.
 // useful for initializing stuff like paths, preparing directories, and reading the environment
 var syncInitializers = ComponentList[model.Initializer]{
-	paths.Paths,
+	paths.Component,
 	cache.Init,
 }
 
@@ -108,16 +108,16 @@ func mode[T any](list ModeMap[T], fire func(mode T) error) *int {
 func pik() int {
 	pflag.Parse()
 
+	syncInitializers.RunSync(func(initializer model.Initializer) error {
+		return initializer.Init()
+	})
+
 	code := mode(statelessModes, func(mode func() error) error {
 		return mode()
 	})
 	if code != nil {
 		return *code
 	}
-
-	syncInitializers.RunSync(func(initializer model.Initializer) error {
-		return initializer.Init()
-	})
 
 	initializers.RunAsync(func(initializer model.Initializer) error {
 		return initializer.Init()
@@ -128,9 +128,9 @@ func pik() int {
 		_, _ = spool.Warn("%v\n", err)
 		return 1
 	}
-	locs := crawl.RichLocations(here)
-	last := locs[len(locs)-1]
-	root, err := os.OpenRoot(last)
+	locs := append(crawl.RichLocations(here), paths.System.String())
+	root, err := os.OpenRoot("/")
+	defer root.Close()
 	if root == nil {
 		_, _ = spool.Warn("%v\n", err)
 		return 1
@@ -150,14 +150,14 @@ func pik() int {
 			if len(stateErrors) > 0 {
 				return
 			}
-			err := cache.Insert(st)
+			err := cache.MergeAndSave(st)
 			if err != nil {
-				spool.Warn("%v\n", err)
+				_, _ = spool.Warn("%v\n", err)
 			}
 
 		}()
 	} else {
-		c, err = cache.LoadFile(fs, cache.Path[1:])
+		c, err = cache.LoadFile(fs, paths.ContextsFile.String()[1:])
 		if err != nil {
 			_, _ = spool.Warn("%v\n", err)
 			return 1

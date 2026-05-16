@@ -8,7 +8,6 @@ import (
 	"io"
 	"io/fs"
 	"os"
-	"path"
 	"slices"
 	"strings"
 )
@@ -19,30 +18,22 @@ type Cache struct {
 
 type cacheInit struct{}
 
-// Path is the file path to the "contexts" cache file
-var Path string
-
-// FsPath is the Path with the leading slash removed, to be opened from fs.FS
-var FsPath string
-
 var Init model.Initializer = &cacheInit{}
 
 func (i *cacheInit) Init() error {
-	Path = path.Join(paths.Cache, "contexts")
-	FsPath = Path[1:]
 	return nil
 }
 
 // Merge combines two caches and filters duplicate keys
 func (c *Cache) Merge(other *Cache) *Cache {
-	if other == nil && c != nil {
+	switch {
+	case other == nil && c != nil:
 		return c
-	}
-	if c == nil && other != nil {
+	case c == nil && other != nil:
 		return other
-	}
-	if c == nil {
+	case c == nil:
 		return nil
+
 	}
 	mp := make(map[string]string)
 	for _, e := range append(c.Entries, other.Entries...) {
@@ -60,9 +51,9 @@ type Entry struct {
 	Label string
 }
 
-var Empty = Cache{}
-
-var UnexpectedEntryError = errors.New("unexpected cache entry")
+func (e Entry) String() string {
+	return e.Path + " # " + e.Label
+}
 
 // LoadFile creates a Cache from a file or an empty one if the file does not exist
 // this handles opening a reader for Unmarshal
@@ -97,8 +88,6 @@ func Unmarshal(r io.Reader) (*Cache, error) {
 			fallthrough
 		case 1:
 			entry.Path = strings.TrimSpace(parts[0])
-		default:
-			return c, UnexpectedEntryError
 		}
 		c.Entries = append(c.Entries, *entry)
 	}
@@ -109,9 +98,7 @@ func Unmarshal(r io.Reader) (*Cache, error) {
 func (c *Cache) Marshal() []byte {
 	b := strings.Builder{}
 	for _, e := range c.Entries {
-		b.WriteString(e.Path)
-		b.WriteString(" # ")
-		b.WriteString(e.Label)
+		b.WriteString(e.String())
 		b.WriteString("\n")
 	}
 	return []byte(b.String())
@@ -131,21 +118,23 @@ func New(st *model.State) *Cache {
 	return c
 }
 
-func Insert(in *model.State) error {
-	f := os.DirFS("/")
-	loaded, err := LoadFile(f, FsPath)
+func MergeAndSave(in *model.State) error {
+	root := "/"
+	f := os.DirFS(root)
+	// remove leading slash from the dirfs
+	loaded, err := LoadFile(f, strings.TrimPrefix(paths.ContextsFile.String(), "/"))
 	if err != nil {
 		return err
 	}
 	insert := New(in)
 	result := loaded.Merge(insert)
 	if loaded == nil {
-		return SaveFile(Path, result)
+		return SaveFile(paths.ContextsFile.String(), result)
 	}
 	if slices.Equal(loaded.Entries, result.Entries) {
 		return nil
 	}
-	return SaveFile(Path, result)
+	return SaveFile(paths.ContextsFile.String(), result)
 }
 
 // SaveFile helps you use Save with a file path instead of a reader

@@ -3,6 +3,8 @@
 package cache
 
 import (
+	"github.com/ewy1/pik/paths"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -203,4 +205,66 @@ func TestMergeNilNormal(t *testing.T) {
 		Entries: []Entry{{Path: "123", Label: "/asdf"}},
 	}
 	_ = e.Merge(c)
+}
+
+func TestCacheInit_Init(t *testing.T) {
+	d := t.TempDir()
+	paths.SetAll(d)
+	c := &cacheInit{}
+	err := c.Init()
+	assert.NoError(t, err)
+	assert.Contains(t, paths.ContextsFile, d)
+}
+
+func TestInsert(t *testing.T) {
+	d := t.TempDir()
+	st := TState(TSource("source", "target"))
+	paths.SetAll(d)
+	defer paths.Reset()
+	err := MergeAndSave(st)
+	assert.NoError(t, err)
+}
+
+func TestInsertNonExistent(t *testing.T) {
+	st := TState(TSource("source", "target"))
+	paths.SetAll("/../")
+	err := MergeAndSave(st)
+	assert.Error(t, err)
+}
+
+func TestLoadState(t *testing.T) {
+	paths.SetAll("/pik")
+	defer paths.Reset()
+	c := &Cache{
+		Entries: []Entry{
+			{Path: "/asdf", Label: "hjkl"},
+		},
+	}
+	f := fstest.MapFS{
+		"/pik/contexts": &fstest.MapFile{
+			Data: []byte("asdf # hjkl"),
+		},
+	}
+	st, errs := LoadState(f, c, nil, nil)
+	for _, e := range errs {
+		assert.NoError(t, e)
+	}
+	assert.NotNil(t, st)
+}
+
+func TestSavesFile(t *testing.T) {
+	d := t.TempDir()
+	paths.Set(paths.ContextsFile, filepath.Join(d, "contexts"))
+	defer paths.Reset()
+	f, err := os.OpenRoot("/")
+	defer f.Close()
+	assert.NoError(t, err)
+	st := TState(TSource("source", "target1", "target2"))
+	c := New(st)
+	assert.NotNil(t, c)
+	err = MergeAndSave(st)
+	assert.NoError(t, err)
+	content, err := os.ReadFile(paths.ContextsFile.String())
+	assert.NoError(t, err)
+	assert.Contains(t, string(content), c.Entries[0].String())
 }

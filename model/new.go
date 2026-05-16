@@ -10,7 +10,7 @@ import (
 	"sync"
 )
 
-func NewState(f fs.FS, locations []string, indexers []Indexer, runners []Runner) (*State, []error) {
+func NewState(rootFs fs.FS, locations []string, indexers []Indexer, runners []Runner) (*State, []error) {
 	var errs []error
 	st := &State{
 		All: *flags.All,
@@ -32,16 +32,16 @@ func NewState(f fs.FS, locations []string, indexers []Indexer, runners []Runner)
 				return
 			}
 
-			myWg := sync.WaitGroup{}
+			locationWg := sync.WaitGroup{}
 			var targets = make([][]Target, len(indexers), len(indexers))
 			for ti, indexer := range indexers {
-				myWg.Go(func() {
-					s, err := fs.Sub(f, loc)
+				locationWg.Go(func() {
+					subFs, err := fs.Sub(rootFs, loc)
 					if err != nil && !errors.Is(err, fs.ErrNotExist) {
 						errs = append(errs, err)
 						return
 					}
-					result, err := indexer.Index("/"+loc, s, runners)
+					result, err := indexer.Index("/"+loc, subFs, runners)
 					if err != nil && !errors.Is(err, fs.ErrNotExist) {
 						errs = append(errs, err)
 						return
@@ -49,7 +49,7 @@ func NewState(f fs.FS, locations []string, indexers []Indexer, runners []Runner)
 					targets[ti] = result
 				})
 			}
-			myWg.Wait()
+			locationWg.Wait()
 
 			for _, t := range targets {
 				if t == nil {

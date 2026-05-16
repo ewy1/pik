@@ -9,6 +9,7 @@ import (
 	"github.com/ewy1/pik/run"
 	"github.com/ewy1/pik/spool"
 	"os"
+	"path/filepath"
 	"runtime"
 	"runtime/pprof"
 )
@@ -43,12 +44,22 @@ func (m ModeMap[T]) Traverse(then func(in T) error) error {
 
 var profileFd *os.File
 
+var UnknownShellError = errors.New("$SHELL not set or empty")
+
 // statelessModes are program modes which do not require state to operate.
 // like --version and --completion
 var statelessModes = ModeMap[func() error]{
 	flags.Version: func() error {
 		_, err := spool.Print("%s\n", version)
 		return err
+	},
+	flags.InstallCompletion: func() error {
+		sh := os.Getenv("SHELL")
+		if sh == "" {
+			return UnknownShellError
+		}
+		_, sh = filepath.Split(sh)
+		return completion.Add(sh)
 	},
 	flags.Completion: func() error {
 		return completion.Echo()
@@ -68,14 +79,23 @@ var statelessModes = ModeMap[func() error]{
 	},
 }
 
+var NoTargetsError = errors.New("no targets or sources to list")
+
 // statefulModes are program modes which require a built state to be executed
 var statefulModes = ModeMap[func(st *model.State) error]{
 	flags.List: func(st *model.State) error {
+		count := 0
 		for _, s := range st.Sources {
+			count++
 			_, _ = spool.Print("%v", s.Label()+paths.Ifs)
 			for _, t := range s.Targets {
 				_, _ = spool.Print("%v", t.ShortestId()+paths.Ifs)
+				count++
 			}
+		}
+
+		if count == 0 {
+			return NoTargetsError
 		}
 		return nil
 	},

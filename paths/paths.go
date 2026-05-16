@@ -3,23 +3,39 @@ package paths
 import (
 	"github.com/adrg/xdg"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
 
 var (
-	Ifs    string
-	Config string
-	Cache  string
-	This   string
-	Home   string
+	Ifs          string
+	ConfigDir    = Empty()
+	CacheDir     = Empty()
+	ContextsFile = Empty()
+	HomeDir      = Empty()
+	System       = Empty()
+	This         = "pik"
 )
+
+var Paths = []*Path{
+	ConfigDir,
+	CacheDir,
+	ContextsFile,
+	HomeDir,
+	System,
+}
+
+var DirectoriesToMake = []*Path{
+	ConfigDir,
+	CacheDir,
+}
 
 type paths struct {
 	Initialized bool
 }
 
-var Paths = &paths{
+var Component = &paths{
 	Initialized: false,
 }
 
@@ -31,20 +47,21 @@ func (p *paths) Init() error {
 		xdg.Reload()
 	}
 
-	Home = xdg.Home
-	This = "pik"
-	Cache = filepath.Join(xdg.CacheHome, This)
-	Config = filepath.Join(xdg.ConfigHome, This)
+	HomeDir.Set(xdg.Home)
+	CacheDir.Set(filepath.Join(xdg.CacheHome, This))
+	ConfigDir.Set(filepath.Join(xdg.ConfigHome, This))
+	ContextsFile.Set(path.Join(CacheDir.String(), "contexts"))
+	System.Set(path.Join(ConfigDir.String()))
+
 	Ifs = os.Getenv("IFS")
 
-	err := os.MkdirAll(Cache, 0700)
-	if err != nil {
-		return err
+	for _, d := range DirectoriesToMake {
+		err := os.MkdirAll(d.String(), 0700)
+		if err != nil {
+			return err
+		}
 	}
-	err = os.MkdirAll(Config, 0700)
-	if err != nil {
-		return err
-	}
+
 	if Ifs == "" {
 		Ifs = "\n"
 	}
@@ -53,5 +70,5 @@ func (p *paths) Init() error {
 }
 
 func ReplaceHome(input string) string {
-	return strings.Replace(input, Home, "~", 1)
+	return strings.Replace(input, HomeDir.String(), "~", 1)
 }

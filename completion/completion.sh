@@ -1,9 +1,8 @@
-#/usr/bin/env bash
 _pik_completions()
 {
   QUERY=""
   for word in COMP_WORDS ; do
-    if [ ! query = "-"* ] ; then
+    if [[ ! query = "-"* ]] ; then
       QUERY="$QUERY $WORD"
     fi
   done

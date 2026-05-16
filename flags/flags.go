@@ -26,7 +26,8 @@ var (
 	List = pflag.BoolP("list", "l", false, "list available targets and exit")
 	// Inline means pik does not go to the terminal alt screen
 	// unused because it is accessed by `flags.Get("inline")`
-	Inline     = pflag.BoolP("inline", "i", false, "if true, will force alt screen; if forced false, will disable alt screen")
-	Edit       = pflag.Bool("edit", false, "edit the target in $EDITOR")
-	Completion = pflag.Bool("completion", false, "echo completion scrip and exit")
+	Inline            = pflag.BoolP("inline", "i", false, "if true, will force alt screen; if forced false, will disable alt screen")
+	Edit              = pflag.Bool("edit", false, "edit the target in $EDITOR")
+	Completion        = pflag.Bool("completion", false, "echo completion scrip and exit")
+	InstallCompletion = pflag.Bool("install-completion", false, "install completion script to shell rc")
 )
