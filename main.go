@@ -147,6 +147,9 @@ func pik() int {
 	if !*flags.All {
 		st, stateErrors = model.NewState(fs, locs, indexers, runners)
 		go func() {
+			if len(stateErrors) > 0 {
+				return
+			}
 			err := cache.Insert(st)
 			if err != nil {
 				spool.Warn("%v\n", err)

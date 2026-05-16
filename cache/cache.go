@@ -139,6 +139,9 @@ func Insert(in *model.State) error {
 	}
 	insert := New(in)
 	result := loaded.Merge(insert)
+	if loaded == nil {
+		return SaveFile(Path, result)
+	}
 	if slices.Equal(loaded.Entries, result.Entries) {
 		return nil
 	}
