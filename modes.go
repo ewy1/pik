@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/ewy1/pik/completion"
 	"github.com/ewy1/pik/flags"
+	"github.com/ewy1/pik/help"
 	"github.com/ewy1/pik/model"
 	"github.com/ewy1/pik/paths"
 	"github.com/ewy1/pik/run"
@@ -54,6 +55,10 @@ var uninitializedModes = ModeMap[func() error]{
 	},
 	flags.Completion: func() error {
 		return completion.Echo()
+	},
+	flags.Help: func() error {
+		help.Echo()
+		return nil
 	},
 }
 

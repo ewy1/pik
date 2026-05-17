@@ -8,6 +8,7 @@ import (
 	"github.com/ewy1/pik/crawl"
 	"github.com/ewy1/pik/flags"
 	"github.com/ewy1/pik/git"
+	"github.com/ewy1/pik/help"
 	"github.com/ewy1/pik/indexers/pikdex"
 	"github.com/ewy1/pik/menu"
 	"github.com/ewy1/pik/model"
@@ -105,6 +106,7 @@ func mode[T any](list ModeMap[T], fire func(mode T) error) *int {
 }
 
 func pik() int {
+	pflag.Usage = help.Echo
 	pflag.Parse()
 
 	code := mode(uninitializedModes, func(mode func() error) error {

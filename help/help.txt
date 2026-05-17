@@ -1,0 +1,35 @@
+Usage: pik [OPTION]... [SOURCE] [TARGET] [ARG]...
+
+If no arguments are provided, the TUI will open.
+
+Otherwise, pik will attempt to run the $TARGET script in $SOURCE.
+
+OPTIONS:
+    --help
+        print this information
+    -a, --all
+        in addition to crawling, also load all cached sources
+    -h, --here
+        run in the current working directory instead of the source folder
+    -@, --at [LOCATION]
+        run at $LOCATION instead of the source folder
+    -s, --single
+        skip triggers (pre, post, final targets)
+    -d, --dry
+        instead of running targets, echo their command
+    -r, --root
+        prefix target command with sudo
+    -y, --yes
+        assume yes for yes/no prompts
+    --env [ENVTYPE] [--env [OTHER]]...
+        load environment files that look like they belong to this category
+    -v, --version
+        print pik version and exit
+    -l, --list
+        list all available sources and targets instead of doing anything interactive
+    -i, -inline
+        disable TUI alt screen
+    --edit
+        open the target in $EDITOR instead of running it
+    --install-completion
+        install completion in your shell rc file (bash or zsh currently supported)

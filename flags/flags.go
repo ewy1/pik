@@ -3,6 +3,7 @@ package flags
 import "github.com/spf13/pflag"
 
 var (
+	Help    = pflag.Bool("help", false, "print help information")
 	Profile = pflag.Bool("profile", false, "enable profiling")
 	// Here makes pik run the target at the current location instead of in its source directory
 	Here = pflag.BoolP("here", "h", false, "run target in current directory instead of source location")
