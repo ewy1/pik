@@ -1,3 +1,6 @@
 .idea
 web/coverage.html
 coverage.out
+
+# build artifact
+pik

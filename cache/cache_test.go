@@ -209,9 +209,9 @@ func TestMergeNilNormal(t *testing.T) {
 
 func TestInsert(t *testing.T) {
 	d := t.TempDir()
-	st := TState(TSource("source", "target"))
-	paths.Set(paths.CacheDir, d)
+	paths.Set(paths.ContextsFile, filepath.Join(d, "contexts"))
 	defer paths.Reset()
+	st := TState(TSource("source", "target"))
 	err := MergeAndSave(st)
 	assert.NoError(t, err)
 }
