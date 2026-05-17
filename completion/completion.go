@@ -31,8 +31,10 @@ var completionFileByShell = map[string]string{
 	"zsh":  ".zshrc",
 }
 
+// AlreadyInstalledError is returned when we already found completion code in your shell rc file
 var AlreadyInstalledError = errors.New("completion already installed")
 
+// Add finds the right file to append the completion code to and does that
 func Add(shell string) error {
 	f := filepath.Join(paths.HomeDir.String(), completionFileByShell[shell])
 	content, err := os.ReadFile(f)
@@ -59,6 +61,8 @@ func successMessage(shell string, file string) {
 	_, _ = spool.Print("Installed completion for %s in %s\n", shell, file)
 }
 
+// Echo prints the actual completion script
+// because it is baked in with the program it should always be version-appropriate
 func Echo() error {
 	_, err := spool.Print("%s", completionCode)
 	return err

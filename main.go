@@ -30,7 +30,6 @@ import (
 // useful for initializing stuff like paths, preparing directories, and reading the environment
 var syncInitializers = ComponentList[model.Initializer]{
 	paths.Component,
-	cache.Init,
 }
 
 // initializers are ran before indexing with the indexers,
@@ -108,17 +107,23 @@ func mode[T any](list ModeMap[T], fire func(mode T) error) *int {
 func pik() int {
 	pflag.Parse()
 
-	syncInitializers.RunSync(func(initializer model.Initializer) error {
-		return initializer.Init()
-	})
-
-	code := mode(statelessModes, func(mode func() error) error {
+	code := mode(uninitializedModes, func(mode func() error) error {
 		return mode()
 	})
 	if code != nil {
 		return *code
 	}
 
+	code = mode(statelessModes, func(mode func() error) error {
+		return mode()
+	})
+	if code != nil {
+		return *code
+	}
+
+	syncInitializers.RunSync(func(initializer model.Initializer) error {
+		return initializer.Init()
+	})
 	initializers.RunAsync(func(initializer model.Initializer) error {
 		return initializer.Init()
 	})

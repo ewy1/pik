@@ -46,13 +46,20 @@ var profileFd *os.File
 
 var UnknownShellError = errors.New("$SHELL not set or empty")
 
-// statelessModes are program modes which do not require state to operate.
-// like --version and --completion
-var statelessModes = ModeMap[func() error]{
+// uninitializedModes are modes which can run before the program runs initializers
+var uninitializedModes = ModeMap[func() error]{
 	flags.Version: func() error {
 		_, err := spool.Print("%s\n", version)
 		return err
 	},
+	flags.Completion: func() error {
+		return completion.Echo()
+	},
+}
+
+// statelessModes are program modes which do not require state to operate.
+// like --version and --completion
+var statelessModes = ModeMap[func() error]{
 	flags.InstallCompletion: func() error {
 		sh := os.Getenv("SHELL")
 		if sh == "" {
@@ -60,9 +67,6 @@ var statelessModes = ModeMap[func() error]{
 		}
 		_, sh = filepath.Split(sh)
 		return completion.Add(sh)
-	},
-	flags.Completion: func() error {
-		return completion.Echo()
 	},
 	flags.Profile: func() error {
 		fd, err := os.Create("pik-profile.out")

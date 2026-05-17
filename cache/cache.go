@@ -12,17 +12,12 @@ import (
 	"strings"
 )
 
+// Cache is a wrapper for its entries. I guess it could be a plain type.
 type Cache struct {
 	Entries []Entry
 }
 
 type cacheInit struct{}
-
-var Init model.Initializer = &cacheInit{}
-
-func (i *cacheInit) Init() error {
-	return nil
-}
 
 // Merge combines two caches and filters duplicate keys
 func (c *Cache) Merge(other *Cache) *Cache {
@@ -46,11 +41,13 @@ func (c *Cache) Merge(other *Cache) *Cache {
 	return result
 }
 
+// Entry is a cache entry containing a path and name
 type Entry struct {
 	Path  string
 	Label string
 }
 
+// String returns the string representation of this cache entry
 func (e Entry) String() string {
 	return e.Path + " # " + e.Label
 }
@@ -104,6 +101,7 @@ func (c *Cache) Marshal() []byte {
 	return []byte(b.String())
 }
 
+// String returns the string representation of the Cache
 func (c *Cache) String() string {
 	return string(c.Marshal())
 }
@@ -118,6 +116,8 @@ func New(st *model.State) *Cache {
 	return c
 }
 
+// MergeAndSave creates a cache from a state, combines it with
+// a potential saved context file, and writes it to disk
 func MergeAndSave(in *model.State) error {
 	root := "/"
 	f := os.DirFS(root)
